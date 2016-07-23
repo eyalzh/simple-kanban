@@ -1,0 +1,38 @@
+{
+  "name": "react-kanban",
+  "version": "1.0.0",
+  "description": "Lightweight Kanban Board",
+  "scripts": {
+    "dev": "webpack-dev-server --inline --hot --content-base .",
+    "build": "webpack --config webpack.production.config.js --optimize-occurence-order",
+    "postinstall": "typings install",
+    "test": "mocha --require ts-node/register test/**/*.ts",
+    "lint": "tslint src/**/*.ts src/**/*.tsx"
+  },
+  "keywords": [
+    "kanban", "todo", "react"
+  ],
+  "author": "eyalzh@gmail.com",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "css-loader": "^0.23.1",
+    "mocha": "^2.4.5",
+    "react-addons-test-utils": "^15.2.1",
+    "react-hot-loader": "^1.3.0",
+    "sinon": "^1.17.4",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^0.8.2",
+    "ts-node": "^0.7.2",
+    "tslint": "^3.8.1",
+    "typescript": "^1.8.10",
+    "typings": "^0.8.1",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "dependencies": {
+    "react": "^15.2.1",
+    "react-dom": "^15.2.1",
+    "react-modal": "^1.3.0"
+  }
+}

@@ -1,0 +1,21 @@
+body {
+    margin: 0;
+    background-color: aliceblue;
+}
+
+.toolbar {
+    position: absolute;
+    top: 4px;
+    right: 7px;
+    clear: both;
+    height: 40px;
+}
+
+.toolbar button {
+    margin: 2px;
+}
+
+.toolbar select {
+    margin: 2px;
+}
+
