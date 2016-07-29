@@ -124,6 +124,14 @@ export default class TaskModel {
         return newKey;
     }
 
+    public editCurrentBoard(boardName: string) {
+        const boardMap = this.db.getMap<string>("boardMap");
+        const currentBoard = this.getCurrentBoard();
+        boardMap.set(currentBoard, sanitizer.sanitizeBoardName(boardName));
+
+        this.db.setMap("boardMap", boardMap);
+   }
+
     public editColumn(columnId: string, columnName: string, wipLimit: number) {
 
         const columnsMap = this.getColumns();

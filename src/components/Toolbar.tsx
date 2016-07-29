@@ -13,6 +13,7 @@ interface ToolbarState {
     currentBoardId: string;
     isColBeingAdded: boolean;
     isBoardBeingAdded: boolean;
+    boardBeingEdited: string;
 }
 
 export default class Toolbar extends React.Component<ToolbarProps, ToolbarState> {
@@ -22,7 +23,8 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
         this.state = {
             currentBoardId: "",
             isColBeingAdded: false,
-            isBoardBeingAdded: false
+            isBoardBeingAdded: false,
+            boardBeingEdited: null
         };
     }
 
@@ -54,7 +56,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
                     {boardOptions}
                 </select>
                 <button onClick={e=>this.onAddBoardClicked()}>Add board</button>
-                <button onClick={e=>this.onRemoveBoardClicked()}>Remove board</button>
+                <button onClick={e=>this.onEditBoardClicked()}>Edit board</button>
                 <button onClick={e=>this.onAddColStarted()}>Add column</button>
                 <button onClick={e=>this.clear()}>Reset</button>
                 <ColumnEditDialog
@@ -64,8 +66,11 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
                 />
                 <BoardEditDialog
                     isBeingEdited={this.state.isBoardBeingAdded}
+                    boardId={this.state.boardBeingEdited}
+                    boardName={boards.get(this.state.currentBoardId)}
                     onEditClose={this.onBoardEditClose.bind(this)}
                     onEditSubmitted={this.onAddBoardSubmitted.bind(this)}
+                    onRemoveBoard={this.onRemoveBoard.bind(this)}
                 />
             </div>
         );
@@ -75,8 +80,9 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
         this.setState({
             currentBoardId: this.props.model.getCurrentBoard(),
             isColBeingAdded: false,
-            isBoardBeingAdded: false
-        })
+            isBoardBeingAdded: false,
+            boardBeingEdited: null
+        });
     }
 
     private onColEditClose() {
@@ -86,11 +92,13 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
 
     private onBoardEditClose() {
         this.state.isBoardBeingAdded = false;
+        this.state.boardBeingEdited = null;
         this.setState(this.state);
     }
 
     private onAddBoardClicked() {
         this.state.isBoardBeingAdded = true;
+        this.state.boardBeingEdited = null;
         this.setState(this.state);
     }
 
@@ -119,12 +127,26 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
         if (boardName !== null) {
             const boardNameTrimmed = boardName.trim();
             if (boardNameTrimmed.length > 0) {
-                BoardActions.addBoard(boardNameTrimmed);
+                if (this.state.boardBeingEdited !== null) {
+                    BoardActions.editCurrentBoard(boardNameTrimmed);
+                } else {
+                    BoardActions.addBoard(boardNameTrimmed);
+                }
+
             }
         }
     }
 
-    private onRemoveBoardClicked() {
+    private onEditBoardClicked() {
+        this.state.isBoardBeingAdded = true;
+        this.state.boardBeingEdited = this.props.model.getCurrentBoard();
+        this.setState(this.state);
+    }
+
+    private onRemoveBoard() {
+        this.state.isBoardBeingAdded = false;
+        this.state.boardBeingEdited = null;
+        this.setState(this.state);
         BoardActions.removeCurrentBoard();
     }
 

@@ -71,6 +71,11 @@ export function addBoard(boardName: string) {
     dispatcher.dispatch("refreshBoard", {});
 }
 
+export function editCurrentBoard(boardName: string) {
+    getModel().editCurrentBoard(boardName);
+    dispatcher.dispatch("refreshBoard", {});
+}
+
 export function removeCurrentBoard() {
     const currentBoard = getModel().getCurrentBoard();
     const tasks = getModel().getTasksByBoard(currentBoard);

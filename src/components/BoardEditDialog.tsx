@@ -4,7 +4,10 @@ const Modal = require("react-modal");
 interface BoardEditDialogProps {
     isBeingEdited: boolean;
     onEditClose: Function;
+    onRemoveBoard: Function;
     onEditSubmitted: (boardName: string) => void;
+    boardId?: string;
+    boardName?: string;
 }
 
 interface BoardEditDialogState {
@@ -22,14 +25,46 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
         };
     }
 
+    componentWillReceiveProps(props: BoardEditDialogProps) {
+
+        if (props.boardName !== null && props.boardId !== null) {
+            this.state.name = props.boardName;
+        } else {
+            this.state.name = "";
+        }
+
+        this.setState(this.state);
+    }
+
     render() {
+
+        let title;
+        let removeBtn;
+        if (this.props.boardId !== null) {
+            title = "Edit Board";
+            removeBtn = (
+                <button className="remove-btn" onClick={e => this.onRemoveBoard()}>Remove board</button>
+            );
+        } else {
+            title = "Add Board";
+            removeBtn = <div />;
+        }
+
+        let buttons = (
+            <p>
+                <button onClick={e => this.onEditSubmitted()}>Submit</button>&nbsp;
+                <button onClick={this.props.onEditClose}>Cancel</button>&nbsp;
+                {removeBtn}
+            </p>
+        );
+
         return (
             <Modal
                 isOpen={this.props.isBeingEdited}
                 onRequestClose={this.props.onEditClose}
                 onAfterOpen={this.onEditDialogOpen.bind(this)}>
 
-                <h1>Add board</h1>
+                <h1>{title}</h1>
                 <p>
                     Board name
                 </p>
@@ -41,10 +76,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
                         onKeyPress={this.onKeyPressed.bind(this)} />
                 </p>
 
-                <p>
-                    <button onClick={e => this.onEditSubmitted()}>Submit</button>&nbsp;
-                    <button onClick={this.props.onEditClose}>Cancel</button>
-                </p>
+                {buttons}
 
             </Modal>
         )
@@ -64,6 +96,10 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
     private onEditSubmitted() {
         this.props.onEditSubmitted(this.state.name);
+    }
+
+    private onRemoveBoard() {
+        this.props.onRemoveBoard();
     }
 
     private onEditDialogOpen() {
