@@ -2,7 +2,7 @@
 class Sanitizer {
 
     public sanitizeColName(colName: string): string {
-        return colName.trim().substr(0, 16);
+        return colName.trim().substr(0, 24);
     }
 
     public sanitizeWipLimit(wipLimit: number, defaultWipLimit: number): number {
@@ -18,7 +18,7 @@ class Sanitizer {
     }
 
     public sanitizeBoardName(boardName: string): string {
-        return boardName.trim().substr(0, 16);
+        return boardName.trim().substr(0, 24);
     }
 
 }
