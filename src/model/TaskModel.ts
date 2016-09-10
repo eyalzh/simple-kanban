@@ -13,7 +13,7 @@ export default class TaskModel {
         this.db = db;
     }
 
-    public getCurrentBoard(): string {
+    public getCurrentBoard(): string | null {
        return this.db.getItem("selectedBoard");
     }
 
@@ -25,9 +25,13 @@ export default class TaskModel {
         return this.db.getMap<string>("boardMap");
     }
     
-    public getNextBoard(): string {
+    public getNextBoard(): string | null {
+        const currentBoard = this.getCurrentBoard();
+        if (currentBoard === null) {
+            return null;
+        }
         const keys = [...this.getBoards().keys()];
-        const next = (keys.indexOf(this.getCurrentBoard()) + 1) % keys.length;
+        const next = (keys.indexOf(currentBoard) + 1) % keys.length;
         return keys[next];
     }
 
@@ -44,10 +48,20 @@ export default class TaskModel {
         let tasks: Array<Task> = [];
         const allTasks = this.getTasks();
         const map = this.db.getMap<Array<string>>("colTaskMap");
-        if (map.has(columnId)) {
-            tasks = map
-                .get(columnId)
-                .map(taskId => allTasks.get(taskId));
+
+        if (! map) {
+            throw new Error("could not fetch column task map");
+        }
+
+        const columnTasks = map.get(columnId);
+
+        if (columnTasks) {
+            for(const taskId of columnTasks) {
+                const task = allTasks.get(taskId);
+                if (task) {
+                    tasks.push(task);
+                }
+            }
         } else {
             throw new Error(`Column ${columnId} was not found`);
         }
@@ -57,9 +71,11 @@ export default class TaskModel {
 
     public getTasksByBoard(boardId: string): Array<Task> {
         const cols = this.getColumnsByBoard(boardId);
-        let tasks = [];
+        let tasks: Array<Task> = [];
         cols.forEach(col => {
-            tasks = tasks.concat(this.getTasksByColumn(col.id));
+            if (col) {
+                tasks = tasks.concat(this.getTasksByColumn(col.id));
+            }
         });
         return tasks;
     }
@@ -71,9 +87,15 @@ export default class TaskModel {
         const boardsToColsMap = this.db.getMap<Array<string>>("boardColMap");
 
         if (boardsToColsMap.has(boardId)) {
-            cols = boardsToColsMap
-                .get(boardId)
-                .map(colId => allCols.get(colId));
+            const colMap = boardsToColsMap.get(boardId);
+            if (colMap) {
+                colMap.forEach(colId => {
+                    const col = allCols.get(colId);
+                    if (col) {
+                        cols.push(col);
+                    }
+                });
+            }
         } else {
             throw new Error(`Board ${boardId} could not be found`);
         }
@@ -82,6 +104,17 @@ export default class TaskModel {
     }
 
     public addColumn(name: string, wipLimit = 3): string {
+
+        const currentBoard = this.getCurrentBoard();
+        if (currentBoard === null) {
+            throw new Error("can't add column - no active board found");
+        }
+
+        const boardsToColsMap = this.db.getMap<Array<string>>("boardColMap");
+        let colsInBoard = boardsToColsMap.get(currentBoard);
+        if (! colsInBoard) {
+            throw new Error("can't add column - corrupted board data");
+        }
 
         const newKey = generateUniqId(this.db, "col");
         const newCol: Column = {
@@ -99,9 +132,6 @@ export default class TaskModel {
         colsTasksMap.set(newKey, []);
         this.db.setMap("colTaskMap", colsTasksMap);
 
-        const boardsToColsMap = this.db.getMap<Array<string>>("boardColMap");
-        const currentBoard = this.getCurrentBoard();
-        let colsInBoard = boardsToColsMap.get(currentBoard);
         colsInBoard = colsInBoard.concat(newKey);
         boardsToColsMap.set(currentBoard, colsInBoard);
 
@@ -127,15 +157,24 @@ export default class TaskModel {
     public editCurrentBoard(boardName: string) {
         const boardMap = this.db.getMap<string>("boardMap");
         const currentBoard = this.getCurrentBoard();
-        boardMap.set(currentBoard, sanitizer.sanitizeBoardName(boardName));
 
-        this.db.setMap("boardMap", boardMap);
+        if (currentBoard === null) {
+            throw new Error("There is no active board to edit");
+        } else {
+            boardMap.set(currentBoard, sanitizer.sanitizeBoardName(boardName));
+            this.db.setMap("boardMap", boardMap);
+        }
+
    }
 
     public editColumn(columnId: string, columnName: string, wipLimit: number) {
 
         const columnsMap = this.getColumns();
         const col = columnsMap.get(columnId);
+
+        if (! col) {
+            throw new Error(`column ${columnId} doesn't exist`);
+        }
 
         col.name = sanitizer.sanitizeColName(columnName);
         col.wipLimit = sanitizer.sanitizeWipLimit(wipLimit, 3);
@@ -146,18 +185,24 @@ export default class TaskModel {
 
     public addTask(columnId: string, desc: string, longdesc?: string): string {
 
+        const map = this.db.getMap<string>("colTaskMap");
+        let tasksInCol = map.get(columnId);
+
+        if (! tasksInCol) {
+            throw new Error(`can't add task to column ${columnId} - corrupted data`);
+        }
+
         const newKey = generateUniqId(this.db, "task");
+
         const newTask: Task = {
             id: newKey,
             desc: sanitizer.sanitizeTaskTitle(desc),
-            longdesc
+            longdesc: typeof longdesc !== "undefined" ? longdesc : ""
         };
 
         const taskMap = this.getTasks();
         taskMap.set(newKey, newTask);
 
-        const map = this.db.getMap<string>("colTaskMap");
-        let tasksInCol = map.get(columnId);
         tasksInCol = tasksInCol.concat(newKey);
         map.set(columnId, tasksInCol);
 
@@ -169,14 +214,29 @@ export default class TaskModel {
 
     public moveTask(taskId: string, sourceColumnId: string, targetColumnId: string) {
 
-        const map = this.db.getMap<Array<string>>("colTaskMap");
+        const colTaskMap = this.db.getMap<Array<string>>("colTaskMap");
 
-        const existingColTasks = map.get(sourceColumnId);
+        const existingColTasks = colTaskMap.get(sourceColumnId);
+
+        if (! existingColTasks) {
+            throw new Error(`Can't move task from ${sourceColumnId} - corrupted data`);
+        }
+
         const theTask = existingColTasks.find(task => task === taskId);
-        map.set(sourceColumnId, existingColTasks.filter(task => task !== taskId));
+        if (! theTask) {
+            throw new Error(`Count not find task ${taskId} in source column`);
+        }
 
-        map.set(targetColumnId, map.get(targetColumnId).concat(theTask));
-        this.db.setMap("colTaskMap", map)
+        const targetTasks = colTaskMap.get(targetColumnId);
+        if (! targetTasks) {
+            throw new Error(`Can't move task to ${targetColumnId} - corrupted data`);
+        }
+
+        colTaskMap.set(sourceColumnId, existingColTasks.filter(task => task !== taskId));
+        colTaskMap.set(targetColumnId, targetTasks.concat(theTask));
+
+        this.db.setMap("colTaskMap", colTaskMap);
+
     }
 
     public deleteTask(columnId: string, taskId: string) {
@@ -192,6 +252,10 @@ export default class TaskModel {
 
         const boardColMap = this.db.getMap<Array<string>>("boardColMap");
         let columns = boardColMap.get(boardId);
+
+        if (! columns) {
+            throw new Error(`can't find columns for board ${boardId}`);
+        }
 
         const firstIdx = columns.indexOf(firstColumnId);
         const secondIdx = columns.indexOf(secondColumnId);
@@ -209,14 +273,26 @@ export default class TaskModel {
         const tasks = this.getTasks();
 
         let task = tasks.get(taskId);
+
+        if (! task) {
+            throw new Error(`Can't find task ${taskId}`);
+        }
+
         task.desc = sanitizer.sanitizeTaskTitle(newDesc);
-        task.longdesc = newLongDesc;
+        task.longdesc = typeof newLongDesc !== "undefined" ? newLongDesc : "";
 
         this.db.setMap("tasks", tasks)
 
     }
 
     public removeColumn(boardId: string, columnId: string) {
+
+        const boardMap = this.db.getMap<Array<string>>("boardColMap");
+        const colsInBoard = boardMap.get(boardId);
+
+        if (! colsInBoard) {
+            throw new Error(`cannot find column ${columnId} in board ${boardId}`);
+        }
 
         const tasks = this.getTasksByColumn(columnId);
         if (tasks.length > 0) {
@@ -227,8 +303,6 @@ export default class TaskModel {
         map.delete(columnId);
         this.db.setMap("colTaskMap", map);
 
-        const boardMap = this.db.getMap<Array<string>>("boardColMap");
-        const colsInBoard = boardMap.get(boardId);
         const updatedCols = colsInBoard.filter(colId => colId !== columnId);
         boardMap.set(boardId, updatedCols);
         this.db.setMap("boardColMap", boardMap);
@@ -240,12 +314,14 @@ export default class TaskModel {
 
     public removeCurrentBoard() {
         const boardId = this.getCurrentBoard();
-        const cols = this.getColumnsByBoard(boardId);
-        cols.forEach(col => this.removeColumn(boardId, col.id));
+        if (boardId !== null) {
+            const cols = this.getColumnsByBoard(boardId);
+            cols.forEach(col => col && this.removeColumn(boardId, col.id));
 
-        const boardsMap = this.db.getMap<string>("boardMap");
-        boardsMap.delete(boardId);
-        this.db.setMap("boardMap", boardsMap)
+            const boardsMap = this.db.getMap<string>("boardMap");
+            boardsMap.delete(boardId);
+            this.db.setMap("boardMap", boardsMap)
+        }
     }
 
     public clear() {
@@ -262,10 +338,12 @@ export default class TaskModel {
         }
 
         const tasks = map.get(columnId);
-        const updatedTasks = tasks.filter(task => task !== taskId);
-        map.set(columnId, updatedTasks);
+        if (tasks) {
+            const updatedTasks = tasks.filter(task => task !== taskId);
+            map.set(columnId, updatedTasks);
 
-        this.db.setMap("colTaskMap", map)
+            this.db.setMap("colTaskMap", map);
+        }
 
     }
 
@@ -279,7 +357,7 @@ export default class TaskModel {
 
         const boardsToColsMap = this.db.getMap<Array<string>>("boardColMap");
         const currentBoard = this.getCurrentBoard();
-        if (!boardsToColsMap.has(currentBoard)) {
+        if (currentBoard !== null && !boardsToColsMap.has(currentBoard)) {
             boardsToColsMap.set(currentBoard, []);
             this.db.setMap("boardColMap", boardsToColsMap)
         }

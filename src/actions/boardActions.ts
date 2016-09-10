@@ -78,15 +78,17 @@ export function editCurrentBoard(boardName: string) {
 
 export function removeCurrentBoard() {
     const currentBoard = getModel().getCurrentBoard();
-    const tasks = getModel().getTasksByBoard(currentBoard);
-    if (tasks.length > 0) {
-        alert(`You cannot remove a non-empty board (${tasks.length} tasks found)`);
-    } else {
-        const nextBoard = getModel().getNextBoard();
-        getModel().removeCurrentBoard();
-        if (nextBoard) {
-            getModel().setCurrentBoard(nextBoard);
+    if (currentBoard !== null) {
+        const tasks = getModel().getTasksByBoard(currentBoard);
+        if (tasks.length > 0) {
+            alert(`You cannot remove a non-empty board (${tasks.length} tasks found)`);
+        } else {
+            const nextBoard = getModel().getNextBoard();
+            getModel().removeCurrentBoard();
+            if (nextBoard) {
+                getModel().setCurrentBoard(nextBoard);
+            }
+            dispatcher.dispatch("refreshBoard", {});
         }
-        dispatcher.dispatch("refreshBoard", {});
     }
 }

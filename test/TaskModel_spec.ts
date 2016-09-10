@@ -3,6 +3,7 @@ import {MapBasedStorage} from "./MapBasedStorage";
 import TaskModel from "../src/model/TaskModel";
 import LocalStorageDB from "../src/model/DB/LocalStorageDB";
 import {DB} from "../src/model/DB/DB";
+import {Column} from "../src/model/Column";
 
 describe("task model", function () {
 
@@ -21,7 +22,7 @@ describe("task model", function () {
         taskModel.addColumn("first");
         taskModel.addColumn("second");
 
-        const actualColumns = taskModel.getColumnsByBoard(board);
+        const actualColumns: Array<Column> = taskModel.getColumnsByBoard(board);
 
         expect(actualColumns[0].name).to.equal("first");
         expect(actualColumns[1].name).to.equal("second");

@@ -7,7 +7,7 @@ export default class LocalStorageDB implements DB {
         this.storage = storage;
     }
 
-    getItem(key: string): string {
+    getItem(key: string): string | null {
         return this.storage.getItem(key);
     }
 

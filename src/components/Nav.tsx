@@ -9,7 +9,7 @@ interface NavProps {
 }
 
 interface NavState {
-    currentBoard: string;
+    currentBoard: string | undefined;
 }
 
 export default class Nav extends React.Component<NavProps, NavState> {
@@ -30,9 +30,12 @@ export default class Nav extends React.Component<NavProps, NavState> {
         const boards = this.props.model.getBoards();
         const currentBoard = this.props.model.getCurrentBoard();
 
-        this.setState({
-            currentBoard: boards.get(currentBoard)
-        })
+        if (currentBoard !== null) {
+            this.setState({
+                currentBoard: boards.get(currentBoard)
+            });
+        }
+
     }
 
     render() {

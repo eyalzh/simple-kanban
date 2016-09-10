@@ -13,7 +13,7 @@ interface ToolbarState {
     currentBoardId: string;
     isColBeingAdded: boolean;
     isBoardBeingAdded: boolean;
-    boardBeingEdited: string;
+    boardBeingEdited: string | null | undefined;
 }
 
 export default class Toolbar extends React.Component<ToolbarProps, ToolbarState> {
@@ -42,12 +42,11 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
     render() {
 
         const boards = this.props.model.getBoards();
-        let boardOptions = [];
+        let boardOptions: Array<JSX.Element> = [];
 
         boards.forEach((desc, id) => {
-            boardOptions.push(
-                <option key={id} value={id}>{desc}</option>
-            );
+            const el = <option key={id} value={id}>{desc}</option>;
+            boardOptions.push(el);
         });
 
         return (
@@ -77,12 +76,15 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
     }
 
     private syncSelBoard() {
-        this.setState({
-            currentBoardId: this.props.model.getCurrentBoard(),
-            isColBeingAdded: false,
-            isBoardBeingAdded: false,
-            boardBeingEdited: null
-        });
+        const currentBoardId = this.props.model.getCurrentBoard();
+        if (currentBoardId !== null) {
+            this.setState({
+                currentBoardId,
+                isColBeingAdded: false,
+                isBoardBeingAdded: false,
+                boardBeingEdited: null
+            });
+        }
     }
 
     private onColEditClose() {

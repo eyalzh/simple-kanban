@@ -26,7 +26,7 @@ describe("dispatcher", function () {
 
     it("should broadcast the event based on priority", function () {
 
-        let callOrder = [];
+        let callOrder: Array<number> = [];
         const dispatcher = new Dispatcher();
 
         dispatcher.register(function () {

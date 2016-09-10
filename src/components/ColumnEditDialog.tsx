@@ -5,7 +5,7 @@ interface ColumnEditDialogProps {
     name?: string;
     wipLimit?: number;
     isBeingEdited: boolean;
-    onEditClose: Function;
+    onEditClose: React.MouseEventHandler;
     onEditSubmitted: (desc: string, wipLimit: number) => void;
 }
 
@@ -56,7 +56,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
                     </p>
                     <p>
                         <input
-                            value={this.state.wipLimit}
+                            value={this.state.wipLimit.toString()}
                             onChange={this.onWipLimitChange.bind(this)}
                             type="number"
                             min={1}

@@ -6,7 +6,7 @@ interface TaskEditDialogProps {
     desc?: string;
     longdesc?: string;
     isBeingEdited: boolean;
-    onCloseEditTask: Function;
+    onCloseEditTask: React.MouseEventHandler;
     onEditSubmitted: (desc: string, longdesc: string) => void;
 }
 

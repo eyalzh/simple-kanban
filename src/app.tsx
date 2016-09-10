@@ -15,6 +15,10 @@ initializeModel(taskModel);
 
 const cont = document.getElementById("cont");
 
+if (cont === null) {
+    throw new Error("Could not find main container element.");
+}
+
 render(
     <div>
         <Nav model={taskModel}/>
@@ -26,7 +30,10 @@ render(
 window.addEventListener("keydown", (e) => {
     const ALT_B = 66;
     if(e.altKey && e.keyCode === ALT_B) {
-        BoardActions.switchBoard(taskModel.getNextBoard());
+        const nextBoard = taskModel.getNextBoard();
+        if (nextBoard !== null) {
+            BoardActions.switchBoard(nextBoard);
+        }
         e.preventDefault();
     }
 }, false);

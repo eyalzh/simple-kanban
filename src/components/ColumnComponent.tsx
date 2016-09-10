@@ -86,7 +86,7 @@ export default class ColumnComponent extends React.Component<ColumnProps, Column
                  onDrop={e => this.onDropTask(e)}
                  onDoubleClick={e => this.onAddTask()}
                  onDragStart={e => this.onDragStart(e)}
-                 draggable="true">
+                 draggable={true}>
                 <div className="column-header" title="double click to edit" onDoubleClick={e => this.editColumn(e)}>
                     <div>{this.props.column.name}</div>
                     <div className="wip">{taskNo} / {this.props.column.wipLimit}</div>
@@ -137,6 +137,11 @@ export default class ColumnComponent extends React.Component<ColumnProps, Column
     private onDropTask(e: React.DragEvent) {
 
         const context = dragContext.get(e);
+
+        if (typeof context === "undefined") {
+            throw new Error("could not drop task - context is undefined");
+        }
+
         dragContext.delete(e);
 
         if (context.type === DragContextType.TASK) {

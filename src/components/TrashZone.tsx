@@ -20,6 +20,9 @@ export default class TrashZone extends React.Component<{}, {}> {
 
     private onDrop(e: React.DragEvent) {
         const context = dragContext.get(e);
+        if (typeof context === "undefined") {
+            throw new Error("undefined drag and drop context");
+        }
         dragContext.delete(e);
         if (context) {
             switch(context.type) {
@@ -27,7 +30,9 @@ export default class TrashZone extends React.Component<{}, {}> {
                     BoardActions.deleteTask(context.sourceColumnId, context.entityId);
                     break;
                 case DragContextType.COLUMN:
-                    BoardActions.removeColumn(context.boardId, context.entityId);
+                    if (typeof context.boardId !== "undefined") {
+                        BoardActions.removeColumn(context.boardId, context.entityId);
+                    }
                     break;
             }
         }

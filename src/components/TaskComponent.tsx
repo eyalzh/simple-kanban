@@ -30,7 +30,7 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
             <div
                 className="task"
                 onDragStart={e => this.dragStart(e)}
-                draggable="true"
+                draggable={true}
                 onDoubleClick={e => this.editTask(e)}>
 
                 <div className="task-title">{renderedDesc}</div>

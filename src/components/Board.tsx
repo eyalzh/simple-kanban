@@ -13,7 +13,7 @@ interface BoardProps {
 }
 
 interface BoardState {
-    columns: Array<Column>;
+    columns: Array<Column|undefined>;
     boardId: string;
 }
 
@@ -44,23 +44,27 @@ export default class Board extends React.Component<BoardProps, BoardState> {
 
     private syncState() {
         const boardId = this.props.model.getCurrentBoard();
-        this.setState({
-            boardId,
-            columns: this.props.model.getColumnsByBoard(boardId)
-        });
+        if (boardId !== null) {
+            this.setState({
+                boardId,
+                columns: this.props.model.getColumnsByBoard(boardId)
+            });
+        }
     }
 
     render() {
 
         const columns = this.state.columns.map((column) => {
-            return (
-                <ColumnComponent
-                    key={column.id}
-                    column={column}
-                    model={this.props.model}
-                    boardId={this.state.boardId}
+            if (column) {
+                return (
+                    <ColumnComponent
+                        key={column.id}
+                        column={column}
+                        model={this.props.model}
+                        boardId={this.state.boardId}
                     />
-            )
+                )
+            }
         });
 
         return (

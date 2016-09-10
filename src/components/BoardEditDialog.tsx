@@ -3,10 +3,10 @@ const Modal = require("react-modal");
 
 interface BoardEditDialogProps {
     isBeingEdited: boolean;
-    onEditClose: Function;
+    onEditClose: React.MouseEventHandler;
     onRemoveBoard: Function;
     onEditSubmitted: (boardName: string) => void;
-    boardId?: string;
+    boardId?: string | null;
     boardName?: string;
 }
 
@@ -27,7 +27,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
     componentWillReceiveProps(props: BoardEditDialogProps) {
 
-        if (props.boardName !== null && props.boardId !== null) {
+        if (typeof props.boardName !== "undefined" && props.boardId !== null) {
             this.state.name = props.boardName;
         } else {
             this.state.name = "";
