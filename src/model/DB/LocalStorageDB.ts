@@ -7,41 +7,64 @@ export default class LocalStorageDB implements DB {
         this.storage = storage;
     }
 
-    getItem(key: string): string | null {
-        return this.storage.getItem(key);
+    getItem(key: string): Promise<string | null> {
+        console.log("getItem");
+        return new Promise<string | null>((resolve, reject) => {
+            resolve(this.storage.getItem(key));
+        });
     }
 
-    getMap<T>(key: string): Map<string, T> {
+    getMap<T>(key: string): Promise<Map<string, T>> {
 
-        const json = this.storage.getItem(key);
-        let map: Map<any, any>;
+        console.log("getmap");
 
-        if (json) {
-            map = new Map(JSON.parse(json));
-        } else {
-            map = new Map();
-        }
+        return new Promise<Map<string, T>>((resolve, reject) => {
+            const json = this.storage.getItem(key);
+            let map: Map<any, any>;
 
-        return (map as Map<string, T>);
+            if (json) {
+                map = new Map(JSON.parse(json));
+            } else {
+                map = new Map();
+            }
 
-    }
-
-    setItem(key: string, data: string | Map<string, any>): void {
-
-        if (typeof data === "string") {
-            this.storage.setItem(key, data);
-        } else {
-            this.storage.setItem(key, JSON.stringify(data));
-        }
+            resolve(map as Map<string, T>);
+        });
 
     }
 
-    setMap(key: string, data: Map<string, any>): void {
-        this.storage.setItem(key, JSON.stringify([...data]));
+    setItem(key: string, data: string | Map<string, any>): Promise<void> {
+
+        console.log("setItem");
+
+        return new Promise<void>((resolve, reject) => {
+            if (typeof data === "string") {
+                this.storage.setItem(key, data);
+            } else {
+                this.storage.setItem(key, JSON.stringify(data));
+            }
+            resolve();
+        });
     }
 
-    clear(): void {
-        this.storage.clear();
+    setMap(key: string, data: Map<string, any>): Promise<void> {
+
+        console.log("setMap");
+
+        return new Promise<void>((resolve, reject) => {
+            this.storage.setItem(key, JSON.stringify([...data]));
+            resolve();
+        });
+    }
+
+    clear(): Promise<void> {
+
+        console.log("clear");
+
+        return new Promise<void>((resolve, reject) => {
+            this.storage.clear();
+            resolve();
+        });
     }
 
 }

@@ -27,16 +27,16 @@ export function reorderArray<T>(arr: Array<T>, searchFn: (T) => boolean, directi
  * Generate a globally unique ID
  */
 var uniqueId: number|null = null;
-export function generateUniqId(db: DB, prefix: string): string {
+export async function generateUniqId(db: DB, prefix: string): Promise<string> {
 
     if (uniqueId === null) {
-        uniqueId = Number(db.getItem("uniqueId"));
+        uniqueId = Number(await db.getItem("uniqueId"));
         if (! uniqueId) {
             uniqueId = 1;
         }
     }
     uniqueId++;
-    db.setItem("uniqueId", uniqueId.toString());
+    await db.setItem("uniqueId", uniqueId.toString());
 
     return prefix + "_" + uniqueId;
 }

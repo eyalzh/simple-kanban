@@ -13,41 +13,41 @@ export default class TaskModel {
         this.db = db;
     }
 
-    public getCurrentBoard(): string | null {
-       return this.db.getItem("selectedBoard");
+    public async getCurrentBoard(): Promise<string | null> {
+       return await this.db.getItem("selectedBoard");
     }
 
-    public setCurrentBoard(boardId: string) {
-        this.db.setItem("selectedBoard", boardId);
+    public async setCurrentBoard(boardId: string) {
+       await this.db.setItem("selectedBoard", boardId);
     }
 
-    public getBoards(): Map<string, string> {
-        return this.db.getMap<string>("boardMap");
+    public async getBoards(): Promise<Map<string, string>> {
+        return await this.db.getMap<string>("boardMap");
     }
     
-    public getNextBoard(): string | null {
-        const currentBoard = this.getCurrentBoard();
+    public async getNextBoard(): Promise<string | null> {
+        const currentBoard = await this.getCurrentBoard();
         if (currentBoard === null) {
             return null;
         }
-        const keys = [...this.getBoards().keys()];
+        const keys = [...(await this.getBoards()).keys()];
         const next = (keys.indexOf(currentBoard) + 1) % keys.length;
         return keys[next];
     }
 
-    public getColumns(): Map<string, Column> {
-        return this.db.getMap<Column>("columnsMap");
+    public async getColumns(): Promise<Map<string, Column>> {
+        return await this.db.getMap<Column>("columnsMap");
     }
 
-    public getTasks(): Map<string, Task> {
-        return this.db.getMap<Task>("tasks");
+    public async getTasks(): Promise<Map<string, Task>> {
+        return await this.db.getMap<Task>("tasks");
     }
     
-    public getTasksByColumn(columnId: string): Array<Task> {
+    public async getTasksByColumn(columnId: string): Promise<Array<Task>> {
 
         let tasks: Array<Task> = [];
-        const allTasks = this.getTasks();
-        const map = this.db.getMap<Array<string>>("colTaskMap");
+        const allTasks = await this.getTasks();
+        const map = await this.db.getMap<Array<string>>("colTaskMap");
 
         if (! map) {
             throw new Error("could not fetch column task map");
@@ -56,7 +56,7 @@ export default class TaskModel {
         const columnTasks = map.get(columnId);
 
         if (columnTasks) {
-            for(const taskId of columnTasks) {
+            for(let taskId of columnTasks) {
                 const task = allTasks.get(taskId);
                 if (task) {
                     tasks.push(task);
@@ -69,22 +69,29 @@ export default class TaskModel {
         return tasks;
     }
 
-    public getTasksByBoard(boardId: string): Array<Task> {
-        const cols = this.getColumnsByBoard(boardId);
+    public async getTasksByBoard(boardId: string): Promise<Array<Task>> {
+        const cols = await this.getColumnsByBoard(boardId);
         let tasks: Array<Task> = [];
-        cols.forEach(col => {
-            if (col) {
-                tasks = tasks.concat(this.getTasksByColumn(col.id));
+
+        const taskMods = cols.map(col => {
+            return async function() {
+                if (col) {
+                    const colTasks = await this.getTasksByColumn(col.id);
+                    tasks = tasks.concat(colTasks);
+                }
             }
         });
+
+        await Promise.all(taskMods);
+
         return tasks;
     }
 
-    public getColumnsByBoard(boardId: string): Array<Column> {
+    public async getColumnsByBoard(boardId: string): Promise<Array<Column>> {
 
         let cols: Array<Column> = [];
-        const allCols = this.getColumns();
-        const boardsToColsMap = this.db.getMap<Array<string>>("boardColMap");
+        const allCols = await this.getColumns();
+        const boardsToColsMap = await this.db.getMap<Array<string>>("boardColMap");
 
         if (boardsToColsMap.has(boardId)) {
             const colMap = boardsToColsMap.get(boardId);
@@ -103,73 +110,74 @@ export default class TaskModel {
         return cols;
     }
 
-    public addColumn(name: string, wipLimit = 3): string {
+    public async addColumn(name: string, wipLimit = 3): Promise<string> {
 
-        const currentBoard = this.getCurrentBoard();
+        const currentBoard = await this.getCurrentBoard();
         if (currentBoard === null) {
             throw new Error("can't add column - no active board found");
         }
 
-        const boardsToColsMap = this.db.getMap<Array<string>>("boardColMap");
+        const boardsToColsMap = await this.db.getMap<Array<string>>("boardColMap");
         let colsInBoard = boardsToColsMap.get(currentBoard);
         if (! colsInBoard) {
             throw new Error("can't add column - corrupted board data");
         }
 
-        const newKey = generateUniqId(this.db, "col");
+        const newKey = await generateUniqId(this.db, "col");
         const newCol: Column = {
             id: newKey,
             name: sanitizer.sanitizeColName(name),
             wipLimit: sanitizer.sanitizeWipLimit(wipLimit, 3)
         };
 
-        const cols = this.getColumns();
+        const cols = await this.getColumns();
         cols.set(newKey, newCol);
 
-        this.db.setMap("columnsMap", cols);
+        await this.db.setMap("columnsMap", cols);
 
-        const colsTasksMap = this.db.getMap<Array<string>>("colTaskMap");
+        const colsTasksMap = await this.db.getMap<Array<string>>("colTaskMap");
         colsTasksMap.set(newKey, []);
-        this.db.setMap("colTaskMap", colsTasksMap);
+        await this.db.setMap("colTaskMap", colsTasksMap);
 
         colsInBoard = colsInBoard.concat(newKey);
         boardsToColsMap.set(currentBoard, colsInBoard);
 
-        this.db.setMap("boardColMap", boardsToColsMap);
+        await this.db.setMap("boardColMap", boardsToColsMap);
 
         return newKey;
     }
 
-    public addBoard(boardName: string) {
-        const newKey = generateUniqId(this.db, "board");
+    public async addBoard(boardName: string) {
+        const newKey = await generateUniqId(this.db, "board");
 
-        const boardMap = this.db.getMap<string>("boardMap");
+        const boardMap = await this.db.getMap<string>("boardMap");
         boardMap.set(newKey, sanitizer.sanitizeBoardName(boardName));
         this.db.setMap("boardMap", boardMap);
 
-        const boardsToColsMap = this.db.getMap<Array<string>>("boardColMap");
+        const boardsToColsMap = await this.db.getMap<Array<string>>("boardColMap");
         boardsToColsMap.set(newKey, []);
         this.db.setMap("boardColMap", boardsToColsMap);
 
         return newKey;
     }
 
-    public editCurrentBoard(boardName: string) {
-        const boardMap = this.db.getMap<string>("boardMap");
-        const currentBoard = this.getCurrentBoard();
+    public async editCurrentBoard(boardName: string) {
+
+        const boardMap = await this.db.getMap<string>("boardMap");
+        const currentBoard = await this.getCurrentBoard();
 
         if (currentBoard === null) {
             throw new Error("There is no active board to edit");
         } else {
             boardMap.set(currentBoard, sanitizer.sanitizeBoardName(boardName));
-            this.db.setMap("boardMap", boardMap);
+            await this.db.setMap("boardMap", boardMap);
         }
 
    }
 
-    public editColumn(columnId: string, columnName: string, wipLimit: number) {
+    public async editColumn(columnId: string, columnName: string, wipLimit: number) {
 
-        const columnsMap = this.getColumns();
+        const columnsMap = await this.getColumns();
         const col = columnsMap.get(columnId);
 
         if (! col) {
@@ -179,20 +187,20 @@ export default class TaskModel {
         col.name = sanitizer.sanitizeColName(columnName);
         col.wipLimit = sanitizer.sanitizeWipLimit(wipLimit, 3);
 
-        this.db.setMap("columnsMap", columnsMap)
+        await this.db.setMap("columnsMap", columnsMap)
 
     }
 
-    public addTask(columnId: string, desc: string, longdesc?: string): string {
+    public async addTask(columnId: string, desc: string, longdesc?: string): Promise<string> {
 
-        const map = this.db.getMap<string>("colTaskMap");
+        const map = await this.db.getMap<string>("colTaskMap");
         let tasksInCol = map.get(columnId);
 
         if (! tasksInCol) {
             throw new Error(`can't add task to column ${columnId} - corrupted data`);
         }
 
-        const newKey = generateUniqId(this.db, "task");
+        const newKey = await generateUniqId(this.db, "task");
 
         const newTask: Task = {
             id: newKey,
@@ -200,21 +208,21 @@ export default class TaskModel {
             longdesc: typeof longdesc !== "undefined" ? longdesc : ""
         };
 
-        const taskMap = this.getTasks();
+        const taskMap = await this.getTasks();
         taskMap.set(newKey, newTask);
 
         tasksInCol = tasksInCol.concat(newKey);
         map.set(columnId, tasksInCol);
 
-        this.db.setMap("tasks", taskMap);
-        this.db.setMap("colTaskMap", map);
+        await this.db.setMap("tasks", taskMap);
+        await this.db.setMap("colTaskMap", map);
 
         return newKey;
     }
 
-    public moveTask(taskId: string, sourceColumnId: string, targetColumnId: string) {
+    public async moveTask(taskId: string, sourceColumnId: string, targetColumnId: string) {
 
-        const colTaskMap = this.db.getMap<Array<string>>("colTaskMap");
+        const colTaskMap = await this.db.getMap<Array<string>>("colTaskMap");
 
         const existingColTasks = colTaskMap.get(sourceColumnId);
 
@@ -235,22 +243,22 @@ export default class TaskModel {
         colTaskMap.set(sourceColumnId, existingColTasks.filter(task => task !== taskId));
         colTaskMap.set(targetColumnId, targetTasks.concat(theTask));
 
-        this.db.setMap("colTaskMap", colTaskMap);
+        await this.db.setMap("colTaskMap", colTaskMap);
 
     }
 
-    public deleteTask(columnId: string, taskId: string) {
+    public async deleteTask(columnId: string, taskId: string) {
 
-        this.detachTask(columnId, taskId);
+        await this.detachTask(columnId, taskId);
 
-        const tasks = this.getTasks();
+        const tasks = await this.getTasks();
         tasks.delete(taskId);
-        this.db.setMap("tasks", tasks);
+        await this.db.setMap("tasks", tasks);
     }
 
-    public switchColumns(boardId: string, firstColumnId: string, secondColumnId: string) {
+    public async switchColumns(boardId: string, firstColumnId: string, secondColumnId: string) {
 
-        const boardColMap = this.db.getMap<Array<string>>("boardColMap");
+        const boardColMap = await this.db.getMap<Array<string>>("boardColMap");
         let columns = boardColMap.get(boardId);
 
         if (! columns) {
@@ -264,13 +272,13 @@ export default class TaskModel {
 
         boardColMap.set(boardId, columns);
 
-        this.db.setMap("boardColMap", boardColMap)
+        await this.db.setMap("boardColMap", boardColMap)
 
     }
 
-    public editTask(taskId: string, newDesc: string, newLongDesc?: string) {
+    public async editTask(taskId: string, newDesc: string, newLongDesc?: string) {
         
-        const tasks = this.getTasks();
+        const tasks = await this.getTasks();
 
         let task = tasks.get(taskId);
 
@@ -281,57 +289,116 @@ export default class TaskModel {
         task.desc = sanitizer.sanitizeTaskTitle(newDesc);
         task.longdesc = typeof newLongDesc !== "undefined" ? newLongDesc : "";
 
-        this.db.setMap("tasks", tasks)
+        await this.db.setMap("tasks", tasks)
 
     }
 
-    public removeColumn(boardId: string, columnId: string) {
+    public async removeColumn(boardId: string, columnId: string) {
 
-        const boardMap = this.db.getMap<Array<string>>("boardColMap");
+        const boardMap = await this.db.getMap<Array<string>>("boardColMap");
         const colsInBoard = boardMap.get(boardId);
 
         if (! colsInBoard) {
             throw new Error(`cannot find column ${columnId} in board ${boardId}`);
         }
 
-        const tasks = this.getTasksByColumn(columnId);
+        const tasks = await this.getTasksByColumn(columnId);
         if (tasks.length > 0) {
             throw new NonEmptyColumnException();
         }
 
-        const map = this.db.getMap<Array<string>>("colTaskMap");
+        const map = await this.db.getMap<Array<string>>("colTaskMap");
         map.delete(columnId);
-        this.db.setMap("colTaskMap", map);
+        await this.db.setMap("colTaskMap", map);
 
         const updatedCols = colsInBoard.filter(colId => colId !== columnId);
         boardMap.set(boardId, updatedCols);
-        this.db.setMap("boardColMap", boardMap);
+        await this.db.setMap("boardColMap", boardMap);
 
-        let columns = this.getColumns();
+        let columns = await this.getColumns();
         columns.delete(columnId);
-        this.db.setMap("columnsMap", columns)
+        await this.db.setMap("columnsMap", columns);
     }
 
-    public removeCurrentBoard() {
-        const boardId = this.getCurrentBoard();
+    public async removeCurrentBoard() {
+        const boardId = await this.getCurrentBoard();
         if (boardId !== null) {
-            const cols = this.getColumnsByBoard(boardId);
-            cols.forEach(col => col && this.removeColumn(boardId, col.id));
+            const cols = await this.getColumnsByBoard(boardId);
 
-            const boardsMap = this.db.getMap<string>("boardMap");
+            const colMods = cols.map(col => {
+                return async function () {
+                    if (col) {
+                        await this.removeColumn(boardId, col.id)
+                    }
+                }
+            });
+
+            await Promise.all(colMods);
+
+            const boardsMap = await this.db.getMap<string>("boardMap");
             boardsMap.delete(boardId);
-            this.db.setMap("boardMap", boardsMap)
+            await this.db.setMap("boardMap", boardsMap)
         }
     }
 
-    public clear() {
-        this.db.clear();
-        this.initData();
+    public async clear() {
+        await this.db.clear();
+        await this.initData();
     }
 
-    private detachTask(columnId: string, taskId: string) {
+    public async getBoardColumnsMap(): Promise<Map<string, Array<Column>>> {
 
-        const map = this.db.getMap<Array<string>>("colTaskMap");
+        const boardsToColsMap = await this.db.getMap<Array<string>>("boardColMap");
+        const allCols = await this.getColumns();
+        const res: Map<string, Array<Column>> = new Map();
+
+        boardsToColsMap.forEach((colIds, boardId) => {
+
+            const cols = colIds.map(colId => {
+                const col = allCols.get(colId);
+                if (col) {
+                    return col;
+                } else {
+                    throw new Error(`Inconsistent model: can't find ${colId} in columns`);
+                }
+            });
+
+            res.set(boardId, cols);
+
+        });
+
+        return res;
+
+    }
+
+    public async getColumnTaskMap(): Promise<Map<string, Array<Task>>> {
+        const colTaskMap = await this.db.getMap<Array<string>>("colTaskMap");
+        const allTasks = await this.getTasks();
+        const res: Map<string, Array<Task>> = new Map();
+
+        colTaskMap.forEach((tasksIds, colId) => {
+
+            const tasks = tasksIds.map(taskId => {
+                const task = allTasks.get(taskId);
+                if (task) {
+                    return task;
+                } else {
+                    throw new Error(`Inconsistent model: can't find ${taskId} in tasks`);
+                }
+            });
+
+            res.set(colId, tasks);
+
+        });
+
+
+        return res;
+
+    }
+
+    private async detachTask(columnId: string, taskId: string) {
+
+        const map = await this.db.getMap<Array<string>>("colTaskMap");
 
         if (! map.has(columnId)) {
             throw new Error(`column ${columnId} does not exist`);
@@ -342,24 +409,24 @@ export default class TaskModel {
             const updatedTasks = tasks.filter(task => task !== taskId);
             map.set(columnId, updatedTasks);
 
-            this.db.setMap("colTaskMap", map);
+            await this.db.setMap("colTaskMap", map);
         }
 
     }
 
-    private initData() {
+    private async initData() {
 
-        const boardsMap = this.db.getMap<string>("boardMap");
+        const boardsMap = await this.db.getMap<string>("boardMap");
 
         if (boardsMap.size === 0) {
-            this.db.setMap("boardMap", boardsMap)
+            await this.db.setMap("boardMap", boardsMap)
         }
 
-        const boardsToColsMap = this.db.getMap<Array<string>>("boardColMap");
-        const currentBoard = this.getCurrentBoard();
+        const boardsToColsMap = await this.db.getMap<Array<string>>("boardColMap");
+        const currentBoard = await this.getCurrentBoard();
         if (currentBoard !== null && !boardsToColsMap.has(currentBoard)) {
             boardsToColsMap.set(currentBoard, []);
-            this.db.setMap("boardColMap", boardsToColsMap)
+            await this.db.setMap("boardColMap", boardsToColsMap)
         }
     }
 

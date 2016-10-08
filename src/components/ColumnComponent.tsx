@@ -3,8 +3,6 @@ import {Column} from "../model/column";
 import {Task} from "../model/task";
 import TaskComponent from "./TaskComponent";
 import * as BoardActions from "../actions/boardActions";
-import dispatcher from "../Dispatcher";
-import TaskModel from "../model/TaskModel";
 import {classSet} from "../util";
 import dragContext from "../model/dragContext";
 import {DragContextType} from "../model/dragContext";
@@ -13,12 +11,11 @@ import ColumnEditDialog from "./ColumnEditDialog";
 
 interface ColumnProps {
     column: Column;
-    model: TaskModel;
     boardId: string;
+    tasks: Array<Task>;
 }
 
 interface ColumnState {
-    tasks: Array<Task>;
     isTaskBeingAdded: boolean;
     isBeingEdited: boolean;
     isHoverMode: boolean;
@@ -26,47 +23,19 @@ interface ColumnState {
 
 export default class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
 
-    private eventHandler;
-
     constructor() {
         super();
         this.state = {
-            tasks: [],
             isTaskBeingAdded: false,
             isBeingEdited: false,
             isHoverMode: false
         };
     }
 
-    componentWillMount() {
-        this.eventHandler = this.onDispatcherEvent.bind(this);
-        dispatcher.register(this.eventHandler);
-        this.syncTasks();
-    }
-
-    componentWillUnmount() {
-        dispatcher.removeListener(this.eventHandler);
-    }
-
-    private onDispatcherEvent(actionName) {
-        switch(actionName) {
-            case "refreshAll":
-            case "addTask":
-                this.syncTasks();
-                break;
-        }
-    }
-
-    private syncTasks() {
-        const tasks = this.props.model.getTasksByColumn(this.props.column.id) || [];
-        this.state.tasks = tasks;
-        this.setState(this.state);
-    }
-
     render() {
 
         let taskNo = 0;
-        const tasks = this.state.tasks.map((task) => {
+        const tasks = this.props.tasks.map((task) => {
             taskNo++;
             return (
                 <TaskComponent key={task.id} task={task} column={this.props.column} />

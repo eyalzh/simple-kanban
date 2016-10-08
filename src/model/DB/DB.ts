@@ -1,11 +1,11 @@
 export interface DB {
 
-    getItem(key: string): string | null;
-    getMap<T>(key: string): Map<string, T>;
+    getItem(key: string): Promise<string | null>;
+    getMap<T>(key: string): Promise<Map<string, T>>;
 
-    setItem(key: string, data: string | Map<string, any>): void;
-    setMap(key: string, data: Map<string, any>): void;
+    setItem(key: string, data: string | Map<string, any>): Promise<void>;
+    setMap(key: string, data: Map<string, any>): Promise<void>;
 
-    clear(): void;
+    clear(): Promise<void>;
 
 }

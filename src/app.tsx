@@ -1,3 +1,7 @@
+// TODO:
+// 3. Add the store payload to the action, create in the actions module after querying the model
+
+
 import { render } from "react-dom";
 import * as React from "react";
 import Nav from "./components/Nav";
@@ -11,29 +15,36 @@ import * as BoardActions from "./actions/boardActions";
 require("./main.css");
 
 setModel(taskModel);
-initializeModel(taskModel);
+initializeModel(taskModel).then(() => {
 
-const cont = document.getElementById("cont");
+    const cont = document.getElementById("cont");
 
-if (cont === null) {
-    throw new Error("Could not find main container element.");
-}
+    if (cont === null) {
+        throw new Error("Could not find main container element.");
+    }
 
-render(
-    <div>
-        <Nav model={taskModel}/>
-        <Board model={taskModel} />
-        <Toolbar model={taskModel} />
-    </div>
-, cont);
+    render(
+        <div>
+            <Nav />
+            <Board  />
+            <Toolbar />
+        </div>
+        , cont);
+
+
+    BoardActions.dispatchRefreshBoard();
+
+});
 
 window.addEventListener("keydown", (e) => {
     const ALT_B = 66;
     if(e.altKey && e.keyCode === ALT_B) {
-        const nextBoard = taskModel.getNextBoard();
-        if (nextBoard !== null) {
-            BoardActions.switchBoard(nextBoard);
-        }
+        taskModel.getNextBoard()
+            .then((nextBoard) => {
+                if (nextBoard !== null) {
+                    BoardActions.switchBoard(nextBoard);
+                }
+            });
         e.preventDefault();
     }
 }, false);

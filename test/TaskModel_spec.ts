@@ -13,34 +13,34 @@ describe("task model", function () {
         storageMock = new LocalStorageDB(new MapBasedStorage());
     });
 
-    it("getColumns should return the list of columns, by order", function () {
+    it("getColumns should return the list of columns, by order", async function () {
 
         const taskModel = new TaskModel(storageMock);
-        const board = taskModel.addBoard("default");
-        taskModel.setCurrentBoard(board);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
 
-        taskModel.addColumn("first");
-        taskModel.addColumn("second");
+        await taskModel.addColumn("first");
+        await taskModel.addColumn("second");
 
-        const actualColumns: Array<Column> = taskModel.getColumnsByBoard(board);
+        const actualColumns: Array<Column> = await taskModel.getColumnsByBoard(board);
 
         expect(actualColumns[0].name).to.equal("first");
         expect(actualColumns[1].name).to.equal("second");
 
     });
 
-    it("getTasks should return the list of tasks", function () {
+    it("getTasks should return the list of tasks", async function () {
 
         const taskModel = new TaskModel(storageMock);
-        const board = taskModel.addBoard("default");
-        taskModel.setCurrentBoard(board);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
 
-        const key = taskModel.addColumn("TODO");
+        const key = await taskModel.addColumn("TODO");
 
-        taskModel.addTask(key, "foo");
-        taskModel.addTask(key, "bar");
+        await taskModel.addTask(key, "foo");
+        await taskModel.addTask(key, "bar");
 
-        const actualTasksMap = taskModel.getTasks();
+        const actualTasksMap = await taskModel.getTasks();
         const taskValueIter = actualTasksMap.values();
 
         expect(taskValueIter.next().value.desc).to.equal("foo");
@@ -48,42 +48,74 @@ describe("task model", function () {
 
     });
 
-    it("delete task should remove the task from the list", function () {
+    it("delete task should remove the task from the list", async function () {
 
         const taskModel = new TaskModel(storageMock);
-        const board = taskModel.addBoard("default");
-        taskModel.setCurrentBoard(board);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
 
-        const columnKey = taskModel.addColumn("TODO");
+        const columnKey = await taskModel.addColumn("TODO");
 
-        taskModel.addTask(columnKey, "foo");
-        taskModel.addTask(columnKey, "bar");
+        await taskModel.addTask(columnKey, "foo");
+        await taskModel.addTask(columnKey, "bar");
 
-        const tasksForCol = taskModel.getTasksByColumn(columnKey);
+        const tasksForCol = await taskModel.getTasksByColumn(columnKey);
 
-        taskModel.deleteTask(columnKey, tasksForCol[0].id);
+        await taskModel.deleteTask(columnKey, tasksForCol[0].id);
 
-        const actualTasks = taskModel.getTasks();
+        const actualTasks = await taskModel.getTasks();
 
         expect(actualTasks.size).to.equal(1);
 
     });
 
-    it("moveTask should move the task to the target column", function () {
+    it("moveTask should move the task to the target column", async function () {
 
         const taskModel = new TaskModel(storageMock);
-        const board = taskModel.addBoard("default");
-        taskModel.setCurrentBoard(board);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
 
-        const firstCol = taskModel.addColumn("foo");
-        const secondCol = taskModel.addColumn("bar");
+        const firstCol = await taskModel.addColumn("foo");
+        const secondCol = await taskModel.addColumn("bar");
 
-        const taskKey = taskModel.addTask(firstCol, "baz");
-        taskModel.moveTask(taskKey, firstCol, secondCol);
+        const taskKey = await taskModel.addTask(firstCol, "baz");
+        await taskModel.moveTask(taskKey, firstCol, secondCol);
 
-        const tasks = taskModel.getTasksByColumn(secondCol);
+        const tasks = await taskModel.getTasksByColumn(secondCol);
 
         expect(tasks[0].id).to.equal(taskKey);
+
+    });
+
+    it("getNextBoard should return the second board in a set of two boards", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const board1 = await taskModel.addBoard("first");
+        const board2 = await taskModel.addBoard("second");
+        await taskModel.setCurrentBoard(board1);
+
+        const nextBoard = await taskModel.getNextBoard();
+
+        expect(nextBoard).to.equal(board2);
+
+    });
+
+    it("editCurrentBoard should only change the name of the current board", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const board1 = await taskModel.addBoard("original name 1");
+        const board2 = await taskModel.addBoard("original name 2");
+        await taskModel.setCurrentBoard(board1);
+
+        await taskModel.editCurrentBoard("new name");
+
+        const boards = await taskModel.getBoards();
+
+        const boardName1 = boards.get(board1);
+        const boardName2 = boards.get(board2);
+
+        expect(boardName1).to.equal("new name");
+        expect(boardName2).to.equal("original name 2");
 
     });
 

@@ -2,70 +2,75 @@ import * as React from "react";
 import ColumnComponent from "./ColumnComponent";
 import dispatcher from "../Dispatcher";
 import {Column} from "../model/column";
-import TaskModel from "../model/TaskModel";
 import {Priority} from "../Dispatcher";
 import TrashZone from "./TrashZone";
+import {BoardStore} from "../stores/BoardStore";
+import {Task} from "../model/Task";
 
 require("./board.css");
 
-interface BoardProps {
-    model: TaskModel;
-}
-
 interface BoardState {
-    columns: Array<Column|undefined>;
+    columns: Array<Column> | undefined;
     boardId: string;
+    columnTasks: Map<string, Array<Task>> | null;
 }
 
-export default class Board extends React.Component<BoardProps, BoardState> {
+export default class Board extends React.Component<{}, BoardState> {
 
     constructor() {
         super();
         this.state = {
             columns: [],
-            boardId: ""
+            boardId: "",
+            columnTasks: null
         };
     }
 
     componentWillMount() {
 
-        dispatcher.register((actionName) => {
+        dispatcher.register((actionName, store: BoardStore) => {
             switch(actionName) {
-                case "addColumn":
-                case "refreshAll":
                 case "refreshBoard":
-                    this.syncState();
+                    this.syncState(store);
                     break;
             }
         }, Priority.FIRST);
-
-        this.syncState();
     }
 
-    private syncState() {
-        const boardId = this.props.model.getCurrentBoard();
+    private syncState(store: BoardStore) {
+
+        const boardId = store.currentBoard;
         if (boardId !== null) {
             this.setState({
                 boardId,
-                columns: this.props.model.getColumnsByBoard(boardId)
+                columns: store.boardColumns.get(boardId),
+                columnTasks: store.columnTasks
             });
         }
     }
 
     render() {
 
-        const columns = this.state.columns.map((column) => {
-            if (column) {
-                return (
-                    <ColumnComponent
-                        key={column.id}
-                        column={column}
-                        model={this.props.model}
-                        boardId={this.state.boardId}
-                    />
-                )
-            }
-        });
+        let columns;
+        if (this.state.columns) {
+            columns = this.state.columns.map((column) => {
+                let tasks;
+                if (this.state.columnTasks) {
+                    tasks = this.state.columnTasks.get(column.id) || [];
+                }
+                if (column) {
+                    return (
+                        <ColumnComponent
+                            key={column.id}
+                            column={column}
+                            boardId={this.state.boardId}
+                            tasks={tasks}
+                        />
+                    )
+                }
+            });
+        }
+
 
         return (
             <div>

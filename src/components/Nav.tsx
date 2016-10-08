@@ -1,39 +1,44 @@
 import * as React from "react";
-import TaskModel from "../model/TaskModel";
 import dispatcher from "../Dispatcher";
+import {BoardStore} from "../stores/BoardStore";
 
 require("./nav.css");
 
-interface NavProps {
-    model: TaskModel;
-}
-
 interface NavState {
-    currentBoard: string | undefined;
+    currentBoard: string;
 }
 
-export default class Nav extends React.Component<NavProps, NavState> {
+export default class Nav extends React.Component<{}, NavState> {
+
+    constructor() {
+        super();
+        this.state = {
+            currentBoard: ""
+        };
+    }
 
     componentWillMount() {
-        dispatcher.register((actionName) => {
+        dispatcher.register((actionName, store) => {
             switch(actionName) {
                 case "refreshBoard":
-                    this.syncSelBoard();
+                    this.syncSelBoard(store);
                     break;
             }
         });
-        this.syncSelBoard();
     }
 
-    private syncSelBoard() {
+    private syncSelBoard(store: BoardStore) {
 
-        const boards = this.props.model.getBoards();
-        const currentBoard = this.props.model.getCurrentBoard();
+        const boards = store.boards;
+        const currentBoard = store.currentBoard;
 
         if (currentBoard !== null) {
-            this.setState({
-                currentBoard: boards.get(currentBoard)
-            });
+            const boardName = boards.get(currentBoard);
+            if (typeof boardName !== "undefined") {
+                this.setState({
+                    currentBoard: boardName
+                });
+            }
         }
 
     }

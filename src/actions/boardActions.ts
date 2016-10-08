@@ -2,93 +2,139 @@ import {Column} from "../model/column";
 import dispatcher from "../Dispatcher";
 import {getModel} from "../context";
 import NonEmptyColumnException from "../model/NonEmptyColumnException";
+import {BoardStore} from "../stores/BoardStore";
 
 export function addColumn(columnName: string, wipLimit: number) {
-    getModel().addColumn(columnName, wipLimit);
-    dispatcher.dispatch("addColumn", {
-        name: columnName,
-    });
+    getModel()
+        .addColumn(columnName, wipLimit)
+        .then(() => {
+            this.dispatchRefreshBoard();
+        });
 }
 
 export function addTask(column: Column, taskDesc: string, taskLongDesc?: string) {
-    getModel().addTask(column.id, taskDesc, taskLongDesc);
-    dispatcher.dispatch("addTask", {
-        column: column.id
-    });
+    getModel()
+        .addTask(column.id, taskDesc, taskLongDesc)
+        .then(this.dispatchRefreshBoard());
 }
 
 export function deleteTask(columnId: string, taskId: string) {
-    getModel().deleteTask(columnId, taskId);
-    dispatcher.dispatch("refreshAll", {});
+    getModel()
+        .deleteTask(columnId, taskId)
+        .then(this.dispatchRefreshBoard());
 }
 
 export function clear() {
-    getModel().clear();
-    dispatcher.dispatch("refreshBoard", {});
+    getModel()
+        .clear()
+        .then(this.dispatchRefreshBoard());
 }
 
 export function switchColumns(boardId: string, firstColumnId: string, secondColumnId: string) {
-    getModel().switchColumns(boardId, firstColumnId, secondColumnId);
-    dispatcher.dispatch("refreshBoard", {});
+    getModel()
+        .switchColumns(boardId, firstColumnId, secondColumnId)
+        .then(this.dispatchRefreshBoard());
 }
 
 export function editTask(taskId: string, newDesc: string, newLongDesc?: string) {
-    getModel().editTask(taskId, newDesc, newLongDesc);
-    dispatcher.dispatch("refreshAll", {});
+    getModel()
+        .editTask(taskId, newDesc, newLongDesc)
+        .then(this.dispatchRefreshBoard());
 }
 
 export function moveTask(taskId: string, sourceColumnId: string, targetColumnId: string) {
-    getModel().moveTask(taskId, sourceColumnId, targetColumnId);
-    dispatcher.dispatch("refreshAll", {});
+    getModel()
+        .moveTask(taskId, sourceColumnId, targetColumnId)
+        .then(this.dispatchRefreshBoard());
 }
 
 export function removeColumn(boardId: string, columnId: string) {
-    try {
-        getModel().removeColumn(boardId, columnId);
-        dispatcher.dispatch("refreshBoard", {});
-    } catch (e) {
-        if (e instanceof NonEmptyColumnException) {
-            alert("You cannot remove a column that has tasks associated with it");
-        } else {
-            alert("Cannot remove column - unknown error");
-        }
-    }
+
+    getModel()
+        .removeColumn(boardId, columnId)
+        .then(this.dispatchRefreshBoard())
+        .catch(e => {
+            if (e instanceof NonEmptyColumnException) {
+                alert("You cannot remove a column that has tasks associated with it");
+            } else {
+                alert("Cannot remove column - unknown error");
+            }
+        });
 }
 
 export function editColumn(column: Column, newName: string, newWip: number) {
-    getModel().editColumn(column.id, newName, newWip);
-    dispatcher.dispatch("refreshAll", {});
+    getModel()
+        .editColumn(column.id, newName, newWip)
+        .then(this.dispatchRefreshBoard());
 }
 
 export function switchBoard(boardId: string) {
-    getModel().setCurrentBoard(boardId);
-    dispatcher.dispatch("refreshBoard", {});
+    getModel()
+        .setCurrentBoard(boardId)
+        .then(this.dispatchRefreshBoard());
 }
 
 export function addBoard(boardName: string) {
-    const boardId = getModel().addBoard(boardName);
-    getModel().setCurrentBoard(boardId);
-    dispatcher.dispatch("refreshBoard", {});
+
+    getModel()
+        .addBoard(boardName)
+        .then((boardId) => {
+            return getModel().setCurrentBoard(boardId);
+        })
+        .then(this.dispatchRefreshBoard());
+
 }
 
 export function editCurrentBoard(boardName: string) {
-    getModel().editCurrentBoard(boardName);
-    dispatcher.dispatch("refreshBoard", {});
+    getModel()
+        .editCurrentBoard(boardName)
+        .then(this.dispatchRefreshBoard());;
 }
 
 export function removeCurrentBoard() {
-    const currentBoard = getModel().getCurrentBoard();
-    if (currentBoard !== null) {
-        const tasks = getModel().getTasksByBoard(currentBoard);
-        if (tasks.length > 0) {
-            alert(`You cannot remove a non-empty board (${tasks.length} tasks found)`);
-        } else {
-            const nextBoard = getModel().getNextBoard();
-            getModel().removeCurrentBoard();
-            if (nextBoard) {
-                getModel().setCurrentBoard(nextBoard);
+
+    (async function () {
+
+        const currentBoard = await getModel().getCurrentBoard();
+        if (currentBoard !== null) {
+            const tasks = await getModel().getTasksByBoard(currentBoard);
+
+            if (tasks.length > 0) {
+                alert(`You cannot remove a non-empty board (${tasks.length} tasks found)`);
+            } else {
+                const nextBoard = await getModel().getNextBoard();
+                await getModel().removeCurrentBoard();
+                if (nextBoard) {
+                    await getModel().setCurrentBoard(nextBoard);
+                }
+
             }
-            dispatcher.dispatch("refreshBoard", {});
+
         }
-    }
+
+    })().then(() => {
+        this.dispatchRefreshBoard();
+    });
+
+}
+
+export function dispatchRefreshBoard() {
+
+    (async function() {
+
+        const model = getModel();
+
+        const boards = await model.getBoards();
+        const currentBoard = await model.getCurrentBoard();
+        const boardColumns = await model.getBoardColumnsMap();
+        const columnTasks = await model.getColumnTaskMap();
+
+        const store: BoardStore = {boards, currentBoard, boardColumns, columnTasks};
+
+        return store;
+
+    })().then(store => {
+        dispatcher.dispatch("refreshBoard", store);
+    });
+
 }

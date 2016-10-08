@@ -1,22 +1,19 @@
 import * as React from "react";
 import * as BoardActions from "../actions/boardActions";
-import TaskModel from "../model/TaskModel";
 import dispatcher from "../Dispatcher";
 import ColumnEditDialog from "./ColumnEditDialog";
 import BoardEditDialog from "./BoardEditDialog";
-
-interface ToolbarProps {
-    model: TaskModel;
-}
+import {BoardStore} from "../stores/BoardStore";
 
 interface ToolbarState {
     currentBoardId: string;
     isColBeingAdded: boolean;
     isBoardBeingAdded: boolean;
     boardBeingEdited: string | null | undefined;
+    boards: Map<string, string> | null;
 }
 
-export default class Toolbar extends React.Component<ToolbarProps, ToolbarState> {
+export default class Toolbar extends React.Component<{}, ToolbarState> {
 
     constructor() {
         super();
@@ -24,30 +21,48 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
             currentBoardId: "",
             isColBeingAdded: false,
             isBoardBeingAdded: false,
-            boardBeingEdited: null
+            boardBeingEdited: null,
+            boards: null
         };
     }
 
     componentWillMount() {
-        dispatcher.register((actionName) => {
+        dispatcher.register((actionName, store: BoardStore) => {
             switch(actionName) {
                 case "refreshBoard":
-                    this.syncSelBoard();
+                    this.syncSelBoard(store);
                     break;
             }
         });
-        this.syncSelBoard();
+    }
+
+    private syncSelBoard(store: BoardStore) {
+        const currentBoardId = store.currentBoard;
+        const boards = store.boards;
+        if (currentBoardId !== null) {
+            this.setState({
+                currentBoardId,
+                isColBeingAdded: false,
+                isBoardBeingAdded: false,
+                boardBeingEdited: null,
+                boards
+            });
+        }
     }
 
     render() {
 
-        const boards = this.props.model.getBoards();
+        const boards = this.state.boards;
         let boardOptions: Array<JSX.Element> = [];
+        let boardName;
 
-        boards.forEach((desc, id) => {
-            const el = <option key={id} value={id}>{desc}</option>;
-            boardOptions.push(el);
-        });
+        if (boards) {
+            boards.forEach((desc, id) => {
+                const el = <option key={id} value={id}>{desc}</option>;
+                boardOptions.push(el);
+            });
+            boardName = boards.get(this.state.currentBoardId);
+        }
 
         return (
             <div className="toolbar">
@@ -66,25 +81,13 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
                 <BoardEditDialog
                     isBeingEdited={this.state.isBoardBeingAdded}
                     boardId={this.state.boardBeingEdited}
-                    boardName={boards.get(this.state.currentBoardId)}
+                    boardName={boardName}
                     onEditClose={this.onBoardEditClose.bind(this)}
                     onEditSubmitted={this.onAddBoardSubmitted.bind(this)}
                     onRemoveBoard={this.onRemoveBoard.bind(this)}
                 />
             </div>
         );
-    }
-
-    private syncSelBoard() {
-        const currentBoardId = this.props.model.getCurrentBoard();
-        if (currentBoardId !== null) {
-            this.setState({
-                currentBoardId,
-                isColBeingAdded: false,
-                isBoardBeingAdded: false,
-                boardBeingEdited: null
-            });
-        }
     }
 
     private onColEditClose() {
@@ -141,7 +144,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
 
     private onEditBoardClicked() {
         this.state.isBoardBeingAdded = true;
-        this.state.boardBeingEdited = this.props.model.getCurrentBoard();
+        this.state.boardBeingEdited = this.state.currentBoardId;
         this.setState(this.state);
     }
 
