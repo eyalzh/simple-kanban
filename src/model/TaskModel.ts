@@ -74,12 +74,12 @@ export default class TaskModel {
         let tasks: Array<Task> = [];
 
         const taskMods = cols.map(col => {
-            return async function() {
+            return (async () => {
                 if (col) {
                     const colTasks = await this.getTasksByColumn(col.id);
                     tasks = tasks.concat(colTasks);
                 }
-            }
+            })();
         });
 
         await Promise.all(taskMods);
@@ -326,11 +326,11 @@ export default class TaskModel {
             const cols = await this.getColumnsByBoard(boardId);
 
             const colMods = cols.map(col => {
-                return async function () {
+                return (async () => {
                     if (col) {
                         await this.removeColumn(boardId, col.id)
                     }
-                }
+                })();
             });
 
             await Promise.all(colMods);

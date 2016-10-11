@@ -1,7 +1,3 @@
-// TODO:
-// 3. Add the store payload to the action, create in the actions module after querying the model
-
-
 import { render } from "react-dom";
 import * as React from "react";
 import Nav from "./components/Nav";

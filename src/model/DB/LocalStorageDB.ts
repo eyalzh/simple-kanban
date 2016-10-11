@@ -8,15 +8,12 @@ export default class LocalStorageDB implements DB {
     }
 
     getItem(key: string): Promise<string | null> {
-        console.log("getItem");
         return new Promise<string | null>((resolve, reject) => {
             resolve(this.storage.getItem(key));
         });
     }
 
     getMap<T>(key: string): Promise<Map<string, T>> {
-
-        console.log("getmap");
 
         return new Promise<Map<string, T>>((resolve, reject) => {
             const json = this.storage.getItem(key);
@@ -35,8 +32,6 @@ export default class LocalStorageDB implements DB {
 
     setItem(key: string, data: string | Map<string, any>): Promise<void> {
 
-        console.log("setItem");
-
         return new Promise<void>((resolve, reject) => {
             if (typeof data === "string") {
                 this.storage.setItem(key, data);
@@ -49,8 +44,6 @@ export default class LocalStorageDB implements DB {
 
     setMap(key: string, data: Map<string, any>): Promise<void> {
 
-        console.log("setMap");
-
         return new Promise<void>((resolve, reject) => {
             this.storage.setItem(key, JSON.stringify([...data]));
             resolve();
@@ -58,8 +51,6 @@ export default class LocalStorageDB implements DB {
     }
 
     clear(): Promise<void> {
-
-        console.log("clear");
 
         return new Promise<void>((resolve, reject) => {
             this.storage.clear();

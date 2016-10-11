@@ -4,6 +4,7 @@ import TaskModel from "../src/model/TaskModel";
 import LocalStorageDB from "../src/model/DB/LocalStorageDB";
 import {DB} from "../src/model/DB/DB";
 import {Column} from "../src/model/Column";
+import taskModel from "../src/model/model";
 
 describe("task model", function () {
 
@@ -118,5 +119,40 @@ describe("task model", function () {
         expect(boardName2).to.equal("original name 2");
 
     });
+
+    it("getTasksByBoard should return the list of tasks in a board", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
+
+        const columnKey = await taskModel.addColumn("TODO");
+
+        const t1id = await taskModel.addTask(columnKey, "foo");
+        const t2id = await taskModel.addTask(columnKey, "bar");
+
+        const tasks = await taskModel.getTasksByBoard(board);
+
+        expect(tasks[0].id).to.equal(t1id);
+        expect(tasks[1].id).to.equal(t2id);
+
+    });
+
+    it("removeCurrentBoard should remove all columns", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
+
+        await taskModel.addColumn("TODO");
+
+        await taskModel.removeCurrentBoard();
+
+        const cols = await taskModel.getColumns();
+
+        expect(cols.size).to.equal(0);
+
+    });
+
 
 });

@@ -47,7 +47,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
             );
         } else {
             title = "Add Board";
-            removeBtn = <div />;
+            removeBtn = <span />; // <div> cannot be a descendant of <p>
         }
 
         let buttons = (
