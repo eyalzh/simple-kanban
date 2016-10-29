@@ -1,14 +1,14 @@
-import TaskModel from "./TaskModel";
+import TaskModel, {FLAGS} from "./TaskModel";
 
 export default async function initializeModel(model: TaskModel) {
 
     const boards = await model.getBoards();
+    const wasTutorialAdded = await model.getFlag(FLAGS.TUTORIAL_ADDED);
 
-    if (boards.size === 0) {
+    if (!wasTutorialAdded && boards.size === 0) {
 
         const board = await model.addBoard("Tutorial");
         await model.setCurrentBoard(board);
-
         const columns = await model.getColumns();
 
         if (columns.size === 0) {
@@ -27,6 +27,8 @@ export default async function initializeModel(model: TaskModel) {
             await model.addTask(backlog, "Switch between boards by pressing Alt+B or using the select box at the upper right corner of the page");
 
         }
+
+        await model.setFlagOn(FLAGS.TUTORIAL_ADDED);
 
     }
 

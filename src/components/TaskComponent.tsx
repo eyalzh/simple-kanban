@@ -21,7 +21,7 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
         super(props);
         this.state = {
             isBeingEdited: false
-        }
+        };
     }
 
     render() {
@@ -45,7 +45,7 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
                 />
 
             </div>
-        )
+        );
     }
 
     private editTask(e: React.MouseEvent) {
@@ -91,11 +91,11 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
                     if (expr.indexOf("#") === 0) {
                         return (
                             <span key={i} className="hashtag">{expr}</span>
-                        )
+                        );
                     } else {
                         return (
                             <span key={i}>{expr}</span>
-                        )
+                        );
                     }
                 });
         }

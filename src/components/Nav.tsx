@@ -5,7 +5,7 @@ import {BoardStore} from "../stores/BoardStore";
 require("./nav.css");
 
 interface NavState {
-    currentBoard: string;
+    currentBoard: string | null;
 }
 
 export default class Nav extends React.Component<{}, NavState> {
@@ -13,13 +13,13 @@ export default class Nav extends React.Component<{}, NavState> {
     constructor() {
         super();
         this.state = {
-            currentBoard: ""
+            currentBoard: null
         };
     }
 
     componentWillMount() {
         dispatcher.register((actionName, store) => {
-            switch(actionName) {
+            switch (actionName) {
                 case "refreshBoard":
                     this.syncSelBoard(store);
                     break;
@@ -31,24 +31,34 @@ export default class Nav extends React.Component<{}, NavState> {
 
         const boards = store.boards;
         const currentBoard = store.currentBoard;
+        let currentBoardName: string|null = null;
 
         if (currentBoard !== null) {
             const boardName = boards.get(currentBoard);
             if (typeof boardName !== "undefined") {
-                this.setState({
-                    currentBoard: boardName
-                });
+                currentBoardName = boardName;
             }
         }
+
+        this.setState({
+            currentBoard: currentBoardName
+        });
 
     }
 
     render() {
+
+        let currentBoardIndication = "";
+        if (this.state.currentBoard !== null) {
+            currentBoardIndication = `- ${this.state.currentBoard}`;
+        }
+
         return (
             <div className="nav">
-                Lightweight Kanban Board - {this.state.currentBoard}
+                Lightweight Kanban Board {currentBoardIndication}
             </div>
-        )
+        );
+
     }
 
 }

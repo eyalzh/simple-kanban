@@ -48,7 +48,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
                         <input
                             value={this.state.name}
                             onChange={this.onNameChange.bind(this)}
-                            ref={(input) => {this.fieldInput = input}}
+                            ref={(input) => {this.fieldInput = input;}}
                             onKeyPress={this.onKeyPressed.bind(this)} />
                     </p>
                     <p>
@@ -68,7 +68,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
                     </p>
                 </div>
             </Modal>
-        )
+        );
     }
 
     private onKeyPressed(ev: React.KeyboardEvent) {

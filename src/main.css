@@ -19,6 +19,10 @@ body {
     margin: 2px;
 }
 
+.toolbar .hidden {
+    display: none;
+}
+
 .remove-btn {
      color: red;
 }

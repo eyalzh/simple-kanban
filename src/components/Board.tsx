@@ -29,7 +29,7 @@ export default class Board extends React.Component<{}, BoardState> {
     componentWillMount() {
 
         dispatcher.register((actionName, store: BoardStore) => {
-            switch(actionName) {
+            switch (actionName) {
                 case "refreshBoard":
                     this.syncState(store);
                     break;
@@ -66,7 +66,7 @@ export default class Board extends React.Component<{}, BoardState> {
                             boardId={this.state.boardId}
                             tasks={tasks}
                         />
-                    )
+                    );
                 }
             });
         }

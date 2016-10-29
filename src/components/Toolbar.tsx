@@ -4,6 +4,7 @@ import dispatcher from "../Dispatcher";
 import ColumnEditDialog from "./ColumnEditDialog";
 import BoardEditDialog from "./BoardEditDialog";
 import {BoardStore} from "../stores/BoardStore";
+import {classSet} from "../util";
 
 interface ToolbarState {
     currentBoardId: string;
@@ -28,7 +29,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
 
     componentWillMount() {
         dispatcher.register((actionName, store: BoardStore) => {
-            switch(actionName) {
+            switch (actionName) {
                 case "refreshBoard":
                     this.syncSelBoard(store);
                     break;
@@ -64,15 +65,23 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
             boardName = boards.get(this.state.currentBoardId);
         }
 
+        const selectBoardClassSet = classSet({
+            "hidden": boardOptions.length === 0
+        });
+
         return (
             <div className="toolbar">
-                <select value={this.state.currentBoardId} onChange={e=>this.changeProfile(e)} title="Change board (Alt+B)">
+                <select
+                    className={selectBoardClassSet}
+                    value={this.state.currentBoardId}
+                    onChange={e => this.changeProfile(e)}
+                    title="Change board (Alt+B)">
                     {boardOptions}
                 </select>
-                <button onClick={e=>this.onAddBoardClicked()}>Add board</button>
-                <button onClick={e=>this.onEditBoardClicked()}>Edit board</button>
-                <button onClick={e=>this.onAddColStarted()}>Add column</button>
-                <button onClick={e=>this.clear()}>Reset</button>
+                <button onClick={e => this.onAddBoardClicked()}>Add board</button>
+                <button onClick={e => this.onEditBoardClicked()}>Edit board</button>
+                <button onClick={e => this.onAddColStarted()}>Add column</button>
+                <button onClick={e => this.clear()}>Reset</button>
                 <ColumnEditDialog
                     isBeingEdited={this.state.isColBeingAdded}
                     onEditClose={this.onColEditClose.bind(this)}

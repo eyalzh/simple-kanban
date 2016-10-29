@@ -39,7 +39,7 @@ export default class ColumnComponent extends React.Component<ColumnProps, Column
             taskNo++;
             return (
                 <TaskComponent key={task.id} task={task} column={this.props.column} />
-            )
+            );
         });
 
         const isAboveWipLimit = taskNo > this.props.column.wipLimit;

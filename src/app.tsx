@@ -11,36 +11,49 @@ import * as BoardActions from "./actions/boardActions";
 require("./main.css");
 
 setModel(taskModel);
-initializeModel(taskModel).then(() => {
 
-    const cont = document.getElementById("cont");
+taskModel.init()
 
-    if (cont === null) {
-        throw new Error("Could not find main container element.");
-    }
+    .then(() => {
+        return initializeModel(taskModel);
+    })
 
-    render(
-        <div>
-            <Nav />
-            <Board  />
-            <Toolbar />
-        </div>
-        , cont);
+    .then(() => {
+
+        const cont = document.getElementById("cont");
+
+        if (cont === null) {
+            throw new Error("Could not find main container element.");
+        }
+
+        render(
+            <div>
+                <Nav />
+                <Board  />
+                <Toolbar />
+            </div>
+            , cont);
 
 
-    BoardActions.dispatchRefreshBoard();
+        BoardActions.dispatchRefreshBoard();
 
-});
+    })
 
-window.addEventListener("keydown", (e) => {
-    const ALT_B = 66;
-    if(e.altKey && e.keyCode === ALT_B) {
-        taskModel.getNextBoard()
-            .then((nextBoard) => {
-                if (nextBoard !== null) {
-                    BoardActions.switchBoard(nextBoard);
-                }
-            });
-        e.preventDefault();
-    }
-}, false);
+    .then(() => {
+        window.addEventListener("keydown", (e) => {
+            const ALT_B = 66;
+            if (e.altKey && e.keyCode === ALT_B) {
+                taskModel.getNextBoard()
+                    .then((nextBoard) => {
+                        if (nextBoard !== null) {
+                            BoardActions.switchBoard(nextBoard);
+                        }
+                    });
+                e.preventDefault();
+            }
+        }, false);
+    })
+
+    .catch((reason) => {
+       console.error("Error while initializing app", reason);
+    });

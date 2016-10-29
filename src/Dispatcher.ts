@@ -29,7 +29,7 @@ export class Dispatcher {
             }
         });
     }
-    
+
 }
 
 const dispatcher = new Dispatcher();

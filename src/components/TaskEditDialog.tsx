@@ -51,8 +51,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                         <input
                             value={this.state.desc}
                             onChange={this.onChange.bind(this)}
-                            ref={(input) => {this.fieldInput = input}}
-                            onKeyPress={(ev) => {ev.key === "Enter" && this.onEditSubmitted()}}
+                            ref={(input) => {this.fieldInput = input;}}
+                            onKeyPress={(ev) => {ev.key === "Enter" && this.onEditSubmitted();}}
                         />
                     </p>
                     <p>
@@ -68,7 +68,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                 </div>
 
             </Modal>
-        )
+        );
     }
 
     public onChange(e: React.FormEvent) {

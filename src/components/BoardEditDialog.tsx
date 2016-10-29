@@ -72,19 +72,19 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
                     <input
                         value={this.state.name}
                         onChange={this.onNameChange.bind(this)}
-                        ref={(input) => {this.fieldInput = input}}
+                        ref={(input) => {this.fieldInput = input;}}
                         onKeyPress={this.onKeyPressed.bind(this)} />
                 </p>
 
                 {buttons}
 
             </Modal>
-        )
+        );
     }
 
     private onKeyPressed(ev: React.KeyboardEvent) {
         if (ev.key === "Enter") {
-            this.onEditSubmitted()
+            this.onEditSubmitted();
         }
     }
 
