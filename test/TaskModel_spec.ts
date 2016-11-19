@@ -4,14 +4,35 @@ import TaskModel from "../src/model/TaskModel";
 import LocalStorageDB from "../src/model/DB/LocalStorageDB";
 import {DB} from "../src/model/DB/DB";
 import {Column} from "../src/model/Column";
-import taskModel from "../src/model/model";
 
 describe("task model", function () {
 
-    var storageMock: DB;
+    let storageMock: DB;
 
     beforeEach(function () {
         storageMock = new LocalStorageDB(new MapBasedStorage());
+    });
+
+
+    it("getBoards should return no boards when no boards are added", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const boards = await taskModel.getBoards();
+
+        expect(boards.length).to.equal(0);
+
+    });
+
+    it("addBoard should add an item to the map of boards", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
+
+        const boards = await taskModel.getBoards();
+
+        expect(boards.length).to.equal(1);
+
     });
 
     it("getColumns should return the list of columns, by order", async function () {
@@ -42,10 +63,9 @@ describe("task model", function () {
         await taskModel.addTask(key, "bar");
 
         const actualTasksMap = await taskModel.getTasks();
-        const taskValueIter = actualTasksMap.values();
 
-        expect(taskValueIter.next().value.desc).to.equal("foo");
-        expect(taskValueIter.next().value.desc).to.equal("bar");
+        expect(actualTasksMap[0].desc).to.equal("foo");
+        expect(actualTasksMap[1].desc).to.equal("bar");
 
     });
 
@@ -66,7 +86,7 @@ describe("task model", function () {
 
         const actualTasks = await taskModel.getTasks();
 
-        expect(actualTasks.size).to.equal(1);
+        expect(actualTasks.length).to.equal(1);
 
     });
 
@@ -97,7 +117,11 @@ describe("task model", function () {
 
         const nextBoard = await taskModel.getNextBoard();
 
-        expect(nextBoard).to.equal(board2);
+        if (nextBoard === null) {
+            throw new Error();
+        }
+
+        expect(nextBoard.id).to.equal(board2);
 
     });
 
@@ -105,18 +129,18 @@ describe("task model", function () {
 
         const taskModel = new TaskModel(storageMock);
         const board1 = await taskModel.addBoard("original name 1");
-        const board2 = await taskModel.addBoard("original name 2");
+        await taskModel.addBoard("original name 2");
         await taskModel.setCurrentBoard(board1);
 
         await taskModel.editCurrentBoard("new name");
 
         const boards = await taskModel.getBoards();
 
-        const boardName1 = boards.get(board1);
-        const boardName2 = boards.get(board2);
+        const boardName1 = boards[0];
+        const boardName2 = boards[1];
 
-        expect(boardName1).to.equal("new name");
-        expect(boardName2).to.equal("original name 2");
+        expect(boardName1.name).to.equal("new name");
+        expect(boardName2.name).to.equal("original name 2");
 
     });
 
@@ -150,7 +174,7 @@ describe("task model", function () {
 
         const cols = await taskModel.getColumns();
 
-        expect(cols.size).to.equal(0);
+        expect(cols.length).to.equal(0);
 
     });
 

@@ -10,7 +10,7 @@ import {Task} from "../model/Task";
 require("./board.css");
 
 interface BoardState {
-    columns: Array<Column> | undefined;
+    columns: Array<Column> | null;
     boardId: string;
     columnTasks: Map<string, Array<Task>> | null;
 }
@@ -39,11 +39,11 @@ export default class Board extends React.Component<{}, BoardState> {
 
     private syncState(store: BoardStore) {
 
-        const boardId = store.currentBoard;
-        if (boardId !== null) {
+        if (store.currentBoard !== null) {
+            const boardId = store.currentBoard.id;
             this.setState({
                 boardId,
-                columns: store.boardColumns.get(boardId),
+                columns: store.columnsInBoard,
                 columnTasks: store.columnTasks
             });
         }

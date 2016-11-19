@@ -7,9 +7,10 @@ const INTERNAL_PROPERTY_STORE: DBStoreDescriptor = {
     storeKey: "itemId"
 };
 
-// extend IDBObjectStore with the recently-supported getAll method
+// extend IDBObjectStore with the recently-supported getAll and getAllKeys methods
 interface ExtendedIDBObjectStore extends IDBObjectStore {
     getAll(): IDBRequest;
+    getAllKeys(): IDBRequest;
 }
 
 export default class IndexedDBImpl implements DB {
@@ -30,13 +31,13 @@ export default class IndexedDBImpl implements DB {
                 resolve();
             } else {
 
-                console.log("db does not exist, creating it...");
+                console.log("db connection does not exist, creating it...");
 
                 const request = this.dbFactory.open(DATABASE_NAME, DATABASE_VERSION);
 
                 request.addEventListener("success", () => {
                     this.db = request.result;
-                    console.log("successfully created db");
+                    console.log("successfully created db connection");
                     resolve();
                 });
 
@@ -54,13 +55,11 @@ export default class IndexedDBImpl implements DB {
                 });
 
                 request.addEventListener("blocked", () => {
-                    console.log("open database - blocked");
-                    reject();
+                    reject(new Error("open database - blocked"));
                 });
 
                 request.addEventListener("error", (ev: ErrorEvent) => {
-                    console.log("open database - error: ", ev.message);
-                    reject();
+                    reject(new Error(`open database - error: ${ev.message}`));
                 });
             }
 
@@ -69,45 +68,60 @@ export default class IndexedDBImpl implements DB {
     }
 
     getItem(key: string): Promise<string|any> {
-
-        return new Promise<void>((resolve, reject) => {
-
-        });
-
+        console.log("getItem", key);
+        return this.getDocumentByKey(INTERNAL_PROPERTY_STORE.storeName, key);
     }
 
     setItem(key: string, data: string|Map<string, any>): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-
-            // TODO - set item
-
-        });
+        console.log("setItem", key);
+        return this.modifyStore(INTERNAL_PROPERTY_STORE.storeName, key, () => data);
     }
 
-    getMap<T>(key: string): Promise<Map<string, T>> {
+    getAll<T>(storeName: string): Promise<Array<T>> {
 
-        console.log("getMap");
+        console.log("getAll");
 
-        return new Promise<Map<string, T>>((resolve, reject) => {
+        return new Promise<Array<T>>((resolve, reject) => {
 
-            const request = (this.db.transaction(key).objectStore(key) as ExtendedIDBObjectStore).getAll();
+            const request = (this.db.transaction(storeName).objectStore(storeName) as ExtendedIDBObjectStore).getAll();
 
             request.addEventListener("success", () => {
 
-                console.log("successfully got all items in %s", key);
+                console.log("successfully got all items in %s", storeName);
                 resolve(request.result);
 
             });
 
             request.addEventListener("error", () => {
-                console.error("failed to get all items in %s", key);
-                reject();
+                reject(new Error(`failed to get all items in ${storeName}`));
             });
 
         });
     }
 
-    getDocumentByKey<T>(storeName: string, key: string): Promise<T | undefined> {
+    getAllKeys(storeName: string): Promise<Array<string>> {
+
+        console.log("getAllKeys");
+
+        return new Promise<Array<string>>((resolve, reject) => {
+
+            const request = (this.db.transaction(storeName).objectStore(storeName) as ExtendedIDBObjectStore).getAllKeys();
+
+            request.addEventListener("success", () => {
+
+                console.log("successfully got all keys in %s", storeName);
+                resolve(request.result);
+
+            });
+
+            request.addEventListener("error", () => {
+                reject(new Error(`failed to get all keys in ${storeName}`));
+            });
+
+        });
+    }
+
+    getDocumentByKey<T>(storeName: string, key: string): Promise<T> {
         return new Promise<T | undefined>((resolve, reject) => {
 
             const request = this.db.transaction(storeName).objectStore(storeName).get(key);
@@ -120,17 +134,21 @@ export default class IndexedDBImpl implements DB {
             });
 
             request.addEventListener("error", () => {
-                console.error("failed to get document from store %s", storeName);
-                reject();
+                reject(new Error(`failed to get document from store ${storeName}`));
             });
 
         });
     }
 
     addToStore(storeName: string, key: string, value: any): Promise<void> {
+
+        console.log("addToStore");
+
         return new Promise<void>((resolve, reject) => {
 
-            const request = this.db.transaction(storeName).objectStore(storeName).add(value, key);
+            const request = this.db.transaction(storeName, "readwrite").objectStore(storeName).add(value, key);
+
+            console.log("addToStore", request);
 
             request.addEventListener("success", () => {
 
@@ -140,8 +158,7 @@ export default class IndexedDBImpl implements DB {
             });
 
             request.addEventListener("error", () => {
-                console.error("failed to add document with key %s to store %s", key, storeName);
-                reject();
+                reject(new Error(`failed to add document with key ${key} to store ${storeName}`));
             });
 
         });
@@ -162,8 +179,7 @@ export default class IndexedDBImpl implements DB {
                 });
 
                 request.addEventListener("error", () => {
-                    console.error("failed to updated document with key %s in store %s", key, storeName);
-                    reject();
+                    reject(new Error(`failed to updated document with key ${key} in store ${storeName}`));
                 });
 
             });
@@ -181,7 +197,7 @@ export default class IndexedDBImpl implements DB {
             });
 
             request.addEventListener("error", () => {
-                reject();
+                reject(new Error(`could not delete item from store ${storeName} with key ${key}`));
             });
 
         });
@@ -199,13 +215,12 @@ export default class IndexedDBImpl implements DB {
             });
 
             request.addEventListener("blocked", () => {
-                console.log("deleteDatabase - blocked");
-                reject();
+                reject(new Error("deleteDatabase - blocked"));
             });
 
             request.addEventListener("error", (ev: ErrorEvent) => {
                 console.log("deleteDatabase - error: ", ev.message);
-                reject();
+                reject(new Error(`deleteDatabase - error: ${ev.message}`));
             });
 
         });

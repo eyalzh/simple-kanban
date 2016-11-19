@@ -26,12 +26,13 @@ export function reorderArray<T>(arr: Array<T>, searchFn: (T) => boolean, directi
 /**
  * Generate a globally unique ID
  */
-let uniqueId: number|null = null;
+let uniqueId: number | null = null;
 export async function generateUniqId(db: DB, prefix: string): Promise<string> {
 
     if (uniqueId === null) {
-        uniqueId = Number(await db.getItem("uniqueId"));
-        if (! uniqueId) {
+        try {
+            uniqueId = Number(await db.getItem("uniqueId"));
+        } catch (e) {
             uniqueId = 1;
         }
     }

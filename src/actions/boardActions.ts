@@ -3,6 +3,8 @@ import dispatcher from "../Dispatcher";
 import {getModel} from "../context";
 import NonEmptyColumnException from "../model/NonEmptyColumnException";
 import {BoardStore} from "../stores/BoardStore";
+import {Task} from "../model/Task";
+import {Board} from "../model/Board";
 
 export function addColumn(columnName: string, wipLimit: number) {
     getModel()
@@ -108,7 +110,7 @@ export function removeCurrentBoard() {
                 const nextBoard = await getModel().getNextBoard();
                 await getModel().removeCurrentBoard();
                 if (nextBoard) {
-                    await getModel().setCurrentBoard(nextBoard);
+                    await getModel().setCurrentBoard(nextBoard.id);
                 }
 
             }
@@ -126,16 +128,25 @@ export function dispatchRefreshBoard() {
         const model = getModel();
 
         const boards = await model.getBoards();
-        const currentBoard = await model.getCurrentBoard();
-        const boardColumns = await model.getBoardColumnsMap();
-        const columnTasks = await model.getColumnTaskMap();
+        const currentBoardId = await model.getCurrentBoard();
 
-        const store: BoardStore = {boards, currentBoard, boardColumns, columnTasks};
+        let currentBoard: Board | null = null;
+        let columnsInBoard: Array<Column> | null = null;
+        let columnTasks: Map<string, Array<Task>> = new Map();
 
-        return store;
+        if (currentBoardId !== null) {
+            currentBoard = await model.getBoardById(currentBoardId);
+            columnsInBoard = await model.getColumnsByBoard(currentBoardId);
+            for (let col of columnsInBoard) {
+                const tasks = await model.getTasksByColumn(col.id);
+                columnTasks.set(col.id, tasks);
+            }
+        }
 
-    })().then(store => {
+        const store: BoardStore = {boards, currentBoard, columnsInBoard, columnTasks};
+
         dispatcher.dispatch("refreshBoard", store);
-    });
+
+    })();
 
 }

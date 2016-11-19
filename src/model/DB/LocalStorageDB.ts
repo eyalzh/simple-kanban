@@ -1,4 +1,10 @@
-import {DB} from "./DB";
+import {DB, DBStoreDescriptor} from "./DB";
+
+const INTERNAL_PROPERTY_STORE: DBStoreDescriptor = {
+    storeName: "__properties",
+    storeKey: "itemId"
+};
+
 export default class LocalStorageDB implements DB {
 
     private storage: Storage;
@@ -7,48 +13,58 @@ export default class LocalStorageDB implements DB {
         this.storage = storage;
     }
 
-    init(): Promise<void> {
+    init(stores: Array<DBStoreDescriptor>): Promise<void> {
         return new Promise<void>((resolve, reject) => {
+
+            stores.forEach((store) => {
+                if (this.storage.getItem(store.storeName) === null) {
+                    this.storage.setItem(store.storeName, "[]");
+                }
+            });
+
             resolve();
         });
     }
 
-    getItem(key: string): Promise<string | null> {
-        return new Promise<string | null>((resolve, reject) => {
-            resolve(this.storage.getItem(key));
-        });
+    getItem<T>(key: string): Promise<T | null> {
+        return this.getDocumentByKey<T>(INTERNAL_PROPERTY_STORE.storeName, key);
     }
 
-    getMap<T>(key: string): Promise<Map<string, T>> {
+    getAll<T>(storeName: string): Promise<Array<T>> {
 
-        return new Promise<Map<string, T>>((resolve, reject) => {
-            const json = this.storage.getItem(key);
-            let map: Map<any, any>;
+        return new Promise<Array<T>>((resolve, reject) => {
+            const json = this.storage.getItem(storeName);
+            let values: Array<T> = [];
 
             if (json) {
-                map = new Map(JSON.parse(json));
-            } else {
-                map = new Map();
+                const pairArray = JSON.parse(json);
+                values = pairArray.map((pair) => pair[1]);
             }
 
-            resolve(map as Map<string, T>);
+            resolve(values);
         });
 
+    }
+
+    getAllKeys(storeName: string): Promise<Array<string>> {
+        return new Promise<Array<string>>((resolve, reject) => {
+            const json = this.storage.getItem(storeName);
+            let values: Array<string> = [];
+
+            if (json) {
+                const pairArray = JSON.parse(json);
+                values = pairArray.map((pair) => pair[0]);
+            }
+
+            resolve(values);
+        });
     }
 
     setItem(key: string, data: string | Map<string, any>): Promise<void> {
-
-        return new Promise<void>((resolve, reject) => {
-            if (typeof data === "string") {
-                this.storage.setItem(key, data);
-            } else {
-                this.storage.setItem(key, JSON.stringify(data));
-            }
-            resolve();
-        });
+        return this.addToStore(INTERNAL_PROPERTY_STORE.storeName, key, data);
     }
 
-    getDocumentByKey<T>(storeName: string, key: string): Promise<T | undefined> {
+    getDocumentByKey<T>(storeName: string, key: string): Promise<T> {
         return new Promise<T | undefined>((resolve, reject) => {
             const json = this.storage.getItem(storeName);
             let map: Map<any, any>;
@@ -61,7 +77,12 @@ export default class LocalStorageDB implements DB {
 
             const value = map.get(key);
 
-            resolve(value);
+            if (typeof value !== "undefined") {
+                resolve(value);
+            } else {
+                reject(new Error(`failed to find document with key ${key} in store ${storeName}`));
+            }
+
         });
     }
 
@@ -79,7 +100,7 @@ export default class LocalStorageDB implements DB {
             }
 
             map.set(key, value);
-            this.storage.setItem(key, JSON.stringify(map));
+            this.storage.setItem(storeName, JSON.stringify([...map]));
             resolve();
 
         });
@@ -97,14 +118,16 @@ export default class LocalStorageDB implements DB {
                 map = new Map(JSON.parse(json));
                 const value = map.get(key);
                 if (typeof value === "undefined") {
-                    reject(`could not find item with key ${key}`);
+                    reject(new Error(`could not find item with key ${key}`));
                 } else {
+
                     map.set(key, modifier(value));
-                    this.storage.setItem(key, JSON.stringify(map));
+
+                    this.storage.setItem(storeName, JSON.stringify([...map]));
                     resolve();
                 }
             } else {
-                reject(`could not find store ${storeName}`);
+                reject(new Error(`could not find store ${storeName}`));
             }
 
         });
@@ -120,10 +143,10 @@ export default class LocalStorageDB implements DB {
             if (json) {
                 map = new Map(JSON.parse(json));
                 map.delete(key);
-                this.storage.setItem(key, JSON.stringify(map));
+                this.storage.setItem(storeName, JSON.stringify([...map]));
                 resolve();
             } else {
-                reject(`store ${storeName} could not be found`);
+                reject(new Error(`store ${storeName} could not be found`));
             }
 
         });

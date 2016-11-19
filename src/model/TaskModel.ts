@@ -4,6 +4,7 @@ import {generateUniqId} from "./util";
 import NonEmptyColumnException from "./NonEmptyColumnException";
 import {sanitizer} from "./sanitizer";
 import {DB} from "./DB/DB";
+import {Board} from "./Board";
 
 const SELECTED_BOARD_KEY = "selectedBoard";
 const BOARD_MAP_NAME = "boardMap";
@@ -27,7 +28,7 @@ export default class TaskModel {
         return await this.db.init([
             {
                 storeName: BOARD_MAP_NAME,
-                storeKey: "boardId"
+                storeKey: "id"
             },
             {
                 storeName: BOARD_COL_MAP_NAME,
@@ -35,7 +36,7 @@ export default class TaskModel {
             },
             {
                 storeName: COLUMNS_MAP_NAME,
-                storeKey: "columnId"
+                storeKey: "id"
             },
             {
                 storeName: COL_TASK_MAP_NAME,
@@ -43,7 +44,7 @@ export default class TaskModel {
             },
             {
                 storeName: TASKS_NAME,
-                storeKey: "taskId"
+                storeKey: "id"
             },
             {
                 storeName: FLAG_MAP_NAME,
@@ -53,46 +54,54 @@ export default class TaskModel {
     }
 
     public async getCurrentBoard(): Promise<string | null> {
-       return await this.db.getItem(SELECTED_BOARD_KEY);
+       return await this.db.getItem<string>(SELECTED_BOARD_KEY);
     }
 
     public async setCurrentBoard(boardId: string) {
        await this.db.setItem(SELECTED_BOARD_KEY, boardId);
     }
 
-    public async getBoards(): Promise<Map<string, string>> {
-        return await this.db.getMap<string>(BOARD_MAP_NAME);
+    public async getBoards(): Promise<Array<Board>> {
+        return await this.db.getAll<Board>(BOARD_MAP_NAME);
     }
 
-    public async getNextBoard(): Promise<string | null> {
+    public async getNextBoard(): Promise<Board | null> {
+
         const currentBoard = await this.getCurrentBoard();
+
         if (currentBoard === null) {
             return null;
         }
-        const keys = [...(await this.getBoards()).keys()];
-        const next = (keys.indexOf(currentBoard) + 1) % keys.length;
-        return keys[next];
+
+        const boards = await this.getBoards();
+        const idx = boards.findIndex((board) => board.id === currentBoard);
+
+        if (idx === -1) {
+            throw new Error(`inconsistent data: ${currentBoard} cannot be found in board list`);
+        }
+
+        const nextBoard = boards[(idx + 1) % boards.length];
+        return nextBoard;
+
     }
 
-    public async getColumns(): Promise<Map<string, Column>> {
-        return await this.db.getMap<Column>(COLUMNS_MAP_NAME);
+    public async getColumns(): Promise<Array<Column>> {
+        return await this.db.getAll<Column>(COLUMNS_MAP_NAME);
     }
 
-    public async getTasks(): Promise<Map<string, Task>> {
-        return await this.db.getMap<Task>(TASKS_NAME);
+    public async getTasks(): Promise<Array<Task>> {
+        return await this.db.getAll<Task>(TASKS_NAME);
     }
 
     public async getTasksByColumn(columnId: string): Promise<Array<Task>> {
 
-        console.log("getTasksByColumn");
-
         let tasks: Array<Task> = [];
         const columnTasks = await this.db.getDocumentByKey<Array<string>>(COL_TASK_MAP_NAME, columnId);
-        const allTasks = await this.getTasks();
 
         if (columnTasks) {
+
             for (let taskId of columnTasks) {
-                const task = allTasks.get(taskId);
+                const task =  await this.db.getDocumentByKey<Task>(TASKS_NAME, taskId);
                 if (task) {
                     tasks.push(task);
                 }
@@ -125,21 +134,13 @@ export default class TaskModel {
     public async getColumnsByBoard(boardId: string): Promise<Array<Column>> {
 
         let cols: Array<Column> = [];
-        const allCols = await this.getColumns();
-        const boardsToColsMap = await this.db.getMap<Array<string>>(BOARD_COL_MAP_NAME);
+        const boardsToColsMap = await this.db.getDocumentByKey<Array<string>>(BOARD_COL_MAP_NAME, boardId);
 
-        if (boardsToColsMap.has(boardId)) {
-            const colMap = boardsToColsMap.get(boardId);
-            if (colMap) {
-                colMap.forEach(colId => {
-                    const col = allCols.get(colId);
-                    if (col) {
-                        cols.push(col);
-                    }
-                });
+        for (let colId of boardsToColsMap) {
+            const col = await this.db.getDocumentByKey<Column>(COLUMNS_MAP_NAME, colId);
+            if (col) {
+                cols.push(col);
             }
-        } else {
-            throw new Error(`Board ${boardId} could not be found`);
         }
 
         return cols;
@@ -152,11 +153,7 @@ export default class TaskModel {
             throw new Error("can't add column - no active board found");
         }
 
-        const boardsToColsMap = await this.db.getMap<Array<string>>(BOARD_COL_MAP_NAME);
-        let colsInBoard = boardsToColsMap.get(currentBoard);
-        if (! colsInBoard) {
-            throw new Error("can't add column - corrupted board data");
-        }
+        await this.db.getDocumentByKey(BOARD_COL_MAP_NAME, currentBoard);
 
         const newKey = await generateUniqId(this.db, "col");
         const newCol: Column = {
@@ -173,12 +170,24 @@ export default class TaskModel {
     }
 
     public async addBoard(boardName: string) {
+        console.log("addBoard");
         const newKey = await generateUniqId(this.db, "board");
 
-        await this.db.addToStore(BOARD_MAP_NAME, newKey, sanitizer.sanitizeBoardName(boardName));
+        console.log("newKey", newKey);
+
+        const board: Board = {
+            id: newKey,
+            name: sanitizer.sanitizeBoardName(boardName)
+        };
+
+        await this.db.addToStore(BOARD_MAP_NAME, newKey, board);
         await this.db.addToStore(BOARD_COL_MAP_NAME, newKey, []);
 
         return newKey;
+    }
+
+    public async getBoardById(currentBoardId: string) {
+        return this.db.getDocumentByKey<Board>(BOARD_MAP_NAME, currentBoardId);
     }
 
     public async editCurrentBoard(boardName: string) {
@@ -188,7 +197,13 @@ export default class TaskModel {
         if (currentBoard === null) {
             throw new Error("There is no active board to edit");
         } else {
-            await this.db.modifyStore<string>(BOARD_MAP_NAME, currentBoard, () => sanitizer.sanitizeBoardName(boardName));
+
+            const board: Board = {
+                id: currentBoard,
+                name: sanitizer.sanitizeBoardName(boardName)
+            };
+
+            await this.db.modifyStore<Board>(BOARD_MAP_NAME, currentBoard, () => board);
         }
 
    }
@@ -298,63 +313,12 @@ export default class TaskModel {
         await this.initData();
     }
 
-    public async getBoardColumnsMap(): Promise<Map<string, Array<Column>>> {
-
-        const boardsToColsMap = await this.db.getMap<Array<string>>(BOARD_COL_MAP_NAME);
-        const allCols = await this.getColumns();
-        const res: Map<string, Array<Column>> = new Map();
-
-        boardsToColsMap.forEach((colIds, boardId) => {
-
-            const cols = colIds.map(colId => {
-                const col = allCols.get(colId);
-                if (col) {
-                    return col;
-                } else {
-                    throw new Error(`Inconsistent model: can't find ${colId} in columns`);
-                }
-            });
-
-            res.set(boardId, cols);
-
-        });
-
-        return res;
-
-    }
-
-    public async getColumnTaskMap(): Promise<Map<string, Array<Task>>> {
-        const colTaskMap = await this.db.getMap<Array<string>>(COL_TASK_MAP_NAME);
-        const allTasks = await this.getTasks();
-        const res: Map<string, Array<Task>> = new Map();
-
-        colTaskMap.forEach((tasksIds, colId) => {
-
-            const tasks = tasksIds.map(taskId => {
-                const task = allTasks.get(taskId);
-                if (task) {
-                    return task;
-                } else {
-                    throw new Error(`Inconsistent model: can't find ${taskId} in tasks`);
-                }
-            });
-
-            res.set(colId, tasks);
-
-        });
-
-
-        return res;
-
-    }
-
     public async setFlagOn(flag: FLAGS) {
-        await this.db.modifyStore<boolean>(FLAG_MAP_NAME, FLAGS[flag], () => true);
+        await this.db.addToStore(FLAG_MAP_NAME, FLAGS[flag], true);
     }
 
     public async getFlag(flag: FLAGS): Promise<boolean> {
-        const flagMap = await this.db.getMap<boolean>(FLAG_MAP_NAME);
-        const flagValue = flagMap.get(FLAGS[flag]);
+        const flagValue = await this.db.getDocumentByKey(FLAG_MAP_NAME, FLAGS[flag]);
         return !!flagValue;
     }
 
@@ -367,11 +331,15 @@ export default class TaskModel {
     }
 
     private async initData() {
-        const boardsToColsMap = await this.db.getMap<Array<string>>(BOARD_COL_MAP_NAME);
         const currentBoard = await this.getCurrentBoard();
-        if (currentBoard !== null && !boardsToColsMap.has(currentBoard)) {
-            await this.db.modifyStore<Array<string>>(BOARD_COL_MAP_NAME, currentBoard, () => []);
+        if (currentBoard !== null) {
+            try {
+                await this.db.getDocumentByKey(BOARD_COL_MAP_NAME, currentBoard);
+            } catch (e) {
+                await this.db.modifyStore<Array<string>>(BOARD_COL_MAP_NAME, currentBoard, () => []);
+            }
         }
     }
+
 
 }

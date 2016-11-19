@@ -41,12 +41,12 @@ taskModel.init()
 
     .then(() => {
         window.addEventListener("keydown", (e) => {
-            const ALT_B = 66;
-            if (e.altKey && e.keyCode === ALT_B) {
+            const B_KEY = 66;
+            if (e.altKey && e.keyCode === B_KEY) {
                 taskModel.getNextBoard()
                     .then((nextBoard) => {
                         if (nextBoard !== null) {
-                            BoardActions.switchBoard(nextBoard);
+                            BoardActions.switchBoard(nextBoard.id);
                         }
                     });
                 e.preventDefault();

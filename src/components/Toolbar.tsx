@@ -5,13 +5,14 @@ import ColumnEditDialog from "./ColumnEditDialog";
 import BoardEditDialog from "./BoardEditDialog";
 import {BoardStore} from "../stores/BoardStore";
 import {classSet} from "../util";
+import {Board} from "../model/Board";
 
 interface ToolbarState {
-    currentBoardId: string;
+    currentBoard: Board | null;
     isColBeingAdded: boolean;
     isBoardBeingAdded: boolean;
     boardBeingEdited: string | null | undefined;
-    boards: Map<string, string> | null;
+    boards: Array<Board> | null;
 }
 
 export default class Toolbar extends React.Component<{}, ToolbarState> {
@@ -19,7 +20,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
     constructor() {
         super();
         this.state = {
-            currentBoardId: "",
+            currentBoard: null,
             isColBeingAdded: false,
             isBoardBeingAdded: false,
             boardBeingEdited: null,
@@ -38,11 +39,11 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
     }
 
     private syncSelBoard(store: BoardStore) {
-        const currentBoardId = store.currentBoard;
+        const currentBoard = store.currentBoard;
         const boards = store.boards;
-        if (currentBoardId !== null) {
+        if (currentBoard !== null) {
             this.setState({
-                currentBoardId,
+                currentBoard,
                 isColBeingAdded: false,
                 isBoardBeingAdded: false,
                 boardBeingEdited: null,
@@ -56,28 +57,31 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         const boards = this.state.boards;
         let boardOptions: Array<JSX.Element> = [];
         let boardName;
+        let boardSelector = <div />;
 
-        if (boards) {
-            boards.forEach((desc, id) => {
-                const el = <option key={id} value={id}>{desc}</option>;
+        if (this.state.currentBoard && boards) {
+            boards.forEach((board) => {
+                const el = <option key={board.id} value={board.id}>{board.name}</option>;
                 boardOptions.push(el);
             });
-            boardName = boards.get(this.state.currentBoardId);
-        }
+            boardName = this.state.currentBoard.name;
 
-        const selectBoardClassSet = classSet({
-            "hidden": boardOptions.length === 0
-        });
-
-        return (
-            <div className="toolbar">
+            boardSelector = (
                 <select
-                    className={selectBoardClassSet}
-                    value={this.state.currentBoardId}
+                    value={this.state.currentBoard.id}
                     onChange={e => this.changeProfile(e)}
                     title="Change board (Alt+B)">
                     {boardOptions}
                 </select>
+            );
+
+        }
+
+        return (
+            <div className="toolbar">
+
+                {boardSelector}
+
                 <button onClick={e => this.onAddBoardClicked()}>Add board</button>
                 <button onClick={e => this.onEditBoardClicked()}>Edit board</button>
                 <button onClick={e => this.onAddColStarted()}>Add column</button>
@@ -153,7 +157,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
 
     private onEditBoardClicked() {
         this.state.isBoardBeingAdded = true;
-        this.state.boardBeingEdited = this.state.currentBoardId;
+        this.state.boardBeingEdited = this.state.currentBoard ? this.state.currentBoard.id : null;
         this.setState(this.state);
     }
 

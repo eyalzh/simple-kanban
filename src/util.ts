@@ -1,7 +1,7 @@
 export function classSet(classNames: Object) {
     let names = "";
 
-    for (const name in classNames) {
+    for (let name in classNames) {
         if (!classNames.hasOwnProperty(name) || !classNames[name]) {
             continue;
         }

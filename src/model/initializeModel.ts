@@ -5,13 +5,15 @@ export default async function initializeModel(model: TaskModel) {
     const boards = await model.getBoards();
     const wasTutorialAdded = await model.getFlag(FLAGS.TUTORIAL_ADDED);
 
-    if (!wasTutorialAdded && boards.size === 0) {
+    if (!wasTutorialAdded && boards.length === 0) {
+
+        console.log("tutorial flag not found, adding tutorial data...");
 
         const board = await model.addBoard("Tutorial");
         await model.setCurrentBoard(board);
         const columns = await model.getColumns();
 
-        if (columns.size === 0) {
+        if (columns.length === 0) {
 
             const backlog = await model.addColumn("Backlog", 10);
             const next = await model.addColumn("Next", 3);

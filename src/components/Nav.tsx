@@ -1,6 +1,7 @@
 import * as React from "react";
 import dispatcher from "../Dispatcher";
 import {BoardStore} from "../stores/BoardStore";
+import {Board} from "../model/Board";
 
 require("./nav.css");
 
@@ -29,12 +30,11 @@ export default class Nav extends React.Component<{}, NavState> {
 
     private syncSelBoard(store: BoardStore) {
 
-        const boards = store.boards;
-        const currentBoard = store.currentBoard;
+        const currentBoard: Board|null = store.currentBoard;
         let currentBoardName: string|null = null;
 
         if (currentBoard !== null) {
-            const boardName = boards.get(currentBoard);
+            const boardName = currentBoard.name;
             if (typeof boardName !== "undefined") {
                 currentBoardName = boardName;
             }
