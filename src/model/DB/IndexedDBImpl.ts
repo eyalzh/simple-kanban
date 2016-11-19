@@ -48,7 +48,7 @@ export default class IndexedDBImpl implements DB {
                     stores
                         .concat(INTERNAL_PROPERTY_STORE)
                         .forEach((descriptor: DBStoreDescriptor) => {
-                            db.createObjectStore(descriptor.storeName, {keyPath: descriptor.storeKey});
+                            db.createObjectStore(descriptor.storeName);
                             console.log("created object store", descriptor.storeName);
                         });
 
@@ -67,29 +67,22 @@ export default class IndexedDBImpl implements DB {
 
     }
 
-    getItem(key: string): Promise<string|any> {
-        console.log("getItem", key);
+    getItem<T>(key: string): Promise<T | null> {
         return this.getDocumentByKey(INTERNAL_PROPERTY_STORE.storeName, key);
     }
 
     setItem(key: string, data: string|Map<string, any>): Promise<void> {
-        console.log("setItem", key);
         return this.modifyStore(INTERNAL_PROPERTY_STORE.storeName, key, () => data);
     }
 
     getAll<T>(storeName: string): Promise<Array<T>> {
-
-        console.log("getAll");
 
         return new Promise<Array<T>>((resolve, reject) => {
 
             const request = (this.db.transaction(storeName).objectStore(storeName) as ExtendedIDBObjectStore).getAll();
 
             request.addEventListener("success", () => {
-
-                console.log("successfully got all items in %s", storeName);
                 resolve(request.result);
-
             });
 
             request.addEventListener("error", () => {
@@ -101,17 +94,12 @@ export default class IndexedDBImpl implements DB {
 
     getAllKeys(storeName: string): Promise<Array<string>> {
 
-        console.log("getAllKeys");
-
         return new Promise<Array<string>>((resolve, reject) => {
 
             const request = (this.db.transaction(storeName).objectStore(storeName) as ExtendedIDBObjectStore).getAllKeys();
 
             request.addEventListener("success", () => {
-
-                console.log("successfully got all keys in %s", storeName);
                 resolve(request.result);
-
             });
 
             request.addEventListener("error", () => {
@@ -121,15 +109,18 @@ export default class IndexedDBImpl implements DB {
         });
     }
 
-    getDocumentByKey<T>(storeName: string, key: string): Promise<T> {
-        return new Promise<T | undefined>((resolve, reject) => {
+    getDocumentByKey<T>(storeName: string, key: string): Promise<T|null> {
+        return new Promise<T | null>((resolve, reject) => {
 
             const request = this.db.transaction(storeName).objectStore(storeName).get(key);
 
             request.addEventListener("success", () => {
 
-                console.log("successfully got document from index %s with key %s", storeName, key);
-                resolve(request.result);
+                if (typeof request.result === 'undefined') {
+                    resolve(null);
+                } else {
+                    resolve(request.result);
+                }
 
             });
 
@@ -142,19 +133,12 @@ export default class IndexedDBImpl implements DB {
 
     addToStore(storeName: string, key: string, value: any): Promise<void> {
 
-        console.log("addToStore");
-
         return new Promise<void>((resolve, reject) => {
 
             const request = this.db.transaction(storeName, "readwrite").objectStore(storeName).add(value, key);
 
-            console.log("addToStore", request);
-
             request.addEventListener("success", () => {
-
-                console.log("successfully added document to index %s with key %s", storeName, key);
                 resolve();
-
             });
 
             request.addEventListener("error", () => {
@@ -172,10 +156,7 @@ export default class IndexedDBImpl implements DB {
                 const request = this.db.transaction(storeName, "readwrite").objectStore(storeName).put(modifier(value), key);
 
                 request.addEventListener("success", () => {
-
-                    console.log("successfully updated document in index %s with key %s", storeName, key);
                     resolve();
-
                 });
 
                 request.addEventListener("error", () => {
@@ -190,7 +171,7 @@ export default class IndexedDBImpl implements DB {
     deleteStoreItem(storeName: string, key: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
 
-            const request = this.db.transaction(storeName).objectStore(storeName).delete(key);
+            const request = this.db.transaction(storeName, "readwrite").objectStore(storeName).delete(key);
 
             request.addEventListener("success", () => {
                resolve();

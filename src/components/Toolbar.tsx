@@ -60,9 +60,9 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         let boardSelector = <div />;
 
         if (this.state.currentBoard && boards) {
-            boards.forEach((board) => {
-                const el = <option key={board.id} value={board.id}>{board.name}</option>;
-                boardOptions.push(el);
+            boardOptions = boards.map((board) => {
+                console.log(board);
+                return <option key={board.id} value={board.id}>{board.name}</option>;
             });
             boardName = this.state.currentBoard.name;
 

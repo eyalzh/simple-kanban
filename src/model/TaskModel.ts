@@ -136,10 +136,12 @@ export default class TaskModel {
         let cols: Array<Column> = [];
         const boardsToColsMap = await this.db.getDocumentByKey<Array<string>>(BOARD_COL_MAP_NAME, boardId);
 
-        for (let colId of boardsToColsMap) {
-            const col = await this.db.getDocumentByKey<Column>(COLUMNS_MAP_NAME, colId);
-            if (col) {
-                cols.push(col);
+        if (boardsToColsMap !== null) {
+            for (let colId of boardsToColsMap) {
+                const col = await this.db.getDocumentByKey<Column>(COLUMNS_MAP_NAME, colId);
+                if (col) {
+                    cols.push(col);
+                }
             }
         }
 

@@ -31,7 +31,12 @@ export async function generateUniqId(db: DB, prefix: string): Promise<string> {
 
     if (uniqueId === null) {
         try {
-            uniqueId = Number(await db.getItem("uniqueId"));
+            const uniqueIdVal = await db.getItem<string>("uniqueId");
+            if (uniqueIdVal === null) {
+                uniqueId = 1;
+            } else {
+                uniqueId = Number(uniqueIdVal);
+            }
         } catch (e) {
             uniqueId = 1;
         }

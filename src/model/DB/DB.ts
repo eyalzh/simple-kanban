@@ -12,7 +12,7 @@ export interface DB {
 
     getAll<T>(storeName: string): Promise<Array<T>>;
     getAllKeys(storeName: string): Promise<Array<string>>;
-    getDocumentByKey<T>(storeName: string, key: string): Promise<T>;
+    getDocumentByKey<T>(storeName: string, key: string): Promise<T|null>;
 
     addToStore(storeName: string, key: string, value: any): Promise<void>;
     modifyStore<T>(storeName: string, key: string, modifier: (value: T) => T): Promise<void>;
