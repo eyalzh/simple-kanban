@@ -61,7 +61,6 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
 
         if (this.state.currentBoard && boards) {
             boardOptions = boards.map((board) => {
-                console.log(board);
                 return <option key={board.id} value={board.id}>{board.name}</option>;
             });
             boardName = this.state.currentBoard.name;

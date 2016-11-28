@@ -172,10 +172,7 @@ export default class TaskModel {
     }
 
     public async addBoard(boardName: string) {
-        console.log("addBoard");
         const newKey = await generateUniqId(this.db, "board");
-
-        console.log("newKey", newKey);
 
         const board: Board = {
             id: newKey,

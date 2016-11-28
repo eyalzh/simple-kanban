@@ -116,7 +116,7 @@ export default class IndexedDBImpl implements DB {
 
             request.addEventListener("success", () => {
 
-                if (typeof request.result === 'undefined') {
+                if (typeof request.result === "undefined") {
                     resolve(null);
                 } else {
                     resolve(request.result);
