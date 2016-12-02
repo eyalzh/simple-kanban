@@ -187,22 +187,10 @@ export default class IndexedDBImpl implements DB {
 
     clear(): Promise<void> {
 
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<void>((resolve) => {
 
-            const request = this.dbFactory.deleteDatabase(DATABASE_NAME);
-
-            request.addEventListener("success", () => {
-                resolve();
-            });
-
-            request.addEventListener("blocked", () => {
-                reject(new Error("deleteDatabase - blocked"));
-            });
-
-            request.addEventListener("error", (ev: ErrorEvent) => {
-                console.log("deleteDatabase - error: ", ev.message);
-                reject(new Error(`deleteDatabase - error: ${ev.message}`));
-            });
+            this.dbFactory.deleteDatabase(DATABASE_NAME);
+            resolve();
 
         });
     }
