@@ -6,6 +6,7 @@ import BoardEditDialog from "./BoardEditDialog";
 import {BoardStore} from "../stores/BoardStore";
 import {classSet} from "../util";
 import {Board} from "../model/Board";
+import {Template} from "../model/Templates/Template";
 
 interface ToolbarState {
     currentBoard: Board | null;
@@ -137,7 +138,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         }
     }
 
-    private onAddBoardSubmitted(boardName: string) {
+    private onAddBoardSubmitted(boardName: string, template: Template | undefined) {
         this.state.isBoardBeingAdded = false;
         this.setState(this.state);
 
@@ -147,7 +148,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
                 if (this.state.boardBeingEdited !== null) {
                     BoardActions.editCurrentBoard(boardNameTrimmed);
                 } else {
-                    BoardActions.addBoard(boardNameTrimmed);
+                    BoardActions.addBoard(boardNameTrimmed, template);
                 }
 
             }

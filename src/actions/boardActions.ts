@@ -5,13 +5,12 @@ import NonEmptyColumnException from "../model/NonEmptyColumnException";
 import {BoardStore} from "../stores/BoardStore";
 import {Task} from "../model/Task";
 import {Board} from "../model/Board";
+import {Template} from "../model/Templates/Template";
 
 export function addColumn(columnName: string, wipLimit: number) {
     getModel()
         .addColumn(columnName, wipLimit)
-        .then(() => {
-            this.dispatchRefreshBoard();
-        });
+        .then(this.dispatchRefreshBoard);
 }
 
 export function addTask(column: Column, taskDesc: string, taskLongDesc?: string) {
@@ -79,12 +78,17 @@ export function switchBoard(boardId: string) {
         .then(this.dispatchRefreshBoard);
 }
 
-export function addBoard(boardName: string) {
+export function addBoard(boardName: string, template: Template | undefined) {
 
     getModel()
         .addBoard(boardName)
         .then((boardId) => {
             return getModel().setCurrentBoard(boardId);
+        })
+        .then(() => {
+            if (template) {
+                return template.applyOnModel(getModel());
+            }
         })
         .then(this.dispatchRefreshBoard);
 

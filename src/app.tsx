@@ -4,13 +4,15 @@ import Nav from "./components/Nav";
 import Board from "./components/Board";
 import Toolbar from "./components/Toolbar";
 import taskModel from "./model/model";
-import {setModel} from "./context";
+import {setModel, setCatalog} from "./context";
 import initializeModel from "./model/initializeModel";
 import * as BoardActions from "./actions/boardActions";
+import TemplateCatalog from "./model/Templates/TemplateCatalog";
 
 require("./main.css");
 
 setModel(taskModel);
+setCatalog(new TemplateCatalog());
 
 taskModel.init()
 

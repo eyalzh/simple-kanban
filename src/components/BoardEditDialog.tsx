@@ -1,17 +1,20 @@
 import * as React from "react";
+import {getCatalog} from "../context";
+import {Template} from "../model/Templates/Template";
 const Modal = require("react-modal");
 
 interface BoardEditDialogProps {
     isBeingEdited: boolean;
     onEditClose: React.MouseEventHandler;
     onRemoveBoard: Function;
-    onEditSubmitted: (boardName: string) => void;
+    onEditSubmitted: (boardName: string, selectedTemplate: Template | undefined) => void;
     boardId?: string | null;
     boardName?: string;
 }
 
 interface BoardEditDialogState {
     name: string;
+    selectedTemplate: string | undefined;
 }
 
 export default class BoardEditDialog extends React.Component<BoardEditDialogProps, BoardEditDialogState> {
@@ -21,7 +24,8 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
     constructor() {
         super();
         this.state = {
-            name: ""
+            name: "",
+            selectedTemplate: void 0
         };
     }
 
@@ -40,6 +44,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
         let title;
         let removeBtn;
+        let templatesBox = <span />;
         if (this.props.boardId !== null) {
             title = "Edit Board";
             removeBtn = (
@@ -48,6 +53,18 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
         } else {
             title = "Add Board";
             removeBtn = <span />; // <div> cannot be a descendant of <p>
+            const catalog = getCatalog();
+            templatesBox = (
+                <div>
+                    <p>Template</p>
+                    <p><select onChange={e => this.onSelectTemplate(e)}>{
+                        catalog.getTemplates().map((template, i) => (
+                            <option key={i} value={template.getName()}>{template.getName()}</option>
+                        ))
+                    }</select>
+                    </p>
+                </div>
+            );
         }
 
         let buttons = (
@@ -75,6 +92,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
                         ref={(input) => {this.fieldInput = input;}}
                         onKeyPress={this.onKeyPressed.bind(this)} />
                 </p>
+                {templatesBox}
 
                 {buttons}
 
@@ -95,7 +113,12 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
     }
 
     private onEditSubmitted() {
-        this.props.onEditSubmitted(this.state.name);
+
+        let template: Template | undefined;
+        if (this.state.selectedTemplate) {
+            template = getCatalog().getTemplateByName(this.state.selectedTemplate);
+        }
+        this.props.onEditSubmitted(this.state.name, template);
     }
 
     private onRemoveBoard() {
@@ -106,4 +129,9 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
         this.fieldInput.focus();
     }
 
+    private onSelectTemplate(e: React.FormEvent) {
+        const templateName = (e.target as HTMLInputElement).value;
+        this.state.selectedTemplate = templateName;
+        this.setState(this.state);
+    }
 }

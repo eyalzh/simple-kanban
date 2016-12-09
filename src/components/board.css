@@ -4,7 +4,7 @@
     border: 1px solid #c0c4e0;
     margin: 6px;
     min-height: calc(100vh - 54px);
-    box-shadow: 4px 4px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 4px 4px 5px 0 rgba(0,0,0,0.75);
     background-color: #f3f2f2;
     -webkit-user-select: none;
     -moz-user-select: -moz-none;
