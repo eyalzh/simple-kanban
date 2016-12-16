@@ -1,6 +1,7 @@
 # Manual regression tests checklist
 
-1. New board
+1. New board with empty template (default)
+1. New board with "Project" template
 1. Navigating between two boards with alt-b
 1. Remove board
 1. Edit board's name
