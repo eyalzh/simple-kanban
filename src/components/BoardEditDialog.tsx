@@ -23,9 +23,12 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
     constructor() {
         super();
+
+        const catalog = getCatalog();
+
         this.state = {
             name: "",
-            selectedTemplate: void 0
+            selectedTemplate: catalog.getTemplates()[0].getName()
         };
     }
 
@@ -57,7 +60,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
             templatesBox = (
                 <div>
                     <p>Template</p>
-                    <p><select onChange={e => this.onSelectTemplate(e)}>{
+                    <p><select onChange={e => this.onSelectTemplate(e)} value={this.state.selectedTemplate}>{
                         catalog.getTemplates().map((template, i) => (
                             <option key={i} value={template.getName()}>{template.getName()}</option>
                         ))
