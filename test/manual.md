@@ -14,6 +14,7 @@
 1. Move column
 1. New task
 1. Edit task (name and description)
+1. Test markdown rendering in tasks
 1. Move task
 1. Remove task
 1. Remove column with tasks in it (should not allow)
