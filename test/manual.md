@@ -5,11 +5,11 @@
 1. Navigating between two boards with alt-b
 1. Remove board
 1. Edit board's name
-1. Board with name longer than allowed
+1. Board with name longer than allowed (should trim)
 1. New column
 1. Edit column
 1. Remove column
-1. Column with name longer than allowed
+1. Column with name longer than allowed (should trim)
 1. Column WIP limits validations
 1. Move column
 1. New task
