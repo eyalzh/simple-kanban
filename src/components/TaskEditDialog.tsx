@@ -1,4 +1,5 @@
 import * as React from "react";
+import Markdown from "./Markdown";
 const Modal = require("react-modal");
 
 interface TaskEditDialogProps {
@@ -43,28 +44,37 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                 onAfterOpen={this.onEditDialogOpen.bind(this)}>
 
                 <div className="edit-task-form">
-                    <h1>{this.props.dialogTitle}</h1>
-                    <p>
-                        Title:
-                    </p>
-                    <p>
-                        <input
-                            value={this.state.desc}
-                            onChange={this.onChange.bind(this)}
-                            ref={(input) => {this.fieldInput = input;}}
-                            onKeyPress={(ev) => {ev.key === "Enter" && this.onEditSubmitted();}}
-                        />
-                    </p>
-                    <p>
-                        Description:
-                    </p>
-                    <p>
-                        <textarea value={this.state.longdesc} onChange={this.onLongDescChange.bind(this)}/>
-                    </p>
-                    <p>
-                        <button onClick={e => this.onEditSubmitted()}>Submit</button>&nbsp;
-                        <button onClick={this.props.onCloseEditTask}>Cancel</button>
-                    </p>
+                    <div className="edit-section">
+
+                        <h1>{this.props.dialogTitle}</h1>
+                        <p>
+                            Title:
+                        </p>
+                        <p>
+                            <input
+                                value={this.state.desc}
+                                onChange={this.onChange.bind(this)}
+                                ref={(input) => {this.fieldInput = input;}}
+                                onKeyPress={(ev) => {ev.key === "Enter" && this.onEditSubmitted();}}
+                            />
+                        </p>
+                        <p>
+                            Description:
+                        </p>
+                        <p>
+                            <textarea value={this.state.longdesc} onChange={this.onLongDescChange.bind(this)}/>
+                        </p>
+                        <p>
+                            <button onClick={e => this.onEditSubmitted()}>Submit</button>&nbsp;
+                            <button onClick={this.props.onCloseEditTask}>Cancel</button>
+                        </p>
+
+                    </div>
+
+                    <div className="preview-section">
+                        <Markdown text={this.state.longdesc} />
+                    </div>
+
                 </div>
 
             </Modal>

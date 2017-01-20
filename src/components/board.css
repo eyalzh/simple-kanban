@@ -68,11 +68,29 @@
     font-family: "Comic Sans MS", cursive;
 }
 
+.edit-task-form {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+
 .edit-task-form input {
-    width: 600px;
+    width: 500px;
 }
 
 .edit-task-form textarea {
-    width: 600px;
-    height: 180px;
+    width: 500px;
+    height: calc(100vh - 400px);
+}
+
+.edit-section {
+    min-width: 540px;
+    border-right: 1px solid #c0c4e0;
+}
+
+.preview-section {
+    overflow: auto;
+    height:  calc(100vh - 125px);
+    margin-left: 20px;
 }
