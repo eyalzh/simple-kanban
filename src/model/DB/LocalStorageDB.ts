@@ -160,4 +160,9 @@ export default class LocalStorageDB implements DB {
         });
     }
 
+    runMaintenance(): Promise<void> {
+        // no maintenance required for localstorage
+        return Promise.resolve();
+    }
+
 }

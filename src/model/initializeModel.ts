@@ -3,6 +3,8 @@ import TutorialTemplate from "./Templates/TutorialTemplate";
 
 export default async function initializeModel(model: TaskModel) {
 
+    await model.runMaintenance();
+
     const boards = await model.getBoards();
     const wasTutorialAdded = await model.getFlag(FLAGS.TUTORIAL_ADDED);
 

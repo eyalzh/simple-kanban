@@ -321,6 +321,10 @@ export default class TaskModel {
         return !!flagValue;
     }
 
+    public async runMaintenance() {
+        await this.db.runMaintenance();
+    }
+
     private async detachTask(columnId: string, taskId: string) {
 
         await this.db.modifyStore<Array<string>>(COL_TASK_MAP_NAME, columnId, (tasks) => {
@@ -339,6 +343,5 @@ export default class TaskModel {
             }
         }
     }
-
 
 }

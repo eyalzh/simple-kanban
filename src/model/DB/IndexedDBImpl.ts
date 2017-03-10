@@ -17,12 +17,15 @@ export default class IndexedDBImpl implements DB {
 
     private dbFactory: IDBFactory;
     private db: IDBDatabase;
+    private stores: Array<DBStoreDescriptor>;
 
     constructor(dbFactory: IDBFactory) {
         this.dbFactory = dbFactory;
     }
 
     init(stores: Array<DBStoreDescriptor>): Promise<void> {
+
+        this.stores = stores.concat(INTERNAL_PROPERTY_STORE);
 
         return new Promise<void>((resolve, reject) => {
 
@@ -45,8 +48,7 @@ export default class IndexedDBImpl implements DB {
 
                     const db = request.result;
 
-                    stores
-                        .concat(INTERNAL_PROPERTY_STORE)
+                    this.stores
                         .forEach((descriptor: DBStoreDescriptor) => {
                             db.createObjectStore(descriptor.storeName);
                             console.log("created object store", descriptor.storeName);
@@ -193,6 +195,39 @@ export default class IndexedDBImpl implements DB {
             resolve();
 
         });
+    }
+
+    runMaintenance(): Promise<void> {
+
+        return new Promise<void>((resolve) => {
+
+            for (let store of this.stores) {
+
+                const storeName = store.storeName;
+                const request = this.db.transaction(storeName, "readwrite").objectStore(storeName).openCursor();
+
+                request.addEventListener("success", () => {
+
+                    const cursor: IDBCursorWithValue = request.result;
+                    if (cursor) {
+
+                        if (cursor.value === null) {
+                            console.warn("found null values in DB");
+                            cursor.update(new Array(0));
+                        }
+
+                        cursor.continue();
+
+                    } else {
+                        resolve();
+                    }
+
+                });
+
+            }
+
+        });
+
     }
 
 }
