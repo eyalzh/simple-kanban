@@ -38,6 +38,7 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
                 <TaskEditDialog
                     desc={this.props.task.desc}
                     longdesc={this.props.task.longdesc}
+                    createdAt={this.props.task.createdAt}
                     isBeingEdited={this.state.isBeingEdited}
                     onCloseEditTask={this.closeEditTask.bind(this)}
                     onEditSubmitted={this.onTaskSubmitted.bind(this)}

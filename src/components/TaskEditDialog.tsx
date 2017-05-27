@@ -1,12 +1,14 @@
 import * as React from "react";
 import Markdown from "./Markdown";
 import {classSet} from "../util";
+import {Timestamp} from "../model/Timestamp";
 const Modal = require("react-modal");
 
 interface TaskEditDialogProps {
     dialogTitle: string;
     desc?: string;
     longdesc?: string;
+    createdAt?: Timestamp;
     isBeingEdited: boolean;
     onCloseEditTask: React.MouseEventHandler;
     onEditSubmitted: (desc: string, longdesc: string) => void;
@@ -46,6 +48,12 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
             "visible": previewVisible
         });
 
+        let creationDateString: string|null = null;
+        if (this.props.createdAt) {
+            const date = new Date(this.props.createdAt.value);
+            creationDateString = date.toDateString();
+        }
+
         return (
             <Modal
                 isOpen={this.props.isBeingEdited}
@@ -77,6 +85,11 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                             <button onClick={e => this.onEditSubmitted()}>Submit</button>&nbsp;
                             <button onClick={this.props.onCloseEditTask}>Cancel</button>
                         </p>
+
+                        {creationDateString !== null ?
+                            <h5>Created on {creationDateString}</h5>
+                            : <span />
+                        }
 
                     </div>
 
