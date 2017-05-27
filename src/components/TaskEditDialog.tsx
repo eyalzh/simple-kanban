@@ -1,5 +1,6 @@
 import * as React from "react";
 import Markdown from "./Markdown";
+import {classSet} from "../util";
 const Modal = require("react-modal");
 
 interface TaskEditDialogProps {
@@ -37,6 +38,14 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     }
 
     render() {
+
+        const previewVisible = this.state.longdesc.length > 0;
+
+        const previewClassnames = classSet({
+            "preview-section": true,
+            "visible": previewVisible
+        });
+
         return (
             <Modal
                 isOpen={this.props.isBeingEdited}
@@ -71,7 +80,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
                     </div>
 
-                    <div className="preview-section">
+                    <div className={previewClassnames}>
+                        <h2>{this.state.desc}</h2>
                         <Markdown text={this.state.longdesc} />
                     </div>
 
