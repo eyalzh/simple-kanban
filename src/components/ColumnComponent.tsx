@@ -63,19 +63,19 @@ export default class ColumnComponent extends React.Component<ColumnProps, Column
                 <div className="task-container">
                     {tasks}
                 </div>
-                <TaskEditDialog
+                {this.state.isTaskBeingAdded ? <TaskEditDialog
                     isBeingEdited={this.state.isTaskBeingAdded}
                     onCloseEditTask={this.closeEditTask.bind(this)}
                     onEditSubmitted={this.onTaskSubmitted.bind(this)}
                     dialogTitle="Add a New Task"
-                />
-                <ColumnEditDialog
+                /> : <span />}
+                {this.state.isBeingEdited ? <ColumnEditDialog
                     isBeingEdited={this.state.isBeingEdited}
                     onEditClose={this.closeEditColumn.bind(this)}
                     name={this.props.column.name}
                     wipLimit={this.props.column.wipLimit}
                     onEditSubmitted={this.onEditColumnSubmitted.bind(this)}
-                />
+                /> : <span />}
             </div>
         );
     }
