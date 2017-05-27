@@ -1,10 +1,11 @@
 .column {
     float: left;
     width: 160px;
-    border: 1px solid #c0c4e0;
+    border: 1px solid #1829a5;
+    border-radius: 4px;
     margin: 6px;
     min-height: calc(100vh - 54px);
-    box-shadow: 4px 4px 5px 0 rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
     background-color: #f3f2f2;
     -webkit-user-select: none;
     -moz-user-select: -moz-none;
@@ -26,7 +27,7 @@
     color: #2C2C2C;
     padding: 2px;
     text-align: center;
-    font-family: "Comic Sans MS", cursive;
+    font-family:  "Helvetica", "Arial", sans-serif;
     cursor: pointer;
 }
 
@@ -36,17 +37,18 @@
 }
 
 .task {
-    margin: 5px;
-    padding: 3px;
+    margin: 4px;
+    padding: 4px;
     background-color: #fff6a8;
     width: 142px;
     border: 1px solid #2C2C2C;
+    border-radius: 3px;
     cursor: move;
     min-height: 30px;
 }
 
 .task-title {
-    font-family: Comic Sans MS, Comic Sans MS5, cursive;
+    font-family:  "Helvetica", "Arial", sans-serif;
     color: #000066;
     font-size: 14px;
     overflow-x: hidden;
@@ -60,12 +62,13 @@
 .trash-zone {
     float: left;
     width: 150px;
-    border: 2px dashed #2C2C2C;
-    margin: 10px;
-    min-height: calc(100vh - 58px);
+    border: 1px dashed #2C2C2C;
+    border-radius: 4px;
+    margin: 6px;
+    min-height: calc(100vh - 54px);
     text-align: center;
     font-size: 32px;
-    font-family: "Comic Sans MS", cursive;
+    font-family: "Helvetica", "Arial", sans-serif;
 }
 
 .edit-task-form {
@@ -91,6 +94,11 @@
 
 .preview-section {
     overflow: auto;
-    height:  calc(100vh - 125px);
+    height: calc(100vh - 125px);
     margin-left: 20px;
+    display: none;
+}
+
+.preview-section.visible {
+    display: block !important;
 }

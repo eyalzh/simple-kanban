@@ -50,12 +50,12 @@ export default class Nav extends React.Component<{}, NavState> {
 
         let currentBoardIndication = "";
         if (this.state.currentBoard !== null) {
-            currentBoardIndication = `- ${this.state.currentBoard}`;
+            currentBoardIndication = `${this.state.currentBoard}`;
         }
 
         return (
             <div className="nav">
-                Lightweight Kanban Board {currentBoardIndication}
+                {currentBoardIndication}
             </div>
         );
 

@@ -1,7 +1,11 @@
 .nav {
     height: 25px;
-    background-color: #2f6fad;
+    background-color: #1b2f40;
     color: #fff;
     padding: 8px 0px 0px 8px;
-    font-family: Arial, sans-serif;
+    font-family: "Helvetica", "Arial", sans-serif;
+    border-bottom: 2px solid #000000;
+    box-shadow: 1px 0px 6px 0px rgba(0,0,0,0.75);
+    font-size: 20px;
+    line-height: 20px;
 }
