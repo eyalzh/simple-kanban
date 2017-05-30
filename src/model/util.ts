@@ -51,7 +51,7 @@ export async function generateUniqId(db: DB, prefix: string): Promise<string> {
 export function getCurrentTime(): Timestamp {
 
     const now: Timestamp = {
-        value: new Date().getTime()
+        value: Date.now()
     };
 
     return now;

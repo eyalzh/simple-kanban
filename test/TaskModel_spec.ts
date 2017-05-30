@@ -8,11 +8,15 @@ import {Column} from "../src/model/Column";
 describe("task model", function () {
 
     let storageMock: DB;
+    let origDateNow = Date.now;
 
     beforeEach(function () {
         storageMock = new LocalStorageDB(new MapBasedStorage());
     });
 
+    afterEach(function () {
+       Date.now = origDateNow;
+    });
 
     it("getBoards should return no boards when no boards are added", async function () {
 
@@ -105,6 +109,31 @@ describe("task model", function () {
         const tasks = await taskModel.getTasksByColumn(secondCol);
 
         expect(tasks[0].id).to.equal(taskKey);
+
+    });
+
+    it("editTask should update the lastUpdatedAt property of the task", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+
+        const dummyTimestamp = 1496000000000;
+        Date.now = () => dummyTimestamp;
+
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
+
+        const col = await taskModel.addColumn("foo");
+        const taskKey = await taskModel.addTask(col, "bar");
+
+        await taskModel.editTask(taskKey, "modified bar");
+        const tasks = await taskModel.getTasksByColumn(col);
+        const theTask = tasks[0];
+
+        if (! theTask.lastUpdatedAt) {
+            expect.fail("lastUpdatedAt is undefined", "lastUpdatedAt should a Timestamp");
+        } else {
+            expect(theTask.lastUpdatedAt.value).to.equal(dummyTimestamp);
+        }
 
     });
 
