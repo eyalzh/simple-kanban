@@ -1,4 +1,5 @@
 import {DB} from "./DB/DB";
+import {Timestamp} from "./Timestamp";
 
 export enum Direction {UP = -1, DOWN = 1}
 export function reorderArray<T>(arr: Array<T>, searchFn: (T) => boolean, direction: Direction): Array<T> {
@@ -45,4 +46,13 @@ export async function generateUniqId(db: DB, prefix: string): Promise<string> {
     await db.setItem("uniqueId", uniqueId.toString());
 
     return prefix + "_" + uniqueId;
+}
+
+export function getCurrentTime(): Timestamp {
+
+    const now: Timestamp = {
+        value: new Date().getTime()
+    };
+
+    return now;
 }

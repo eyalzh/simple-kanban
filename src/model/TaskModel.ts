@@ -1,11 +1,10 @@
 import {Column} from "./Column";
 import {Task} from "./Task";
-import {generateUniqId} from "./util";
+import {generateUniqId, getCurrentTime} from "./util";
 import NonEmptyColumnException from "./NonEmptyColumnException";
 import {sanitizer} from "./sanitizer";
 import {DB} from "./DB/DB";
 import {Board} from "./Board";
-import {Timestamp} from "./Timestamp";
 
 const SELECTED_BOARD_KEY = "selectedBoard";
 const BOARD_MAP_NAME = "boardMap";
@@ -222,15 +221,11 @@ export default class TaskModel {
 
         const newKey = await generateUniqId(this.db, "task");
 
-        const now: Timestamp = {
-            value: new Date().getTime()
-        };
-
         const newTask: Task = {
             id: newKey,
             desc: sanitizer.sanitizeTaskTitle(desc),
             longdesc: typeof longdesc !== "undefined" ? longdesc : "",
-            createdAt: now
+            createdAt: getCurrentTime()
         };
 
         await this.db.addToStore(TASKS_NAME, newKey, newTask);
@@ -272,6 +267,7 @@ export default class TaskModel {
         await this.db.modifyStore<Task>(TASKS_NAME, taskId, (task) => {
             task.desc = sanitizer.sanitizeTaskTitle(newDesc);
             task.longdesc = typeof newLongDesc !== "undefined" ? newLongDesc : "";
+            task.lastUpdatedAt = getCurrentTime();
             return task;
         });
     }

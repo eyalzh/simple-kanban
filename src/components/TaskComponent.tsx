@@ -25,7 +25,10 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
     }
 
     render() {
-        const renderedDesc = this.colorize(this.props.task.desc);
+
+        const {desc, longdesc, createdAt, lastUpdatedAt} = this.props.task;
+
+        const renderedDesc = this.colorize(desc);
         return (
             <div
                 className="task"
@@ -36,9 +39,10 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
                 <div className="task-title">{renderedDesc}</div>
 
                 <TaskEditDialog
-                    desc={this.props.task.desc}
-                    longdesc={this.props.task.longdesc}
-                    createdAt={this.props.task.createdAt}
+                    desc={desc}
+                    longdesc={longdesc}
+                    createdAt={createdAt}
+                    lastUpdatedAt={lastUpdatedAt}
                     isBeingEdited={this.state.isBeingEdited}
                     onCloseEditTask={this.closeEditTask.bind(this)}
                     onEditSubmitted={this.onTaskSubmitted.bind(this)}

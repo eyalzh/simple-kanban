@@ -9,6 +9,7 @@ interface TaskEditDialogProps {
     desc?: string;
     longdesc?: string;
     createdAt?: Timestamp;
+    lastUpdatedAt?: Timestamp;
     isBeingEdited: boolean;
     onCloseEditTask: React.MouseEventHandler;
     onEditSubmitted: (desc: string, longdesc: string) => void;
@@ -48,11 +49,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
             "visible": previewVisible
         });
 
-        let creationDateString: string|null = null;
-        if (this.props.createdAt) {
-            const date = new Date(this.props.createdAt.value);
-            creationDateString = date.toDateString();
-        }
+        const creationDateString = TaskEditDialog.buildDateString(this.props.createdAt);
+        const lastUpdatedAtString = TaskEditDialog.buildDateString(this.props.lastUpdatedAt);
 
         return (
             <Modal
@@ -87,7 +85,12 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                         </p>
 
                         {creationDateString !== null ?
-                            <h5>Created on {creationDateString}</h5>
+                            <div>Created on {creationDateString}</div>
+                            : <span />
+                        }
+
+                        {lastUpdatedAtString !== null ?
+                            <div>Last updated on {lastUpdatedAtString}</div>
                             : <span />
                         }
 
@@ -122,6 +125,18 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
     private onEditDialogOpen() {
         this.fieldInput.focus();
+    }
+
+    static buildDateString(timestamp: Timestamp | undefined): string | null {
+
+        let dateString: string | null = null;
+
+        if (timestamp) {
+            const date = new Date(timestamp.value);
+            dateString = date.toDateString();
+        }
+
+        return dateString;
     }
 
 }

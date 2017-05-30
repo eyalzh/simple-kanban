@@ -18,7 +18,12 @@ export interface Task {
     longdesc: string;
 
     /**
-     * The time at which the task was created. If this is undefined, the time is unknown.
+     * The time at which the task was created. If this is undefined, the time is unknown
      */
     createdAt?: Timestamp;
+
+    /**
+     * The time at which the task was last updated. If this is undefined, the time is unknown
+     */
+    lastUpdatedAt?: Timestamp;
 }
