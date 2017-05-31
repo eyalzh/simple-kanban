@@ -82,7 +82,8 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
             <Modal
                 isOpen={this.props.isBeingEdited}
                 onRequestClose={this.props.onEditClose}
-                onAfterOpen={this.onEditDialogOpen.bind(this)}>
+                onAfterOpen={this.onEditDialogOpen.bind(this)}
+                contentLabel="Edit Board Dialog">
 
                 <h1>{title}</h1>
                 <p>

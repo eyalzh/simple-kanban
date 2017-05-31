@@ -38,7 +38,8 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
         return (
             <Modal isOpen={this.props.isBeingEdited}
                    onRequestClose={this.props.onEditClose}
-                   onAfterOpen={this.onEditDialogOpen.bind(this)}>
+                   onAfterOpen={this.onEditDialogOpen.bind(this)}
+                   contentLabel="Edit Column Dialog">
                 <div>
                     <h1>Edit Column</h1>
                     <p>

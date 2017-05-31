@@ -56,7 +56,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
             <Modal
                 isOpen={this.props.isBeingEdited}
                 onRequestClose={this.props.onCloseEditTask}
-                onAfterOpen={this.onEditDialogOpen.bind(this)}>
+                onAfterOpen={this.onEditDialogOpen.bind(this)}
+                contentLabel="Edit Task Dialog">
 
                 <div className="edit-task-form">
                     <div className="edit-section">

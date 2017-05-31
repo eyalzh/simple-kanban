@@ -14,7 +14,7 @@ module.exports = {
     module: {
         loaders: [
             // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
-            { test: /\.tsx?$/, loaders: ['react-hot', 'ts-loader'] },
+            { test: /\.tsx?$/, loaders: ['react-hot-loader/webpack', 'ts-loader'] },
             { test: /\.css$/, loader: "style-loader!css-loader" }
         ]
     },
