@@ -3,7 +3,6 @@ import LocalStorageDB from "./DB/LocalStorageDB";
 import IndexedDBImpl from "./DB/IndexedDBImpl";
 import {DB} from "./DB/DB";
 import {config} from "../config";
-import TemplateCatalog from "./Templates/TemplateCatalog";
 
 let dbImpl: DB;
 if (config.useIndexedDB) {

@@ -5,6 +5,7 @@ import {Column} from "../model/column";
 import dragContext from "../model/dragContext";
 import {DragContextType} from "../model/dragContext";
 import TaskEditDialog from "./TaskEditDialog";
+import AnnotatedHashtagDiv from "./AnnotatedHashtagDiv";
 
 interface TaskProps {
     task: Task;
@@ -28,7 +29,6 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
 
         const {desc, longdesc, createdAt, lastUpdatedAt} = this.props.task;
 
-        const renderedDesc = this.colorize(desc);
         return (
             <div
                 className="task"
@@ -36,7 +36,9 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
                 draggable={true}
                 onDoubleClick={e => this.editTask(e)}>
 
-                <div className="task-title">{renderedDesc}</div>
+                <div className="task-title">
+                    <AnnotatedHashtagDiv text={desc} appliedClassName="hashtag"/>
+                </div>
 
                 <TaskEditDialog
                     desc={desc}
@@ -84,27 +86,4 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
 
         e.stopPropagation();
     }
-
-    private colorize(text: string): React.ReactElement<{}>[] | string {
-
-        if (text.indexOf("#") === -1) {
-            return text;
-        } else {
-            return text
-                .split(/(#\S+)/g)
-                .map((expr, i) => {
-                    if (expr.indexOf("#") === 0) {
-                        return (
-                            <span key={i} className="hashtag">{expr}</span>
-                        );
-                    } else {
-                        return (
-                            <span key={i}>{expr}</span>
-                        );
-                    }
-                });
-        }
-
-    }
-
 }

@@ -4,7 +4,6 @@ import dispatcher from "../Dispatcher";
 import ColumnEditDialog from "./ColumnEditDialog";
 import BoardEditDialog from "./BoardEditDialog";
 import {BoardStore} from "../stores/BoardStore";
-import {classSet} from "../util";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
 
