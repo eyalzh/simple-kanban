@@ -1,5 +1,6 @@
 import {expect} from "chai";
 import {Dispatcher, Priority} from "../src/Dispatcher";
+import 'mocha';
 
 describe("dispatcher", function () {
 

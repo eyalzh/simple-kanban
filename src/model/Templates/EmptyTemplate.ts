@@ -1,5 +1,4 @@
 import {Template} from "./Template";
-import TaskModel from "../TaskModel";
 
 export default class EmptyTemplate implements Template {
 
@@ -7,7 +6,7 @@ export default class EmptyTemplate implements Template {
         return "Empty";
     }
 
-    public async applyOnModel(model: TaskModel) {
+    public async applyOnModel() {
     }
 
 }

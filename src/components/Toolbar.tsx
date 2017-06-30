@@ -81,10 +81,10 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
 
                 {boardSelector}
 
-                <button onClick={e => this.onAddBoardClicked()}>Add board</button>
-                <button onClick={e => this.onEditBoardClicked()}>Edit board</button>
-                <button onClick={e => this.onAddColStarted()}>Add column</button>
-                <button onClick={e => this.clear()}>Reset</button>
+                <button onClick={() => this.onAddBoardClicked()}>Add board</button>
+                <button onClick={() => this.onEditBoardClicked()}>Edit board</button>
+                <button onClick={() => this.onAddColStarted()}>Add column</button>
+                <button onClick={() => this.clear()}>Reset</button>
                 <ColumnEditDialog
                     isBeingEdited={this.state.isColBeingAdded}
                     onEditClose={this.onColEditClose.bind(this)}
@@ -103,31 +103,36 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
     }
 
     private onColEditClose() {
-        this.state.isColBeingAdded = false;
-        this.setState(this.state);
+        this.setState({
+            isColBeingAdded: false
+        });
     }
 
     private onBoardEditClose() {
-        this.state.isBoardBeingAdded = false;
-        this.state.boardBeingEdited = null;
-        this.setState(this.state);
+        this.setState({
+            isBoardBeingAdded: false,
+            boardBeingEdited: null
+        });
     }
 
     private onAddBoardClicked() {
-        this.state.isBoardBeingAdded = true;
-        this.state.boardBeingEdited = null;
-        this.setState(this.state);
+        this.setState({
+            isBoardBeingAdded: true,
+            boardBeingEdited: null
+        });
     }
 
     private onAddColStarted() {
-        this.state.isColBeingAdded = true;
-        this.setState(this.state);
+        this.setState({
+            isColBeingAdded: true
+        });
     }
 
     private onAddColSubmitted(columnName: string, wipLimit: number) {
 
-        this.state.isColBeingAdded = false;
-        this.setState(this.state);
+        this.setState({
+            isColBeingAdded: false
+        });
 
         if (columnName !== null) {
             const columnNameTrimmed = columnName.trim();
@@ -138,8 +143,8 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
     }
 
     private onAddBoardSubmitted(boardName: string, template: Template | undefined) {
-        this.state.isBoardBeingAdded = false;
-        this.setState(this.state);
+
+        this.setState({isBoardBeingAdded: false});
 
         if (boardName !== null) {
             const boardNameTrimmed = boardName.trim();
@@ -155,15 +160,16 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
     }
 
     private onEditBoardClicked() {
-        this.state.isBoardBeingAdded = true;
-        this.state.boardBeingEdited = this.state.currentBoard ? this.state.currentBoard.id : null;
-        this.setState(this.state);
+
+        this.setState({
+            isBoardBeingAdded: true,
+            boardBeingEdited: this.state.currentBoard ? this.state.currentBoard.id : null
+        });
+
     }
 
     private onRemoveBoard() {
-        this.state.isBoardBeingAdded = false;
-        this.state.boardBeingEdited = null;
-        this.setState(this.state);
+        this.setState({isBoardBeingAdded: false, boardBeingEdited: null});
         BoardActions.removeCurrentBoard();
     }
 
@@ -173,8 +179,8 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         }
     }
 
-    private changeProfile(e: React.SyntheticEvent) {
-        BoardActions.switchBoard((e.target as HTMLSelectElement).value);
+    private changeProfile(e: React.SyntheticEvent<HTMLSelectElement>) {
+        BoardActions.switchBoard(e.currentTarget.value);
     }
 
 }

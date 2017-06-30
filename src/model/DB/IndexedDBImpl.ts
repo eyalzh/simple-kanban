@@ -73,7 +73,7 @@ export default class IndexedDBImpl implements DB {
         return this.getDocumentByKey(INTERNAL_PROPERTY_STORE.storeName, key);
     }
 
-    setItem(key: string, data: string|Map<string, any>): Promise<void> {
+    setItem<T>(key: string, data: T|Map<T, any>): Promise<void> {
         return this.modifyStore(INTERNAL_PROPERTY_STORE.storeName, key, () => data);
     }
 

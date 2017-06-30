@@ -14,5 +14,5 @@ Build
 =====
 * run `npm install` 
 * run `npm run build`
-* open the `index.html` file in a web browser.
+* open `index.html` in a web browser.
 

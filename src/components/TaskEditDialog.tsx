@@ -2,7 +2,7 @@ import * as React from "react";
 import Markdown from "./Markdown";
 import {classSet} from "../util";
 import {Timestamp} from "../model/Timestamp";
-const Modal = require("react-modal");
+import * as Modal from "react-modal";
 
 interface TaskEditDialogProps {
     dialogTitle: string;
@@ -11,7 +11,7 @@ interface TaskEditDialogProps {
     createdAt?: Timestamp;
     lastUpdatedAt?: Timestamp;
     isBeingEdited: boolean;
-    onCloseEditTask: React.MouseEventHandler;
+    onCloseEditTask: () => void;
     onEditSubmitted: (desc: string, longdesc: string) => void;
 }
 
@@ -22,7 +22,7 @@ interface TaskEditDialogState {
 
 export default class TaskEditDialog extends React.Component<TaskEditDialogProps, TaskEditDialogState> {
 
-    private fieldInput: HTMLInputElement;
+    private fieldInput: HTMLInputElement | null;
 
     constructor(props) {
         super(props);
@@ -81,7 +81,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                             <textarea value={this.state.longdesc} onChange={this.onLongDescChange.bind(this)}/>
                         </p>
                         <p>
-                            <button onClick={e => this.onEditSubmitted()}>Submit</button>&nbsp;
+                            <button onClick={() => this.onEditSubmitted()}>Submit</button>&nbsp;
                             <button onClick={this.props.onCloseEditTask}>Cancel</button>
                         </p>
 
@@ -108,16 +108,14 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         );
     }
 
-    public onChange(e: React.FormEvent) {
-        const title = (e.target as HTMLInputElement).value;
-        this.state.desc = title;
-        this.setState(this.state);
+    public onChange(e: React.FormEvent<HTMLInputElement>) {
+        const desc = e.currentTarget.value;
+        this.setState({desc});
     }
 
-    public onLongDescChange(e: React.FormEvent) {
-        const longDesc = (e.target as HTMLInputElement).value;
-        this.state.longdesc = longDesc;
-        this.setState(this.state);
+    public onLongDescChange(e: React.FormEvent<HTMLInputElement>) {
+        const longdesc = e.currentTarget.value;
+        this.setState({longdesc});
     }
 
     private onEditSubmitted() {
@@ -125,7 +123,9 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     }
 
     private onEditDialogOpen() {
-        this.fieldInput.focus();
+        if (this.fieldInput) {
+            this.fieldInput.focus();
+        }
     }
 
     static buildDateString(timestamp: Timestamp | undefined): string | null {

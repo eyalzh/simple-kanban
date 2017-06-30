@@ -2,12 +2,11 @@ import * as React from "react";
 import {Task} from "../model/task";
 import * as BoardActions from "../actions/boardActions";
 import {Column} from "../model/column";
-import dragContext from "../model/dragContext";
-import {DragContextType} from "../model/dragContext";
 import TaskEditDialog from "./TaskEditDialog";
 import AnnotatedHashtagDiv from "./AnnotatedHashtagDiv";
+import {draggable, Referrable} from "./dragAndDrop";
 
-interface TaskProps {
+interface TaskProps extends Referrable {
     task: Task;
     column: Column;
 }
@@ -16,13 +15,19 @@ interface TaskState {
     isBeingEdited: boolean;
 }
 
-export default class TaskComponent extends React.Component<TaskProps, TaskState> {
+class TaskComponent extends React.Component<TaskProps, TaskState> {
 
-    constructor(props) {
-        super(props);
+    constructor() {
+
+        super();
+
         this.state = {
             isBeingEdited: false
         };
+
+        this.closeEditTask = this.closeEditTask.bind(this);
+        this.onTaskSubmitted = this.onTaskSubmitted.bind(this);
+
     }
 
     render() {
@@ -31,14 +36,11 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
 
         return (
             <div
+                ref={this.props.innerRef}
                 className="task"
-                onDragStart={e => this.dragStart(e)}
-                draggable={true}
                 onDoubleClick={e => this.editTask(e)}>
 
-                <div className="task-title">
-                    <AnnotatedHashtagDiv text={desc} appliedClassName="hashtag"/>
-                </div>
+                <AnnotatedHashtagDiv text={desc} appliedClassName="hashtag" className="task-title"/>
 
                 <TaskEditDialog
                     desc={desc}
@@ -46,8 +48,8 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
                     createdAt={createdAt}
                     lastUpdatedAt={lastUpdatedAt}
                     isBeingEdited={this.state.isBeingEdited}
-                    onCloseEditTask={this.closeEditTask.bind(this)}
-                    onEditSubmitted={this.onTaskSubmitted.bind(this)}
+                    onCloseEditTask={this.closeEditTask}
+                    onEditSubmitted={this.onTaskSubmitted}
                     dialogTitle="Edit Task"
                 />
 
@@ -55,9 +57,8 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
         );
     }
 
-    private editTask(e: React.MouseEvent) {
-        this.state.isBeingEdited = true;
-        this.setState(this.state);
+    private editTask(e: React.MouseEvent<HTMLElement>) {
+        this.setState({isBeingEdited: true});
         e.stopPropagation();
 
     }
@@ -66,24 +67,14 @@ export default class TaskComponent extends React.Component<TaskProps, TaskState>
         if (desc) {
             BoardActions.editTask(this.props.task.id, desc, longdesc);
         }
-        this.state.isBeingEdited = false;
-        this.setState(this.state);
+        this.setState({isBeingEdited: false});
     }
 
     private closeEditTask() {
-        this.state.isBeingEdited = false;
-        this.setState(this.state);
+        this.setState({isBeingEdited: false});
     }
 
-    private dragStart(e: React.DragEvent) {
-        dragContext.set(e, {
-            type: DragContextType.TASK,
-            entityId: this.props.task.id,
-            sourceColumnId: this.props.column.id
-        });
-
-        e.dataTransfer.setData("text/plain", ""); // For firefox
-
-        e.stopPropagation();
-    }
 }
+
+const DraggableTaskComponent = draggable<TaskProps>(TaskComponent);
+export default DraggableTaskComponent;

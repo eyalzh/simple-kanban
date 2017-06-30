@@ -6,6 +6,7 @@ import {Priority} from "../Dispatcher";
 import TrashZone from "./TrashZone";
 import {BoardStore} from "../stores/BoardStore";
 import {Task} from "../model/Task";
+import * as BoardActions from "../actions/boardActions";
 
 require("./board.css");
 
@@ -24,6 +25,9 @@ export default class Board extends React.Component<{}, BoardState> {
             boardId: "",
             columnTasks: null
         };
+
+        this.onMovedToTrash = this.onMovedToTrash.bind(this);
+
     }
 
     componentWillMount() {
@@ -49,6 +53,26 @@ export default class Board extends React.Component<{}, BoardState> {
         }
     }
 
+    private onDropColumn(columnId: string, type: string, data: any) {
+
+        if (type === "task") {
+            BoardActions.moveTask(data.id, data.sourceColumnId, columnId);
+        } else if (type === "column") {
+            BoardActions.switchColumns(this.state.boardId, data.id, columnId);
+        }
+
+    }
+
+    private onMovedToTrash(type: string, data: any) {
+
+        if (type === "task") {
+            BoardActions.deleteTask(data.sourceColumnId, data.id);
+        } else if (type === "column") {
+            BoardActions.removeColumn(this.state.boardId, data.id);
+        }
+
+    }
+
     render() {
 
         let columns;
@@ -63,8 +87,11 @@ export default class Board extends React.Component<{}, BoardState> {
                         <ColumnComponent
                             key={column.id}
                             column={column}
-                            boardId={this.state.boardId}
                             tasks={tasks}
+                            type="column"
+                            data={{id: column.id}}
+                            onDrop={this.onDropColumn.bind(this, column.id)}
+                            filterTypeFunc={() => true}
                         />
                     );
                 }
@@ -74,8 +101,11 @@ export default class Board extends React.Component<{}, BoardState> {
 
         return (
             <div>
+
                 {columns}
-                <TrashZone />
+
+                <TrashZone onDrop={this.onMovedToTrash}/>
+
             </div>
         );
     }

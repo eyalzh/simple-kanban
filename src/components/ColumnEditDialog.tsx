@@ -1,11 +1,11 @@
 import * as React from "react";
-const Modal = require("react-modal");
+import * as Modal from "react-modal";
 
 interface ColumnEditDialogProps {
     name?: string;
     wipLimit?: number;
     isBeingEdited: boolean;
-    onEditClose: React.MouseEventHandler;
+    onEditClose: () => void;
     onEditSubmitted: (desc: string, wipLimit: number) => void;
 }
 
@@ -16,7 +16,7 @@ interface ColumnEditDialogState {
 
 export default class ColumnEditDialog extends React.Component<ColumnEditDialogProps, ColumnEditDialogState> {
 
-    private fieldInput: HTMLInputElement;
+    private fieldInput: HTMLInputElement | null;
 
     constructor(props) {
         super(props);
@@ -35,6 +35,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
     }
 
     render() {
+
         return (
             <Modal isOpen={this.props.isBeingEdited}
                    onRequestClose={this.props.onEditClose}
@@ -64,7 +65,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
                             onKeyPress={this.onKeyPressed.bind(this)} />
                     </p>
                     <p>
-                        <button onClick={e => this.onEditSubmitted()}>Submit</button>&nbsp;
+                        <button onClick={() => this.onEditSubmitted()}>Submit</button>&nbsp;
                         <button onClick={this.props.onEditClose}>Cancel</button>
                     </p>
                 </div>
@@ -72,22 +73,20 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
         );
     }
 
-    private onKeyPressed(ev: React.KeyboardEvent) {
+    private onKeyPressed(ev: React.KeyboardEvent<HTMLElement>) {
         if (ev.key === "Enter") {
             this.onEditSubmitted();
         }
     }
 
-    private onNameChange(e: React.FormEvent) {
+    private onNameChange(e: React.FormEvent<HTMLElement>) {
         const name = (e.target as HTMLInputElement).value;
-        this.state.name = name;
-        this.setState(this.state);
+        this.setState({name});
     }
 
-    private onWipLimitChange(e: React.FormEvent) {
+    private onWipLimitChange(e: React.FormEvent<HTMLElement>) {
         const wip = (e.target as HTMLInputElement).value;
-        this.state.wipLimit = Number(wip);
-        this.setState(this.state);
+        this.setState({wipLimit: Number(wip)});
     }
 
     private onEditSubmitted() {
@@ -95,7 +94,9 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
     }
 
     private onEditDialogOpen() {
-        this.fieldInput.focus();
+        if (this.fieldInput) {
+            this.fieldInput.focus();
+        }
     }
 
 }

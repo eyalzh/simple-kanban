@@ -7,17 +7,12 @@
         "strictNullChecks": true,
         "experimentalDecorators": true,
         "noUnusedLocals": true,
-        "typeRoots": [
-            "typings/modules",
-            "typings/global"
-        ]
+        "noUnusedParameters": true
     },
 
     "exclude": [
         "node_modules",
-        "dist",
-        "typings/browser.d.ts",
-        "typings/browser"
+        "dist"
     ]
 
 }

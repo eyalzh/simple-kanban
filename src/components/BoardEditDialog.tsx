@@ -1,12 +1,12 @@
 import * as React from "react";
 import {getCatalog} from "../context";
 import {Template} from "../model/Templates/Template";
-const Modal = require("react-modal");
+import * as Modal from "react-modal";
 
 interface BoardEditDialogProps {
     isBeingEdited: boolean;
-    onEditClose: React.MouseEventHandler;
-    onRemoveBoard: Function;
+    onEditClose: () => void;
+    onRemoveBoard: () => void;
     onEditSubmitted: (boardName: string, selectedTemplate: Template | undefined) => void;
     boardId?: string | null;
     boardName?: string;
@@ -19,7 +19,7 @@ interface BoardEditDialogState {
 
 export default class BoardEditDialog extends React.Component<BoardEditDialogProps, BoardEditDialogState> {
 
-    private fieldInput: HTMLInputElement;
+    private fieldInput: HTMLInputElement | null;
 
     constructor() {
         super();
@@ -34,13 +34,15 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
     componentWillReceiveProps(props: BoardEditDialogProps) {
 
+        let name;
+
         if (typeof props.boardName !== "undefined" && props.boardId !== null) {
-            this.state.name = props.boardName;
+            name = props.boardName;
         } else {
-            this.state.name = "";
+            name = "";
         }
 
-        this.setState(this.state);
+        this.setState({name});
     }
 
     render() {
@@ -51,7 +53,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
         if (this.props.boardId !== null) {
             title = "Edit Board";
             removeBtn = (
-                <button className="remove-btn" onClick={e => this.onRemoveBoard()}>Remove board</button>
+                <button className="remove-btn" onClick={() => this.onRemoveBoard()}>Remove board</button>
             );
         } else {
             title = "Add Board";
@@ -72,7 +74,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
         let buttons = (
             <p>
-                <button onClick={e => this.onEditSubmitted()}>Submit</button>&nbsp;
+                <button onClick={() => this.onEditSubmitted()}>Submit</button>&nbsp;
                 <button onClick={this.props.onEditClose}>Cancel</button>&nbsp;
                 {removeBtn}
             </p>
@@ -104,16 +106,15 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
         );
     }
 
-    private onKeyPressed(ev: React.KeyboardEvent) {
+    private onKeyPressed(ev: React.KeyboardEvent<HTMLElement>) {
         if (ev.key === "Enter") {
             this.onEditSubmitted();
         }
     }
 
-    private onNameChange(e: React.FormEvent) {
+    private onNameChange(e: React.FormEvent<HTMLElement>) {
         const name = (e.target as HTMLInputElement).value;
-        this.state.name = name;
-        this.setState(this.state);
+        this.setState({name});
     }
 
     private onEditSubmitted() {
@@ -130,12 +131,13 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
     }
 
     private onEditDialogOpen() {
-        this.fieldInput.focus();
+        if (this.fieldInput) {
+            this.fieldInput.focus();
+        }
     }
 
-    private onSelectTemplate(e: React.FormEvent) {
-        const templateName = (e.target as HTMLInputElement).value;
-        this.state.selectedTemplate = templateName;
-        this.setState(this.state);
+    private onSelectTemplate(e: React.FormEvent<HTMLElement>) {
+        const selectedTemplate = (e.target as HTMLInputElement).value;
+        this.setState({selectedTemplate});
     }
 }

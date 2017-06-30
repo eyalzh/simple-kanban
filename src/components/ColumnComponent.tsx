@@ -4,14 +4,12 @@ import {Task} from "../model/task";
 import TaskComponent from "./TaskComponent";
 import * as BoardActions from "../actions/boardActions";
 import {classSet} from "../util";
-import dragContext from "../model/dragContext";
-import {DragContextType} from "../model/dragContext";
 import TaskEditDialog from "./TaskEditDialog";
 import ColumnEditDialog from "./ColumnEditDialog";
+import {draggable, droppable, Referrable} from "./dragAndDrop";
 
-interface ColumnProps {
+interface ColumnProps extends Referrable {
     column: Column;
-    boardId: string;
     tasks: Array<Task>;
 }
 
@@ -21,28 +19,40 @@ interface ColumnState {
     isHoverMode: boolean;
 }
 
-export default class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
+class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
 
     constructor() {
+
         super();
+
         this.state = {
             isTaskBeingAdded: false,
             isBeingEdited: false,
             isHoverMode: false
         };
+
+        this.closeEditTask = this.closeEditTask.bind(this);
+        this.onTaskSubmitted = this.onTaskSubmitted.bind(this);
+        this.closeEditColumn = this.closeEditColumn.bind(this);
+        this.onEditColumnSubmitted = this.onEditColumnSubmitted.bind(this);
+
     }
 
     render() {
 
-        let taskNo = 0;
+        const taskCount = this.props.tasks.length;
         const tasks = this.props.tasks.map((task) => {
-            taskNo++;
             return (
-                <TaskComponent key={task.id} task={task} column={this.props.column} />
+                <TaskComponent
+                    type="task"
+                    data={{id: task.id, sourceColumnId: this.props.column.id}}
+                    key={task.id}
+                    task={task}
+                    column={this.props.column} />
             );
         });
 
-        const isAboveWipLimit = taskNo > this.props.column.wipLimit;
+        const isAboveWipLimit = taskCount > this.props.column.wipLimit;
 
         const classNames = classSet({
             "column": true,
@@ -50,45 +60,41 @@ export default class ColumnComponent extends React.Component<ColumnProps, Column
         });
 
         return (
-            <div className={classNames}
-                 onDragOver={e => this.onDragOver(e)}
-                 onDrop={e => this.onDropTask(e)}
-                 onDoubleClick={e => this.onAddTask()}
-                 onDragStart={e => this.onDragStart(e)}
-                 draggable={true}>
+            <div
+                ref={this.props.innerRef}
+                className={classNames}
+                onDoubleClick={() => this.onAddTask()}>
+
                 <div className="column-header" title="double click to edit" onDoubleClick={e => this.editColumn(e)}>
                     <div>{this.props.column.name}</div>
-                    <div className="wip">{taskNo} / {this.props.column.wipLimit}</div>
+                    <div className="wip">{taskCount} / {this.props.column.wipLimit}</div>
                 </div>
                 <div className="task-container">
                     {tasks}
                 </div>
                 {this.state.isTaskBeingAdded ? <TaskEditDialog
                     isBeingEdited={this.state.isTaskBeingAdded}
-                    onCloseEditTask={this.closeEditTask.bind(this)}
-                    onEditSubmitted={this.onTaskSubmitted.bind(this)}
+                    onCloseEditTask={this.closeEditTask}
+                    onEditSubmitted={this.onTaskSubmitted}
                     dialogTitle="Add a New Task"
                 /> : <span />}
                 {this.state.isBeingEdited ? <ColumnEditDialog
                     isBeingEdited={this.state.isBeingEdited}
-                    onEditClose={this.closeEditColumn.bind(this)}
+                    onEditClose={this.closeEditColumn}
                     name={this.props.column.name}
                     wipLimit={this.props.column.wipLimit}
-                    onEditSubmitted={this.onEditColumnSubmitted.bind(this)}
+                    onEditSubmitted={this.onEditColumnSubmitted}
                 /> : <span />}
             </div>
         );
     }
 
     private onAddTask() {
-        this.state.isTaskBeingAdded = true;
-        this.setState(this.state);
+        this.setState({isTaskBeingAdded: true});
     }
 
-    private editColumn(e: React.MouseEvent) {
-        this.state.isBeingEdited = true;
-        this.setState(this.state);
-
+    private editColumn(e: React.MouseEvent<HTMLElement>) {
+        this.setState({isBeingEdited: true});
         e.stopPropagation();
     }
 
@@ -99,65 +105,26 @@ export default class ColumnComponent extends React.Component<ColumnProps, Column
                 BoardActions.editColumn(this.props.column, name, wipLimit);
             }
         }
-        this.state.isBeingEdited = false;
-        this.setState(this.state);
-    }
 
-    private onDropTask(e: React.DragEvent) {
-
-        const context = dragContext.get(e);
-
-        if (typeof context === "undefined") {
-            throw new Error("could not drop task - context is undefined");
-        }
-
-        dragContext.delete(e);
-
-        if (context.type === DragContextType.TASK) {
-            BoardActions.moveTask(context.entityId, context.sourceColumnId, this.props.column.id);
-        } else if (context.type === DragContextType.COLUMN) {
-            BoardActions.switchColumns(this.props.boardId, context.sourceColumnId, this.props.column.id);
-        }
-
-    }
-
-    private onDragOver(e: React.DragEvent) {
-        const context = dragContext.get(e);
-        if (context) {
-            if (context.sourceColumnId !== this.props.column.id) {
-                e.preventDefault();
-            }
-        }
-        return false;
-    }
-
-    private onDragStart(e: React.DragEvent) {
-        dragContext.set(e, {
-            type: DragContextType.COLUMN,
-            boardId: this.props.boardId,
-            entityId: this.props.column.id,
-            sourceColumnId: this.props.column.id
-        });
-
-        e.dataTransfer.setData("text/plain", ""); // For firefox
+        this.setState({isBeingEdited: false});
     }
 
     private closeEditTask() {
-        this.state.isTaskBeingAdded = false;
-        this.setState(this.state);
+        this.setState({isTaskBeingAdded: false});
     }
 
     private closeEditColumn() {
-        this.state.isBeingEdited = false;
-        this.setState(this.state);
+        this.setState({isBeingEdited: false});
     }
 
     private onTaskSubmitted(desc: string, longdesc: string) {
         if (desc) {
             BoardActions.addTask(this.props.column, desc, longdesc);
-            this.state.isTaskBeingAdded = false;
-            this.setState(this.state);
+            this.setState({isTaskBeingAdded: false});
         }
     }
 
 }
+
+const DraggableDroppableColumnComponent = droppable(draggable<ColumnProps>(ColumnComponent));
+export default DraggableDroppableColumnComponent;

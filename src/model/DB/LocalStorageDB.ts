@@ -14,7 +14,7 @@ export default class LocalStorageDB implements DB {
     }
 
     init(stores: Array<DBStoreDescriptor>): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<void>((resolve) => {
 
             stores.forEach((store) => {
                 if (this.storage.getItem(store.storeName) === null) {
@@ -32,7 +32,7 @@ export default class LocalStorageDB implements DB {
 
     getAll<T>(storeName: string): Promise<Array<T>> {
 
-        return new Promise<Array<T>>((resolve, reject) => {
+        return new Promise<Array<T>>((resolve) => {
             const json = this.storage.getItem(storeName);
             let values: Array<T> = [];
 
@@ -47,7 +47,7 @@ export default class LocalStorageDB implements DB {
     }
 
     getAllKeys(storeName: string): Promise<Array<string>> {
-        return new Promise<Array<string>>((resolve, reject) => {
+        return new Promise<Array<string>>((resolve) => {
             const json = this.storage.getItem(storeName);
             let values: Array<string> = [];
 
@@ -60,12 +60,13 @@ export default class LocalStorageDB implements DB {
         });
     }
 
-    setItem(key: string, data: string | Map<string, any>): Promise<void> {
+
+    setItem<T>(key: string, data: T | Map<T, any>): Promise<void> {
         return this.addToStore(INTERNAL_PROPERTY_STORE.storeName, key, data);
     }
 
-    getDocumentByKey<T>(storeName: string, key: string): Promise<T> {
-        return new Promise<T | undefined>((resolve, reject) => {
+    getDocumentByKey<T>(storeName: string, key: string): Promise<T | null> {
+        return new Promise<T | null>((resolve, reject) => {
             const json = this.storage.getItem(storeName);
             let map: Map<any, any>;
 
@@ -88,7 +89,7 @@ export default class LocalStorageDB implements DB {
 
     addToStore(storeName: string, key: string, value: any): Promise<void> {
 
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<void>((resolve) => {
 
             const json = this.storage.getItem(storeName);
             let map: Map<any, any>;
@@ -154,7 +155,7 @@ export default class LocalStorageDB implements DB {
 
     clear(): Promise<void> {
 
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<void>((resolve) => {
             this.storage.clear();
             resolve();
         });

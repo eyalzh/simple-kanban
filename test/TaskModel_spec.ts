@@ -4,6 +4,7 @@ import TaskModel from "../src/model/TaskModel";
 import LocalStorageDB from "../src/model/DB/LocalStorageDB";
 import {DB} from "../src/model/DB/DB";
 import {Column} from "../src/model/Column";
+import 'mocha';
 
 describe("task model", function () {
 
