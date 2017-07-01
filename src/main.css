@@ -9,6 +9,7 @@ body {
     right: 7px;
     clear: both;
     height: 40px;
+    color: #fff;
 }
 
 .toolbar button {
@@ -17,7 +18,7 @@ body {
     background-color: transparent;
     color: #fff;
     font-size: 14px;
-    border: 0px;
+    border: 0;
     padding: 2px;
     cursor: pointer;
     font-family: Helvetica, serif;

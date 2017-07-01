@@ -76,15 +76,17 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
 
         }
 
+        const separator = <span> | </span>;
+
         return (
             <div className="toolbar">
 
-                {boardSelector}
-
-                <button onClick={() => this.onAddBoardClicked()}>Add board</button>
-                <button onClick={() => this.onEditBoardClicked()}>Edit board</button>
-                <button onClick={() => this.onAddColStarted()}>Add column</button>
+                {boardSelector}{separator}
+                <button onClick={() => this.onAddBoardClicked()}>Add board</button>{separator}
+                <button onClick={() => this.onEditBoardClicked()}>Edit board</button>{separator}
+                <button onClick={() => this.onAddColStarted()}>Add column</button>{separator}
                 <button onClick={() => this.clear()}>Reset</button>
+
                 <ColumnEditDialog
                     isBeingEdited={this.state.isColBeingAdded}
                     onEditClose={this.onColEditClose.bind(this)}
@@ -98,6 +100,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
                     onEditSubmitted={this.onAddBoardSubmitted.bind(this)}
                     onRemoveBoard={this.onRemoveBoard.bind(this)}
                 />
+
             </div>
         );
     }
