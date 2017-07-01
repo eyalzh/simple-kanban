@@ -91,7 +91,7 @@ export default class Board extends React.Component<{}, BoardState> {
                             type="column"
                             data={{id: column.id}}
                             onDrop={this.onDropColumn.bind(this, column.id)}
-                            filterTypeFunc={() => true}
+                            filterTypeFunc={(type, data) => !(type === "task" && data.sourceColumnId === column.id)}
                         />
                     );
                 }

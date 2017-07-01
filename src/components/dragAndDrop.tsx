@@ -54,8 +54,8 @@ export function draggable<P>(Comp: new() => Component<P & Referrable, {}>): new(
 }
 
 interface DroppableInterface {
-    onDrop: (type: string, data: object) => void;
-    filterTypeFunc?: (type: string) => boolean;
+    onDrop: (type: string, data: any) => void;
+    filterTypeFunc?: (type: string, data: any) => boolean;
 }
 
 export function droppable<P>(Comp: new() => Component<P & Referrable, {}>): new() => Component<P & DroppableInterface, {}> {
@@ -101,9 +101,9 @@ export function droppable<P>(Comp: new() => Component<P & Referrable, {}>): new(
             const context = dragContext;
 
             if (context !== null) {
-                const type = context.type;
+                const {type, data} = context;
 
-                if (! this.props.filterTypeFunc || this.props.filterTypeFunc(type)) {
+                if (! this.props.filterTypeFunc || this.props.filterTypeFunc(type, data)) {
                     e.preventDefault();
                 }
             }
