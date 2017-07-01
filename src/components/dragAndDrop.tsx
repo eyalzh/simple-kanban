@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {DragEvent, Component} from "react";
 
 export interface Referrable {
@@ -39,7 +39,7 @@ export function draggable<P>(Comp: new() => Component<P & Referrable, {}>): new(
 
         render () {
             const { innerRef, ...newProps } = this.props as any;
-            return <Comp innerRef={this.onRefUpdate} {...newProps}/>
+            return <Comp innerRef={this.onRefUpdate} {...newProps}/>;
         }
 
         private dragStart(e: DragEvent<HTMLElement>) {
@@ -81,7 +81,7 @@ export function droppable<P>(Comp: new() => Component<P & Referrable, {}>): new(
             const { innerRef, ...newProps } = this.props as any;
             return (
                 <Comp innerRef={this.onRefUpdate} {...newProps} />
-            )
+            );
         }
 
         private onDrop() {
@@ -110,6 +110,6 @@ export function droppable<P>(Comp: new() => Component<P & Referrable, {}>): new(
 
         }
 
-    }
+    };
 
 }

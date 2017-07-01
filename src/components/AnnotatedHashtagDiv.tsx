@@ -21,7 +21,7 @@ export default class AnnotatedHashtagDiv extends React.Component<AnnotatedHashta
         super();
         this.state = {
             textParts: []
-        }
+        };
     }
 
     componentWillMount() {
@@ -42,7 +42,7 @@ export default class AnnotatedHashtagDiv extends React.Component<AnnotatedHashta
                 parts.push({
                     text: expr,
                     isAnnotated: expr.indexOf("#") !== -1
-                })
+                });
             });
         }
 

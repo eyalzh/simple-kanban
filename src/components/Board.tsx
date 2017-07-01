@@ -98,8 +98,6 @@ export default class Board extends React.Component<{}, BoardState> {
 
         });
 
-
-
         return (
             <div>
 
