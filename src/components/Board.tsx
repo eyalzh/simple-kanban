@@ -76,27 +76,28 @@ export default class Board extends React.Component<{}, BoardState> {
     render() {
 
         let columns;
-        if (this.state.columns) {
-            columns = this.state.columns.map((column) => {
-                let tasks;
-                if (this.state.columnTasks) {
-                    tasks = this.state.columnTasks.get(column.id) || [];
-                }
-                if (column) {
-                    return (
-                        <ColumnComponent
-                            key={column.id}
-                            column={column}
-                            tasks={tasks}
-                            type="column"
-                            data={{id: column.id}}
-                            onDrop={this.onDropColumn.bind(this, column.id)}
-                            filterTypeFunc={(type, data) => !(type === "task" && data.sourceColumnId === column.id)}
-                        />
-                    );
-                }
-            });
-        }
+
+        columns = (this.state.columns || []).map((column) => {
+
+            let tasks;
+            if (this.state.columnTasks) {
+                tasks = this.state.columnTasks.get(column.id) || [];
+            }
+
+            return (
+                <ColumnComponent
+                    key={column.id}
+                    column={column}
+                    tasks={tasks}
+                    type="column"
+                    data={{id: column.id}}
+                    onDrop={this.onDropColumn.bind(this, column.id)}
+                    filterTypeFunc={(type, data) => !(type === "task" && data.sourceColumnId === column.id)}
+                />
+            );
+
+        });
+
 
 
         return (
