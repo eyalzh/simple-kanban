@@ -44,7 +44,8 @@ export function draggable<P>(Comp: new() => Component<P & Referrable, {}>): new(
 
         private dragStart(e: DragEvent<HTMLElement>) {
             const {type, data} = this.props;
-            dragContext = {type, data}; // todo - replace with Object.assign
+            const clonedContextData = Object.assign({}, data);
+            dragContext = {type, data: clonedContextData};
             e.dataTransfer.setData("text/plain", ""); // We don't use dataTransfer, but firefox requires it
             e.stopPropagation();
         }
