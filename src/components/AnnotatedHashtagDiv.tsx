@@ -3,7 +3,7 @@ import * as React from "react";
 interface AnnotatedHashtagDivProps {
     text: string;
     appliedClassName: string;
-    className: string;
+    className?: string;
 }
 
 interface AnnotatedTextPart {

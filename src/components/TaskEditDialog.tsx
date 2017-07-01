@@ -3,6 +3,7 @@ import Markdown from "./Markdown";
 import {classSet} from "../util";
 import {Timestamp} from "../model/Timestamp";
 import * as Modal from "react-modal";
+import AnnotatedHashtagDiv from "./AnnotatedHashtagDiv";
 
 interface TaskEditDialogProps {
     dialogTitle: string;
@@ -98,7 +99,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                     </div>
 
                     <div className={previewClassnames}>
-                        <h2>{this.state.desc}</h2>
+                        <h2><AnnotatedHashtagDiv text={this.state.desc} appliedClassName="hashtag" /></h2>
                         <Markdown text={this.state.longdesc} />
                     </div>
 
