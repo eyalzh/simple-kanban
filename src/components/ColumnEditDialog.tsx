@@ -79,13 +79,13 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
         }
     }
 
-    private onNameChange(e: React.FormEvent<HTMLElement>) {
-        const name = (e.target as HTMLInputElement).value;
+    private onNameChange(e: React.FormEvent<HTMLInputElement>) {
+        const name = e.currentTarget.value;
         this.setState({name});
     }
 
-    private onWipLimitChange(e: React.FormEvent<HTMLElement>) {
-        const wip = (e.target as HTMLInputElement).value;
+    private onWipLimitChange(e: React.FormEvent<HTMLInputElement>) {
+        const wip = e.currentTarget.value;
         this.setState({wipLimit: Number(wip)});
     }
 
