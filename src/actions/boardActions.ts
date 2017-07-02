@@ -58,10 +58,10 @@ export function removeColumn(boardId: string, columnId: string) {
         .then(this.dispatchRefreshBoard)
         .catch(e => {
             if (e instanceof NonEmptyColumnException) {
-                alert("You cannot remove a column that has tasks associated with it");
+                alert("Cannot remove a column that has tasks");
             } else {
-                alert("Cannot remove column - unknown error (please view console)");
                 console.error(e);
+                alert("Cannot remove column (see dev console)");
             }
         });
 }
@@ -109,7 +109,7 @@ export function removeCurrentBoard() {
             const tasks = await getModel().getTasksByBoard(currentBoard);
 
             if (tasks.length > 0) {
-                alert(`You cannot remove a non-empty board (${tasks.length} tasks found)`);
+                alert(`Cannot remove a non-empty board (${tasks.length} tasks found)`);
             } else {
                 const nextBoard = await getModel().getNextBoard();
                 await getModel().removeCurrentBoard();
