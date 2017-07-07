@@ -6,6 +6,7 @@ import {BoardStore} from "../stores/BoardStore";
 import {Task} from "../model/Task";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
+import {ColumnInsertionMode} from "../model/TaskModel";
 
 export function addColumn(columnName: string, wipLimit: number) {
     getModel()
@@ -33,9 +34,9 @@ export function clear() {
         });
 }
 
-export function switchColumns(boardId: string, firstColumnId: string, secondColumnId: string) {
+export function reorderColumns(boardId: string,  columnIdToMove: string, targetColumnId: string, insertionMode: ColumnInsertionMode) {
     getModel()
-        .switchColumns(boardId, firstColumnId, secondColumnId)
+        .reorderColumns(boardId, columnIdToMove, targetColumnId, insertionMode)
         .then(this.dispatchRefreshBoard);
 }
 

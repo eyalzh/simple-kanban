@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import {MapBasedStorage} from "./MapBasedStorage";
-import TaskModel from "../src/model/TaskModel";
+import TaskModel, {ColumnInsertionMode} from "../src/model/TaskModel";
 import LocalStorageDB from "../src/model/DB/LocalStorageDB";
 import {DB} from "../src/model/DB/DB";
 import {Column} from "../src/model/Column";
@@ -177,15 +177,15 @@ describe("task model", function () {
     it("getTasksByBoard should return the list of tasks in a board", async function () {
 
         const taskModel = new TaskModel(storageMock);
-        const board = await taskModel.addBoard("default");
-        await taskModel.setCurrentBoard(board);
+        const boardId = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(boardId);
 
         const columnKey = await taskModel.addColumn("TODO");
 
         const t1id = await taskModel.addTask(columnKey, "foo");
         const t2id = await taskModel.addTask(columnKey, "bar");
 
-        const tasks = await taskModel.getTasksByBoard(board);
+        const tasks = await taskModel.getTasksByBoard(boardId);
 
         expect(tasks[0].id).to.equal(t1id);
         expect(tasks[1].id).to.equal(t2id);
@@ -195,8 +195,8 @@ describe("task model", function () {
     it("removeCurrentBoard should remove all columns", async function () {
 
         const taskModel = new TaskModel(storageMock);
-        const board = await taskModel.addBoard("default");
-        await taskModel.setCurrentBoard(board);
+        const boardId = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(boardId);
 
         await taskModel.addColumn("TODO");
 
@@ -205,6 +205,87 @@ describe("task model", function () {
         const cols = await taskModel.getColumns();
 
         expect(cols.length).to.equal(0);
+
+    });
+
+    it("reorderColumns with insertion mode 'after' should place the source column after the target column", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const boardId = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(boardId);
+
+        // State before reordering:
+        // |      | |      | |      |
+        // |source| |middle| |target|
+        // |      | |      | |      |
+        const sourceColId = await taskModel.addColumn("source");
+        await taskModel.addColumn("middle");
+        const targetColId = await taskModel.addColumn("target");
+
+        await taskModel.reorderColumns(boardId, sourceColId, targetColId, ColumnInsertionMode.AFTER);
+
+        const cols = await taskModel.getColumnsByBoard(boardId);
+
+        // Expected state after reordering:
+        // |      | |      | |      |
+        // |middle| |target| |source|
+        // |      | |      | |      |
+        expect([cols[0].name, cols[1].name, cols[2].name])
+            .to.deep.equal(["middle", "target", "source"]);
+
+    });
+
+    it("reorderColumns with insertion mode 'before' should place the source column before the target column", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const boardId = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(boardId);
+
+        // State before reordering:
+        // |      | |      | |      |
+        // |source| |middle| |target|
+        // |      | |      | |      |
+        const sourceColId = await taskModel.addColumn("source");
+        await taskModel.addColumn("middle");
+        const targetColId = await taskModel.addColumn("target");
+
+        await taskModel.reorderColumns(boardId, sourceColId, targetColId, ColumnInsertionMode.BEFORE);
+
+        const cols = await taskModel.getColumnsByBoard(boardId);
+
+        // Expected state after reordering:
+        // |      | |      | |      |
+        // |middle| |source| |target|
+        // |      | |      | |      |
+        expect([cols[0].name, cols[1].name, cols[2].name])
+            .to.deep.equal(["middle", "source", "target"]);
+
+    });
+
+    it("reorderColumns with insertion mode 'before' and a target at index 0 should place the source as the first column", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const boardId = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(boardId);
+
+        // State before reordering:
+        // |      | |      | |      |
+        // |target| |middle| |source|
+        // |      | |      | |      |
+        const targetColId = await taskModel.addColumn("target");
+        await taskModel.addColumn("middle");
+        const sourceColId = await taskModel.addColumn("source");
+
+        await taskModel.reorderColumns(boardId, sourceColId, targetColId, ColumnInsertionMode.BEFORE);
+
+        const cols = await taskModel.getColumnsByBoard(boardId);
+
+        // Expected state after reordering:
+        // |      | |      | |      |
+        // |source| |target| |middle|
+        // |      | |      | |      |
+        expect([cols[0].name, cols[1].name, cols[2].name])
+            .to.deep.equal(["source", "target", "middle"]);
 
     });
 

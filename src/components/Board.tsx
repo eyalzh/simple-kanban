@@ -7,6 +7,7 @@ import TrashZone from "./TrashZone";
 import {BoardStore} from "../stores/BoardStore";
 import {Task} from "../model/Task";
 import * as BoardActions from "../actions/boardActions";
+import {ColumnInsertionMode} from "../model/TaskModel";
 
 require("./board.css");
 
@@ -58,7 +59,7 @@ export default class Board extends React.Component<{}, BoardState> {
         if (type === "task") {
             BoardActions.moveTask(data.id, data.sourceColumnId, columnId);
         } else if (type === "column") {
-            BoardActions.switchColumns(this.state.boardId, data.id, columnId);
+            BoardActions.reorderColumns(this.state.boardId, data.id, columnId, ColumnInsertionMode.AFTER);
         }
 
     }
