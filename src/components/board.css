@@ -1,15 +1,22 @@
-.column {
+.column-container>div {
     float: left;
+    min-height: calc(100vh - 54px);
+}
+
+.column {
     width: 160px;
     border: 1px solid #1829a5;
     border-radius: 4px;
     margin: 6px;
-    min-height: calc(100vh - 54px);
-    box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
+    box-shadow: 0 0 3px 0 rgba(0,0,0,0.75);
     background-color: #f3f2f2;
     -webkit-user-select: none;
     -moz-user-select: -moz-none;
     user-select: none;
+}
+
+.column.in-background {
+    opacity: 0.3;
 }
 
 .column-above-limit {
@@ -19,6 +26,15 @@
 
 .column-above-limit .wip {
     color: #fbe2cd;
+}
+
+.column-drop-zone {
+    width: 22px;
+    margin: 6px 0 6px 0;
+    border: 1px solid #1829a5;
+    border-radius: 4px;
+    box-shadow: 0 0 3px 0 rgba(0,0,0,0.75);
+    background-color: #f3f2f2;
 }
 
 .column-header {

@@ -11,6 +11,9 @@ import {draggable, droppable, Referrable} from "./dragAndDrop";
 interface ColumnProps extends Referrable {
     column: Column;
     tasks: Array<Task>;
+    inBackground?: boolean;
+    rightEar?: React.ReactNode;
+    leftEar?: React.ReactNode;
 }
 
 interface ColumnState {
@@ -56,35 +59,40 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
 
         const classNames = classSet({
             "column": true,
-            "column-above-limit": isAboveWipLimit
+            "column-above-limit": isAboveWipLimit,
+            "in-background": this.props.inBackground
         });
 
         return (
-            <div
-                ref={this.props.innerRef}
-                className={classNames}
-                onDoubleClick={() => this.onAddTask()}>
+            <div className="column-container">
+                {this.props.leftEar}
+                <div
+                    ref={this.props.innerRef}
+                    className={classNames}
+                    onDoubleClick={() => this.onAddTask()}>
 
-                <div className="column-header" title="double click to edit" onDoubleClick={e => this.editColumn(e)}>
-                    <div>{this.props.column.name}</div>
-                    <div className="wip">{taskCount} / {this.props.column.wipLimit}</div>
+                    <div className="column-header" title="double click to edit" onDoubleClick={e => this.editColumn(e)}>
+                        <div>{this.props.column.name}</div>
+                        <div className="wip">{taskCount} / {this.props.column.wipLimit}</div>
+                    </div>
+                    <div className="task-container">
+                        {tasks}
+                    </div>
+                    {this.state.isTaskBeingAdded ? <TaskEditDialog
+                        isBeingEdited={this.state.isTaskBeingAdded}
+                        onCloseEditTask={this.closeEditTask}
+                        onEditSubmitted={this.onTaskSubmitted}
+                        dialogTitle="Add a New Task"
+                    /> : null}
+                    {this.state.isBeingEdited ? <ColumnEditDialog
+                        isBeingEdited={this.state.isBeingEdited}
+                        onEditClose={this.closeEditColumn}
+                        name={this.props.column.name}
+                        wipLimit={this.props.column.wipLimit}
+                        onEditSubmitted={this.onEditColumnSubmitted}
+                    /> : null}
                 </div>
-                <div className="task-container">
-                    {tasks}
-                </div>
-                {this.state.isTaskBeingAdded ? <TaskEditDialog
-                    isBeingEdited={this.state.isTaskBeingAdded}
-                    onCloseEditTask={this.closeEditTask}
-                    onEditSubmitted={this.onTaskSubmitted}
-                    dialogTitle="Add a New Task"
-                /> : <span />}
-                {this.state.isBeingEdited ? <ColumnEditDialog
-                    isBeingEdited={this.state.isBeingEdited}
-                    onEditClose={this.closeEditColumn}
-                    name={this.props.column.name}
-                    wipLimit={this.props.column.wipLimit}
-                    onEditSubmitted={this.onEditColumnSubmitted}
-                /> : <span />}
+                {this.props.rightEar}
             </div>
         );
     }

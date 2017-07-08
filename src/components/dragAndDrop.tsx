@@ -9,6 +9,8 @@ export interface Referrable {
 export interface DraggableProps {
     type: string;
     data: object;
+    onDragStart?: () => void;
+    onDragEnd?: () => void;
 }
 
 interface DragContext {
@@ -31,6 +33,7 @@ export function draggable<P>(Comp: new() => Component<P & Referrable, {}>): new(
             if (node) {
                 node.draggable = true;
                 node.ondragstart = this.dragStart.bind(this);
+                node.ondragend = this.dragEnd.bind(this);
                 if (this.props.innerRef) {
                     this.props.innerRef(node);
                 }
@@ -43,12 +46,27 @@ export function draggable<P>(Comp: new() => Component<P & Referrable, {}>): new(
         }
 
         private dragStart(e: DragEvent<HTMLElement>) {
+
             const {type, data} = this.props;
+
             const clonedContextData = Object.assign({}, data);
             dragContext = {type, data: clonedContextData};
             e.dataTransfer.setData("text/plain", ""); // We don't use dataTransfer, but firefox requires it
+
+            if (this.props.onDragStart) {
+                setTimeout(this.props.onDragStart, 0);
+            }
+
             e.stopPropagation();
         }
+
+        private dragEnd() {
+            if (this.props.onDragEnd) {
+                this.props.onDragEnd();
+            }
+
+        }
+
     };
 
 }
