@@ -32,6 +32,7 @@
     "ts-node": "^3.1.0",
     "tslint": "^3.15.1",
     "typescript": "^2.4.1",
+    "uglify-es-webpack-plugin": "0.0.2",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   },
