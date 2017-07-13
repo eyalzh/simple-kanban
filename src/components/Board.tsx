@@ -114,8 +114,6 @@ export default class Board extends React.Component<{}, BoardState> {
 
     render() {
 
-       console.log("board render");
-
         let columns;
         columns = (this.state.columns || []).map((column) => {
 
