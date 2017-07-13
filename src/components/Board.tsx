@@ -6,9 +6,8 @@ import {Priority} from "../Dispatcher";
 import TrashZone from "./TrashZone";
 import {BoardStore} from "../stores/BoardStore";
 import {Task} from "../model/Task";
-import ColumnDropZone from "./ColumnDropZone";
 import * as BoardActions from "../actions/boardActions";
-import {ColumnInsertionMode} from "../model/TaskModel";
+import {reorderArray} from "../model/util";
 
 require("./board.css");
 
@@ -16,7 +15,7 @@ interface BoardState {
     columns: Array<Column> | null;
     boardId: string;
     columnTasks: Map<string, Array<Task>> | null;
-    columnBeingDragged: boolean;
+    columnIdBeingDragged: string|null;
 }
 
 export default class Board extends React.Component<{}, BoardState> {
@@ -27,7 +26,7 @@ export default class Board extends React.Component<{}, BoardState> {
             columns: [],
             boardId: "",
             columnTasks: null,
-            columnBeingDragged: false
+            columnIdBeingDragged: null
         };
 
         this.onMovedToTrash = this.onMovedToTrash.bind(this);
@@ -58,59 +57,69 @@ export default class Board extends React.Component<{}, BoardState> {
         }
     }
 
-    private onDropColumn(columnId: string, _type: string, data: any) {
-        BoardActions.moveTask(data.id, data.sourceColumnId, columnId);
-    }
+    private onDropColumn(columnId: string, type: string, data: any) {
 
-    private onMovedToTrash(type: string, data: any) {
+        switch (type) {
+            case "task":
+                BoardActions.moveTask(data.id, data.sourceColumnId, columnId);
+                break;
+            case "column":
+                BoardActions.setOrder(this.state.boardId, (this.state.columns || []).map(col => col.id));
+                break;
 
-        if (type === "task") {
-            BoardActions.deleteTask(data.sourceColumnId, data.id);
-        } else if (type === "column") {
-            BoardActions.removeColumn(this.state.boardId, data.id);
+            default:
         }
 
     }
 
-    private onColumnDroppedIntoZone(targetColumnId: string, insertionMode: ColumnInsertionMode, _type: string, data: any) {
-        BoardActions.reorderColumns(this.state.boardId, data.id, targetColumnId, insertionMode);
+    private onDragEnter(targetColumnId: string, type: string, data: any) {
+
+        if (type !== "column" || data.id === targetColumnId) {
+            return;
+        }
+
+        const columns = this.state.columns || [];
+
+        const firstIdx = columns.findIndex(col => col.id === data.id);
+        const secondIdx = columns.findIndex(col => col.id === targetColumnId);
+
+        const newlyOrderedColumns = reorderArray(columns, firstIdx, secondIdx);
+
+        this.setState({columns: newlyOrderedColumns});
     }
 
-    private onColumnBeingDragged() {
-        this.setState({columnBeingDragged: true});
+    private onMovedToTrash(type: string, data: any) {
+
+        switch(type) {
+            case "task":
+                BoardActions.deleteTask(data.sourceColumnId, data.id);
+                break;
+
+            case "column":
+                BoardActions.removeColumn(this.state.boardId, data.id);
+                break;
+
+            default:
+        }
+
+    }
+
+    private onColumnBeingDragged(columnId: string) {
+        this.setState({columnIdBeingDragged: columnId});
     }
 
     private onColumnDraggedEnd() {
-        this.setState({columnBeingDragged: false});
+        this.setState({columnIdBeingDragged: null});
     }
 
     render() {
 
         let columns;
-        columns = (this.state.columns || []).map((column, i) => {
+        columns = (this.state.columns || []).map((column) => {
 
             let tasks;
             if (this.state.columnTasks) {
                 tasks = this.state.columnTasks.get(column.id) || [];
-            }
-
-            let rightColumnDropZone;
-            let leftColumnDropZone;
-            if (this.state.columnBeingDragged) {
-
-                const filterTypeFunc = (type) => type === "column";
-
-                rightColumnDropZone = <ColumnDropZone
-                    onDrop={this.onColumnDroppedIntoZone.bind(this, column.id, ColumnInsertionMode.AFTER)}
-                    filterTypeFunc={filterTypeFunc}
-                />;
-
-                if (i === 0) {
-                    leftColumnDropZone = <ColumnDropZone
-                        onDrop={this.onColumnDroppedIntoZone.bind(this, column.id, ColumnInsertionMode.BEFORE)}
-                        filterTypeFunc={filterTypeFunc}
-                    />
-                }
             }
 
             return (
@@ -120,13 +129,12 @@ export default class Board extends React.Component<{}, BoardState> {
                     tasks={tasks}
                     type="column"
                     data={{id: column.id}}
-                    filterTypeFunc={(type, data) => (type === "task" && data.sourceColumnId !== column.id)}
+                    filterTypeFunc={(type, data) => !(type === "task" && data.sourceColumnId === column.id)}
                     onDrop={this.onDropColumn.bind(this, column.id)}
-                    onDragStart={this.onColumnBeingDragged}
+                    onDragStart={this.onColumnBeingDragged.bind(this, column.id)}
                     onDragEnd={this.onColumnDraggedEnd}
-                    inBackground={this.state.columnBeingDragged}
-                    rightEar={rightColumnDropZone}
-                    leftEar={leftColumnDropZone}
+                    onDragEnter={this.onDragEnter.bind(this, column.id)}
+                    inBackground={this.state.columnIdBeingDragged !== null && this.state.columnIdBeingDragged !== column.id}
                 />
             );
 

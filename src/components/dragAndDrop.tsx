@@ -73,6 +73,7 @@ export function draggable<P>(Comp: new() => Component<P & Referrable, {}>): new(
 
 interface DroppableInterface {
     onDrop: (type: string, data: any) => void;
+    onDragEnter?: (type: string, data: any) => void;
     filterTypeFunc?: (type: string, data: any) => boolean;
 }
 
@@ -89,6 +90,7 @@ export function droppable<P>(Comp: new() => Component<P & Referrable, {}>): new(
             if (node) {
                 node.ondrop = this.onDrop.bind(this);
                 node.ondragover = this.onDragOver.bind(this);
+                node.ondragenter = this.onDragEnter.bind(this);
                 if (this.props.innerRef) {
                     this.props.innerRef(node);
                 }
@@ -122,6 +124,23 @@ export function droppable<P>(Comp: new() => Component<P & Referrable, {}>): new(
                 const {type, data} = context;
 
                 if (! this.props.filterTypeFunc || this.props.filterTypeFunc(type, data)) {
+                    e.preventDefault();
+                }
+            }
+
+        }
+
+        private onDragEnter(e: React.DragEvent<HTMLElement>) {
+
+            const context = dragContext;
+
+            if (context !== null) {
+                const {type, data} = context;
+
+                if (! this.props.filterTypeFunc || this.props.filterTypeFunc(type, data)) {
+                    if (this.props.onDragEnter) {
+                        this.props.onDragEnter(type, data);
+                    }
                     e.preventDefault();
                 }
             }

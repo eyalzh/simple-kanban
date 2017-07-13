@@ -10,7 +10,7 @@ class ColumnDropZoneComponent extends React.Component<ColumnDropZoneProps, {}> {
     render() {
 
         return (
-            <div ref={this.props.innerRef} className={'column-drop-zone'}>
+            <div ref={this.props.innerRef} className={"column-drop-zone"}>
             </div>
         );
     }

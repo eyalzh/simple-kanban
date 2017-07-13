@@ -15,7 +15,6 @@ const TASKS_NAME = "tasks";
 const FLAG_MAP_NAME = "flagMap";
 
 export enum FLAGS {TUTORIAL_ADDED}
-export enum ColumnInsertionMode {BEFORE = -1, AFTER = 0}
 
 export default class TaskModel {
 
@@ -252,27 +251,10 @@ export default class TaskModel {
         await this.db.deleteStoreItem(TASKS_NAME, taskId);
     }
 
-    public async reorderColumns(boardId: string, columnIdToMove: string, targetColumnId: string, insertionMode: ColumnInsertionMode) {
+    public async setOrder(boardId: string, columnIds: Array<string>) {
 
-        await this.db.modifyStore<Array<string>>(BOARD_COL_MAP_NAME, boardId, (columns) => {
-
-            if (columnIdToMove === targetColumnId) {
-                return columns;
-            }
-
-            const firstIdx = columns.indexOf(columnIdToMove);
-            const secondIdx = columns.indexOf(targetColumnId);
-
-            let offset = insertionMode;
-            if (secondIdx < firstIdx) {
-                offset++;
-            }
-
-            const newlyOrderedColumns = columns.slice(0); // clone the array
-            newlyOrderedColumns.splice(firstIdx, 1);
-            newlyOrderedColumns.splice(Math.max(0, secondIdx + offset), 0, columnIdToMove);
-;
-            return newlyOrderedColumns;
+        await this.db.modifyStore<Array<string>>(BOARD_COL_MAP_NAME, boardId, () => {
+            return columnIds;
         });
 
     }

@@ -1,27 +1,14 @@
 import {DB} from "./DB/DB";
 import {Timestamp} from "./Timestamp";
 
-export enum Direction {UP = -1, DOWN = 1}
-export function reorderArray<T>(arr: Array<T>, searchFn: (T) => boolean, direction: Direction): Array<T> {
+export function reorderArray<T>(arr: Array<T>, sourceIndex: number, targetIndex: number): Array<T> {
 
     const ret = arr.slice(0); // clone the array
-    const idx = arr.findIndex(searchFn);
 
-    if (typeof idx === "undefined") {
-        throw new Error(`Cannot find the element in the array`);
-    }
-
-    const temp = arr[idx];
-    const offset = direction;
-    const targetIdx = idx + offset;
-
-    if (targetIdx < arr.length && targetIdx >= 0) {
-        ret[idx] = ret[targetIdx];
-        ret[targetIdx] = temp;
-    }
+    ret.splice(sourceIndex, 1);
+    ret.splice(targetIndex, 0, arr[sourceIndex]);
 
     return ret;
-
 }
 
 /**
