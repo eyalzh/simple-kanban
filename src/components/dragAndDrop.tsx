@@ -60,10 +60,13 @@ export function draggable<P>(Comp: new() => Component<P & Referrable, {}>): new(
             e.stopPropagation();
         }
 
-        private dragEnd() {
+        private dragEnd(e: DragEvent<HTMLElement>) {
+
             if (this.props.onDragEnd) {
                 this.props.onDragEnd();
             }
+
+            e.stopPropagation();
 
         }
 
