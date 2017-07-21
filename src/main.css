@@ -10,6 +10,9 @@ body {
     clear: both;
     height: 40px;
     color: #fff;
+    font-family: "Helvetica Neue", sans-serif;
+    line-height: 14px;
+    font-size: 14px;
 }
 
 .toolbar button {
