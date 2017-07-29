@@ -12,7 +12,7 @@ export function reorderArray<T>(arr: Array<T>, sourceIndex: number, targetIndex:
 }
 
 /**
- * Generate a globally unique ID
+ * Generate a unique ID
  */
 let uniqueId: number | null = null;
 export async function generateUniqId(db: DB, prefix: string): Promise<string> {
@@ -42,4 +42,10 @@ export function getCurrentTime(): Timestamp {
     };
 
     return now;
+}
+
+export function createIndexedDBExportUrl(dump: string) {
+    const blob = new Blob([dump], {type: "octet/stream"});
+    const url = URL.createObjectURL(blob);
+    location.href = url;
 }

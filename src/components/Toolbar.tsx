@@ -6,11 +6,13 @@ import BoardEditDialog from "./BoardEditDialog";
 import {BoardStore} from "../stores/BoardStore";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
+import AdvancedDialog from "./AdvancedDialog";
 
 interface ToolbarState {
     currentBoard: Board | null;
     isColBeingAdded: boolean;
     isBoardBeingAdded: boolean;
+    advancedModeOn: boolean;
     boardBeingEdited: string | null | undefined;
     boards: Array<Board> | null;
 }
@@ -23,9 +25,16 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
             currentBoard: null,
             isColBeingAdded: false,
             isBoardBeingAdded: false,
+            advancedModeOn: false,
             boardBeingEdited: null,
             boards: null
         };
+
+        this.onAddBoardClicked = this.onAddBoardClicked.bind(this);
+        this.onEditBoardClicked = this.onEditBoardClicked.bind(this);
+        this.onAddColStarted = this.onAddColStarted.bind(this);
+        this.onAdvancedClicked = this.onAdvancedClicked.bind(this);
+        this.onAdvancedModeClose = this.onAdvancedModeClose.bind(this);
     }
 
     componentWillMount() {
@@ -39,8 +48,9 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
     }
 
     private syncSelBoard(store: BoardStore) {
-        const currentBoard = store.currentBoard;
-        const boards = store.boards;
+
+        const {currentBoard, boards} = store;
+
         if (currentBoard !== null) {
             this.setState({
                 currentBoard,
@@ -50,6 +60,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
                 boards
             });
         }
+
     }
 
     render() {
@@ -82,10 +93,10 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
             <div className="toolbar">
 
                 {boardSelector}{separator}
-                <button onClick={() => this.onAddBoardClicked()}>Add board</button>{separator}
-                <button onClick={() => this.onEditBoardClicked()}>Edit board</button>{separator}
-                <button onClick={() => this.onAddColStarted()}>Add column</button>{separator}
-                <button onClick={() => this.clear()}>Reset</button>
+                <button onClick={this.onAddBoardClicked}>Add board</button>{separator}
+                <button onClick={this.onEditBoardClicked}>Edit board</button>{separator}
+                <button onClick={this.onAddColStarted}>Add column</button>{separator}
+                <button onClick={this.onAdvancedClicked}>Advanced</button>
 
                 <ColumnEditDialog
                     isBeingEdited={this.state.isColBeingAdded}
@@ -99,6 +110,10 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
                     onEditClose={this.onBoardEditClose.bind(this)}
                     onEditSubmitted={this.onAddBoardSubmitted.bind(this)}
                     onRemoveBoard={this.onRemoveBoard.bind(this)}
+                />
+                <AdvancedDialog
+                    isOpened={this.state.advancedModeOn}
+                    onClosed={this.onAdvancedModeClose}
                 />
 
             </div>
@@ -176,14 +191,20 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         BoardActions.removeCurrentBoard();
     }
 
-    private clear() {
-        if (window.confirm("Wait, are you sure you want to reset ALL data?")) {
-            BoardActions.clear();
-        }
-    }
-
     private changeProfile(e: React.SyntheticEvent<HTMLSelectElement>) {
         BoardActions.switchBoard(e.currentTarget.value);
+    }
+
+    private onAdvancedClicked() {
+        this.setState({
+            advancedModeOn: true
+        });
+    }
+
+    private onAdvancedModeClose() {
+        this.setState({
+            advancedModeOn: false
+        });
     }
 
 }

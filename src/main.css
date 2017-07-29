@@ -1,6 +1,7 @@
 body {
     margin: 0;
     background-color: aliceblue;
+    font-family: "Helvetica Neue", sans-serif;
 }
 
 .toolbar {
@@ -10,7 +11,6 @@ body {
     clear: both;
     height: 40px;
     color: #fff;
-    font-family: "Helvetica Neue", sans-serif;
     line-height: 14px;
     font-size: 14px;
 }
@@ -24,7 +24,6 @@ body {
     border: 0;
     padding: 2px;
     cursor: pointer;
-    font-family: Helvetica, serif;
     text-decoration: underline;
     text-transform: lowercase;
 }
@@ -39,4 +38,19 @@ body {
 
 .remove-btn {
      color: red;
+}
+
+.button-row {
+    display: flex;
+}
+
+.button-row>button {
+    width: 120px;
+    margin-right: 20px;
+}
+
+.subtitle {
+    font-size: 1.3em;
+    margin-bottom: 0.3em;
+    font-weight: normal;
 }

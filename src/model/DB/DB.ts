@@ -22,4 +22,6 @@ export interface DB {
     clear(): Promise<void>;
     runMaintenance():  Promise<void>;
 
+    dumpDBAsJson(): Promise<string>;
+
 }

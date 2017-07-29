@@ -6,6 +6,7 @@ import {BoardStore} from "../stores/BoardStore";
 import {Task} from "../model/Task";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
+import {createIndexedDBExportUrl} from "../model/util";
 
 export function addColumn(columnName: string, wipLimit: number) {
     getModel()
@@ -125,6 +126,14 @@ export function removeCurrentBoard() {
 
     })().then(this.dispatchRefreshBoard);
 
+}
+
+export function dumpDB() {
+    getModel()
+        .dumpModel()
+        .then((json) => {
+            createIndexedDBExportUrl(json);
+        })
 }
 
 export function dispatchRefreshBoard() {

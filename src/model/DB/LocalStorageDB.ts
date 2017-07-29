@@ -7,6 +7,8 @@ const INTERNAL_PROPERTY_STORE: DBStoreDescriptor = {
 
 export default class LocalStorageDB implements DB {
 
+
+
     private storage: Storage;
 
     constructor(storage: Storage) {
@@ -164,6 +166,10 @@ export default class LocalStorageDB implements DB {
     runMaintenance(): Promise<void> {
         // no maintenance required for localstorage
         return Promise.resolve();
+    }
+
+    dumpDBAsJson(): Promise<string> {
+        throw new Error("local storage does not support DB dump");
     }
 
 }

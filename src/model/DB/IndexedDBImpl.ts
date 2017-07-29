@@ -230,4 +230,46 @@ export default class IndexedDBImpl implements DB {
 
     }
 
+    dumpStore(storeName: string): Promise<any> {
+
+        return new Promise<any>((resolve, reject) => {
+
+            let storeObj = {};
+
+            const request = this.db.transaction(storeName, "readonly").objectStore(storeName).openCursor();
+
+            request.addEventListener("success", () => {
+
+                const cursor: IDBCursorWithValue = request.result;
+                if (cursor) {
+
+                    if (typeof cursor.key !== "string") {
+                        reject('could not dump store with non-string key');
+                        return;
+                    }
+
+                    storeObj[cursor.key] = cursor.value;
+                    cursor.continue();
+
+                } else {
+                    resolve(storeObj);
+                }
+
+            });
+
+        });
+    }
+
+    async dumpDBAsJson(): Promise<string> {
+        let dbJson = {};
+
+        for (let store of this.stores) {
+
+            const storeDump = await this.dumpStore(store.storeName);
+            dbJson[store.storeName] = storeDump;
+        }
+
+        return JSON.stringify(dbJson);
+    }
+
 }
