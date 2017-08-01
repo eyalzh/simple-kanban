@@ -90,7 +90,7 @@ export default class Board extends React.Component<{}, BoardState> {
 
     private onMovedToTrash(type: string, data: any) {
 
-        switch(type) {
+        switch (type) {
             case "task":
                 BoardActions.deleteTask(data.sourceColumnId, data.id);
                 break;

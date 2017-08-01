@@ -133,7 +133,7 @@ export function dumpDB() {
         .dumpModel()
         .then((json) => {
             createIndexedDBExportUrl(json);
-        })
+        });
 }
 
 export function dispatchRefreshBoard() {

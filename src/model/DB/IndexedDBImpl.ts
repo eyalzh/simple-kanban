@@ -244,7 +244,7 @@ export default class IndexedDBImpl implements DB {
                 if (cursor) {
 
                     if (typeof cursor.key !== "string") {
-                        reject('could not dump store with non-string key');
+                        reject("could not dump store with non-string key");
                         return;
                     }
 
