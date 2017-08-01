@@ -27,11 +27,25 @@ export default class AdvancedDialog extends React.Component<AdvancedDialogProps,
                 <div>
                     <h1>{title}</h1>
 
-                    <div className="subtitle">Data Storage</div>
-                    <div className="button-row">
-                        <button onClick={this.exportDB}>Export DB (TBD)</button>
-                        <button className="remove-btn" onClick={this.resetAllDataClicked}>Reset all data</button>
+                    <div className="dialog-section">
+                        <div className="subtitle">Data Storage</div>
+                        <div className="button-row">
+                            <button onClick={this.exportDB}>Export DB</button>
+                            <button className="remove-btn" onClick={this.resetAllDataClicked}>Reset all data</button>
+                        </div>
                     </div>
+
+                    <div className="dialog-section">
+                        <div className="subtitle">About</div>
+                        <p>
+                            For more info, please see the <a href="https://github.com/eyalzh/simple-kanban" target="_blank">github page</a>
+                        </p>
+                    </div>
+
+                    <div className="dialog-section">
+                        <button onClick={this.props.onClosed}>Close</button>
+                    </div>
+
                 </div>
 
             </Modal>

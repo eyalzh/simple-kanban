@@ -54,3 +54,7 @@ body {
     margin-bottom: 0.3em;
     font-weight: normal;
 }
+
+.dialog-section {
+    margin-bottom: 50px;
+}
