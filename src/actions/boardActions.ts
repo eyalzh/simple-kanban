@@ -34,8 +34,6 @@ export function clear() {
         });
 }
 
-
-
 export function setOrder(boardId: string, columnIds: Array<string>) {
     getModel()
         .setOrder(boardId, columnIds)

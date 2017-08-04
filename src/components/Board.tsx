@@ -15,7 +15,7 @@ interface BoardState {
     columns: Array<Column> | null;
     boardId: string;
     columnTasks: Map<string, Array<Task>> | null;
-    columnIdBeingDragged: string|null;
+    columnIdBeingDragged: string | null;
 }
 
 export default class Board extends React.Component<{}, BoardState> {
