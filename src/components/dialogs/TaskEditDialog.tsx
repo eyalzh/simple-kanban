@@ -1,9 +1,10 @@
 import * as React from "react";
-import Markdown from "./Markdown";
-import {classSet} from "../util";
-import {Timestamp} from "../model/Timestamp";
+import Markdown from "../Markdown";
+import {classSet} from "../../util";
+import {Timestamp} from "../../model/Timestamp";
 import * as Modal from "react-modal";
-import AnnotatedHashtagDiv from "./AnnotatedHashtagDiv";
+import AnnotatedHashtagDiv from "../AnnotatedHashtagDiv";
+import {baseModalStyle} from "./dialogStyle";
 
 interface TaskEditDialogProps {
     dialogTitle: string;
@@ -11,7 +12,7 @@ interface TaskEditDialogProps {
     longdesc?: string;
     createdAt?: Timestamp;
     lastUpdatedAt?: Timestamp;
-    isBeingEdited: boolean;
+    opened: boolean;
     onCloseEditTask: () => void;
     onEditSubmitted: (desc: string, longdesc: string) => void;
 }
@@ -55,9 +56,10 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
         return (
             <Modal
-                isOpen={this.props.isBeingEdited}
+                isOpen={this.props.opened}
                 onRequestClose={this.props.onCloseEditTask}
                 onAfterOpen={this.onEditDialogOpen.bind(this)}
+                style={baseModalStyle}
                 contentLabel="Edit Task Dialog">
 
                 <div className="edit-task-form">

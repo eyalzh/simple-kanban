@@ -4,8 +4,8 @@ import {Task} from "../model/task";
 import TaskComponent from "./TaskComponent";
 import * as BoardActions from "../actions/boardActions";
 import {classSet} from "../util";
-import TaskEditDialog from "./TaskEditDialog";
-import ColumnEditDialog from "./ColumnEditDialog";
+import TaskEditDialog from "./dialogs/TaskEditDialog";
+import ColumnEditDialog from "./dialogs/ColumnEditDialog";
 import {draggable, droppable, Referrable} from "./dragAndDrop";
 
 interface ColumnProps extends Referrable {
@@ -79,16 +79,15 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
                         {tasks}
                     </div>
                     {this.state.isTaskBeingAdded ? <TaskEditDialog
-                        isBeingEdited={this.state.isTaskBeingAdded}
+                        opened={this.state.isTaskBeingAdded}
                         onCloseEditTask={this.closeEditTask}
                         onEditSubmitted={this.onTaskSubmitted}
                         dialogTitle="Add a New Task"
                     /> : null}
                     {this.state.isBeingEdited ? <ColumnEditDialog
-                        isBeingEdited={this.state.isBeingEdited}
+                        opened={this.state.isBeingEdited}
                         onEditClose={this.closeEditColumn}
-                        name={this.props.column.name}
-                        wipLimit={this.props.column.wipLimit}
+                        column={this.props.column}
                         onEditSubmitted={this.onEditColumnSubmitted}
                     /> : null}
                 </div>

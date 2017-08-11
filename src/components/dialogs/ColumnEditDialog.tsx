@@ -1,10 +1,11 @@
 import * as React from "react";
 import * as Modal from "react-modal";
+import {Column} from "../../model/Column";
+import {dialogContainerStyle, dialogModalStyle} from "./dialogStyle";
 
 interface ColumnEditDialogProps {
-    name?: string;
-    wipLimit?: number;
-    isBeingEdited: boolean;
+    column?: Column;
+    opened: boolean;
     onEditClose: () => void;
     onEditSubmitted: (desc: string, wipLimit: number) => void;
 }
@@ -28,21 +29,34 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
     }
 
     private getInitState(props) {
-        return {
-            name: props.name || "",
-            wipLimit: props.wipLimit || 3
+
+        const defaultColumnValues = {
+            name: "",
+            wipLimit: 3
         };
+
+        if (props.column) {
+            const {name, wipLimit} = props.column;
+            return {name, wipLimit};
+        } else {
+            return defaultColumnValues;
+        }
+
     }
 
     render() {
 
+        const title = this.props.column ? "Edit Column" : "Add Column";
+
         return (
-            <Modal isOpen={this.props.isBeingEdited}
+            <Modal isOpen={this.props.opened}
                    onRequestClose={this.props.onEditClose}
                    onAfterOpen={this.onEditDialogOpen.bind(this)}
+                   style={dialogModalStyle}
                    contentLabel="Edit Column Dialog">
-                <div>
-                    <h1>Edit Column</h1>
+
+                <div style={dialogContainerStyle}>
+                    <h1>{title}</h1>
                     <p>
                         Column name
                     </p>
@@ -69,6 +83,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
                         <button onClick={this.props.onEditClose}>Cancel</button>
                     </p>
                 </div>
+
             </Modal>
         );
     }

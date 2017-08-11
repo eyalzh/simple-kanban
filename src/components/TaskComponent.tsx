@@ -2,7 +2,7 @@ import * as React from "react";
 import {Task} from "../model/task";
 import * as BoardActions from "../actions/boardActions";
 import {Column} from "../model/column";
-import TaskEditDialog from "./TaskEditDialog";
+import TaskEditDialog from "./dialogs/TaskEditDialog";
 import AnnotatedHashtagDiv from "./AnnotatedHashtagDiv";
 import {draggable, Referrable} from "./dragAndDrop";
 
@@ -47,7 +47,7 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
                     longdesc={longdesc}
                     createdAt={createdAt}
                     lastUpdatedAt={lastUpdatedAt}
-                    isBeingEdited={this.state.isBeingEdited}
+                    opened={this.state.isBeingEdited}
                     onCloseEditTask={this.closeEditTask}
                     onEditSubmitted={this.onTaskSubmitted}
                     dialogTitle="Edit Task"

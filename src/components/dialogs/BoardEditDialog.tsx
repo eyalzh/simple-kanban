@@ -1,10 +1,11 @@
 import * as React from "react";
-import {getCatalog} from "../context";
-import {Template} from "../model/Templates/Template";
+import {getCatalog} from "../../context";
+import {Template} from "../../model/Templates/Template";
 import * as Modal from "react-modal";
+import {dialogContainerStyle, dialogModalStyle} from "./dialogStyle";
 
 interface BoardEditDialogProps {
-    isBeingEdited: boolean;
+    opened: boolean;
     onEditClose: () => void;
     onRemoveBoard: () => void;
     onEditSubmitted: (boardName: string, selectedTemplate: Template | undefined) => void;
@@ -82,25 +83,30 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
         return (
             <Modal
-                isOpen={this.props.isBeingEdited}
+                isOpen={this.props.opened}
                 onRequestClose={this.props.onEditClose}
                 onAfterOpen={this.onEditDialogOpen.bind(this)}
+                style={dialogModalStyle}
                 contentLabel="Edit Board Dialog">
 
-                <h1>{title}</h1>
-                <p>
-                    Board name
-                </p>
-                <p>
-                    <input
-                        value={this.state.name}
-                        onChange={this.onNameChange.bind(this)}
-                        ref={(input) => {this.fieldInput = input;}}
-                        onKeyPress={this.onKeyPressed.bind(this)} />
-                </p>
-                {templatesBox}
+                <div style={dialogContainerStyle}>
 
-                {buttons}
+                    <h1>{title}</h1>
+                    <p>
+                        Board name
+                    </p>
+                    <p>
+                        <input
+                            value={this.state.name}
+                            onChange={this.onNameChange.bind(this)}
+                            ref={(input) => {this.fieldInput = input;}}
+                            onKeyPress={this.onKeyPressed.bind(this)} />
+                    </p>
+                    {templatesBox}
+
+                    {buttons}
+
+                </div>
 
             </Modal>
         );

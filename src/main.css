@@ -56,5 +56,28 @@ body {
 }
 
 .dialog-section {
-    margin-bottom: 50px;
+    background-color: #ffffff;
+    width: 600px;
+    padding: 20px;
+    font-family: "Helvetica", serif;
+    box-shadow: 0 0 4px 0 rgba(0,0,0,0.75);
+    border-radius: 4px;
+}
+
+.section-title {
+    font-size: 20px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+}
+
+.sub-section:not(:last-child) {
+    margin-bottom: 30px;
+}
+
+.sub-section-title {
+    width: 100%;
+    margin: 0px 8px 12px 0;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #5959b9;
 }

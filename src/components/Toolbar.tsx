@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as BoardActions from "../actions/boardActions";
 import dispatcher from "../Dispatcher";
-import ColumnEditDialog from "./ColumnEditDialog";
-import BoardEditDialog from "./BoardEditDialog";
+import ColumnEditDialog from "./dialogs/ColumnEditDialog";
+import BoardEditDialog from "./dialogs/BoardEditDialog";
 import {BoardStore} from "../stores/BoardStore";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
-import AdvancedDialog from "./AdvancedDialog";
+import AdvancedDialog from "./dialogs/AdvancedDialog";
 
 interface ToolbarState {
     currentBoard: Board | null;
@@ -96,15 +96,15 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
                 <button onClick={this.onAddBoardClicked}>Add board</button>{separator}
                 <button onClick={this.onEditBoardClicked}>Edit board</button>{separator}
                 <button onClick={this.onAddColStarted}>Add column</button>{separator}
-                <button onClick={this.onAdvancedClicked}>Advanced</button>
+                <button onClick={this.onAdvancedClicked}>Options</button>
 
                 <ColumnEditDialog
-                    isBeingEdited={this.state.isColBeingAdded}
+                    opened={this.state.isColBeingAdded}
                     onEditClose={this.onColEditClose.bind(this)}
                     onEditSubmitted={this.onAddColSubmitted.bind(this)}
                 />
                 <BoardEditDialog
-                    isBeingEdited={this.state.isBoardBeingAdded}
+                    opened={this.state.isBoardBeingAdded}
                     boardId={this.state.boardBeingEdited}
                     boardName={boardName}
                     onEditClose={this.onBoardEditClose.bind(this)}
@@ -112,7 +112,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
                     onRemoveBoard={this.onRemoveBoard.bind(this)}
                 />
                 <AdvancedDialog
-                    isOpened={this.state.advancedModeOn}
+                    opened={this.state.advancedModeOn}
                     onClosed={this.onAdvancedModeClose}
                 />
 
