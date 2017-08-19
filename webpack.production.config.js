@@ -1,4 +1,3 @@
-const path = require('path');
 const webpack = require('webpack');
 const UglifyEsPlugin = require('uglify-es-webpack-plugin');
 
@@ -11,11 +10,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
-        alias: {
-            'react$': path.resolve(__dirname, './node_modules/react/dist/react.min.js'),
-            'react-dom$': path.resolve(__dirname, './node_modules/react-dom/dist/react-dom.min.js')
-        }
+        extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']
     },
 
     module: {
