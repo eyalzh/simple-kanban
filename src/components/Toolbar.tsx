@@ -35,6 +35,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         this.onAddColStarted = this.onAddColStarted.bind(this);
         this.onAdvancedClicked = this.onAdvancedClicked.bind(this);
         this.onAdvancedModeClose = this.onAdvancedModeClose.bind(this);
+        this.onFileImport = this.onFileImport.bind(this);
     }
 
     componentWillMount() {
@@ -114,6 +115,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
                 <AdvancedDialog
                     opened={this.state.advancedModeOn}
                     onClosed={this.onAdvancedModeClose}
+                    onFileImport={this.onFileImport}
                 />
 
             </div>
@@ -205,6 +207,10 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         this.setState({
             advancedModeOn: false
         });
+    }
+
+    private onFileImport(text: string) {
+        BoardActions.importFromJSON(text);
     }
 
 }

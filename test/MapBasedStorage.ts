@@ -5,7 +5,9 @@ export class MapBasedStorage implements Storage {
 
     private data: Map<string, any>;
 
-    length: number;
+    get length() {
+        return this.data.size;
+    }
 
     constructor() {
         this.data = new Map();
@@ -20,7 +22,7 @@ export class MapBasedStorage implements Storage {
     }
 
     key(index: number): string {
-        return this.data.keys()[index];
+        return Array.from(this.data.keys())[index];
     }
 
     removeItem(key: string): void {

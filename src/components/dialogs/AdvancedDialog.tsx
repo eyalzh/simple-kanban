@@ -4,10 +4,12 @@ import * as BoardActions from "../../actions/boardActions";
 import TabbedOptions from "../tabs/TabbedOptions";
 import Tab from "../tabs/Tab";
 import {dialogModalStyle} from "./dialogStyle";
+import TextUploadField from "../fields/TextUploadField";
 
 interface AdvancedDialogProps {
     opened: boolean;
     onClosed: () => void;
+    onFileImport: (text: string) => void;
 }
 
 interface AdvancedDialogState {
@@ -28,11 +30,16 @@ export default class AdvancedDialog extends React.Component<AdvancedDialogProps,
         this.resetAllDataClicked = this.resetAllDataClicked.bind(this);
         this.exportDB = this.exportDB.bind(this);
         this.onTabChange = this.onTabChange.bind(this);
+        this.onImportFileRead = this.onImportFileRead.bind(this);
 
     }
 
     onTabChange(tabId) {
         this.setState({activeTab: tabId});
+    }
+
+    onImportFileRead(text) {
+        this.props.onFileImport(text);
     }
 
     render() {
@@ -53,7 +60,7 @@ export default class AdvancedDialog extends React.Component<AdvancedDialogProps,
                         <Tab id="import-export" name="import/export">
                             <div className="sub-section">
                                 <div className="sub-section-title">Import from JSON file</div>
-                                <input type="file" accept=".json"/>
+                                <TextUploadField accept=".json" onFileRead={this.onImportFileRead} />
                             </div>
                             <div className="sub-section">
                                 <div className="sub-section-title">Export data to JSON</div>
@@ -91,7 +98,7 @@ export default class AdvancedDialog extends React.Component<AdvancedDialogProps,
     }
 
     private exportDB() {
-        BoardActions.dumpDB();
+        BoardActions.exportData();
     }
 
 }

@@ -7,6 +7,7 @@ import {Task} from "../model/Task";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
 import {createIndexedDBExportUrl} from "../model/util";
+import DataExporter from "../model/export/DataExporter";
 
 export function addColumn(columnName: string, wipLimit: number) {
     getModel()
@@ -126,12 +127,20 @@ export function removeCurrentBoard() {
 
 }
 
-export function dumpDB() {
-    getModel()
-        .dumpModel()
-        .then((json) => {
-            createIndexedDBExportUrl(json);
-        });
+export function exportData() {
+
+    const model = getModel();
+    const exporter = new DataExporter(model);
+    exporter.export().then((data) => {
+        const json = JSON.stringify(data);
+        createIndexedDBExportUrl(json);
+    });
+}
+
+export function importFromJSON(json: string) {
+    const model = getModel();
+    const exporter = new DataExporter(model);
+    exporter.import(JSON.parse(json)).then(this.dispatchRefreshBoard);
 }
 
 export function dispatchRefreshBoard() {

@@ -20,4 +20,5 @@
 1. Remove column with tasks in it (should not allow)
 1. Remove board with tasks in it (should not allow)
 1. Reset data
+1. Import/export
 1. Tutorial mode

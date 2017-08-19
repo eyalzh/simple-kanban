@@ -5,6 +5,7 @@ import LocalStorageDB from "../src/model/DB/LocalStorageDB";
 import {DB} from "../src/model/DB/DB";
 import {Column} from "../src/model/Column";
 import 'mocha';
+import DataExporter from "../src/model/export/DataExporter";
 
 describe("task model", function () {
 
@@ -205,6 +206,55 @@ describe("task model", function () {
         const cols = await taskModel.getColumns();
 
         expect(cols.length).to.equal(0);
+
+    });
+
+    it("export data should return an object that reflects the exact state of the model", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const boardId = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(boardId);
+
+        const columnId = await taskModel.addColumn("TODO");
+
+        const t1Id = await taskModel.addTask(columnId, "foo");
+        const t2Id = await taskModel.addTask(columnId, "bar");
+
+        const exporter = new DataExporter(taskModel);
+        const data = await exporter.export();
+
+        expect(data.boards.map(board => board.ref)).to.eql([boardId]);
+        expect(data.cols.map(col => col.ref)).to.eql([columnId]);
+        expect(data.cols[0].parentRef).to.eql(boardId);
+        expect(data.tasks.map(task => task.ref)).to.eql([t1Id, t2Id]);
+        expect(data.tasks[0].parentRef).to.eql(columnId);
+        expect(data.tasks[1].parentRef).to.eql(columnId);
+
+    });
+
+    it("import data should copy the exported model into the existing model", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const boardId = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(boardId);
+
+        const columnId = await taskModel.addColumn("TODO");
+
+        await taskModel.addTask(columnId, "foo");
+        await taskModel.addTask(columnId, "bar");
+
+        const exporter = new DataExporter(taskModel);
+        const data = await exporter.export();
+
+        await exporter.import(data);
+
+        const boards = await taskModel.getBoards();
+        const cols = await taskModel.getColumns();
+        const tasks = await taskModel.getTasks();
+
+        expect(boards.map(board => board.name)).to.eql(["default", "default"]);
+        expect(cols.map(col => col.name)).to.eql(["TODO", "TODO"]);
+        expect(tasks.map(task => task.desc)).to.eql(["foo", "bar", "foo", "bar"]);
 
     });
 

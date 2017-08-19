@@ -323,10 +323,6 @@ export default class TaskModel {
         await this.db.runMaintenance();
     }
 
-    public async dumpModel() {
-        return await this.db.dumpDBAsJson();
-    }
-
     private async detachTask(columnId: string, taskId: string) {
 
         await this.db.modifyStore<Array<string>>(COL_TASK_MAP_NAME, columnId, (tasks) => {

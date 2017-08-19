@@ -260,16 +260,4 @@ export default class IndexedDBImpl implements DB {
         });
     }
 
-    async dumpDBAsJson(): Promise<string> {
-        let dbJson = {};
-
-        for (let store of this.stores) {
-
-            const storeDump = await this.dumpStore(store.storeName);
-            dbJson[store.storeName] = storeDump;
-        }
-
-        return JSON.stringify(dbJson);
-    }
-
 }
