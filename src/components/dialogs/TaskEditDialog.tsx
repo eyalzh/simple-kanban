@@ -20,6 +20,8 @@ interface TaskEditDialogProps {
 interface TaskEditDialogState {
     desc: string;
     longdesc: string;
+    creationDateString: string | null;
+    lastUpdatedAtString: string | null;
 }
 
 export default class TaskEditDialog extends React.Component<TaskEditDialogProps, TaskEditDialogState> {
@@ -29,6 +31,13 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     constructor(props) {
         super(props);
         this.state = this.getInitState(props);
+
+        this.onRequestClose = this.onRequestClose.bind(this);
+        this.onEditDialogOpen = this.onEditDialogOpen.bind(this);
+
+        this.onChange = this.onChange.bind(this);
+        this.onLongDescChange = this.onLongDescChange.bind(this);
+
     }
 
     componentWillReceiveProps(props) {
@@ -38,7 +47,9 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     private getInitState(props) {
         return {
             desc: props.desc || "",
-            longdesc: props.longdesc || ""
+            longdesc: props.longdesc || "",
+            creationDateString: TaskEditDialog.buildDateString(props.createdAt),
+            lastUpdatedAtString: TaskEditDialog.buildDateString(this.props.lastUpdatedAt)
         };
     }
 
@@ -51,14 +62,13 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
             "visible": previewVisible
         });
 
-        const creationDateString = TaskEditDialog.buildDateString(this.props.createdAt);
-        const lastUpdatedAtString = TaskEditDialog.buildDateString(this.props.lastUpdatedAt);
+        const {creationDateString, lastUpdatedAtString} = this.state;
 
         return (
             <Modal
                 isOpen={this.props.opened}
-                onRequestClose={this.props.onCloseEditTask}
-                onAfterOpen={this.onEditDialogOpen.bind(this)}
+                onRequestClose={this.onRequestClose}
+                onAfterOpen={this.onEditDialogOpen}
                 style={baseModalStyle}
                 contentLabel="Edit Task Dialog">
 
@@ -72,7 +82,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                         <p>
                             <input
                                 value={this.state.desc}
-                                onChange={this.onChange.bind(this)}
+                                onChange={this.onChange}
                                 ref={(input) => {this.fieldInput = input;}}
                                 onKeyPress={(ev) => {ev.key === "Enter" && this.onEditSubmitted();}}
                             />
@@ -81,11 +91,11 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                             Description:
                         </p>
                         <p>
-                            <textarea value={this.state.longdesc} onChange={this.onLongDescChange.bind(this)}/>
+                            <textarea value={this.state.longdesc} onChange={this.onLongDescChange}/>
                         </p>
                         <p>
                             <button onClick={() => this.onEditSubmitted()}>Submit</button>&nbsp;
-                            <button onClick={this.props.onCloseEditTask}>Cancel</button>
+                            <button onClick={this.onRequestClose}>Cancel</button>
                         </p>
 
                         {creationDateString !== null ?
@@ -111,12 +121,21 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         );
     }
 
-    public onChange(e: React.FormEvent<HTMLInputElement>) {
+    private onRequestClose() {
+        const confirmationMessage = 'Are you sure you want to close the dialog? No changes will be saved.';
+        const changesDetected = this.state.longdesc !== this.props.longdesc;
+        debugger;
+        if (!changesDetected || window.confirm(confirmationMessage)) {
+            this.props.onCloseEditTask();
+        }
+    }
+
+    private onChange(e: React.FormEvent<HTMLInputElement>) {
         const desc = e.currentTarget.value;
         this.setState({desc});
     }
 
-    public onLongDescChange(e: React.FormEvent<HTMLInputElement>) {
+    private onLongDescChange(e: React.FormEvent<HTMLTextAreaElement>) {
         const longdesc = e.currentTarget.value;
         this.setState({longdesc});
     }
