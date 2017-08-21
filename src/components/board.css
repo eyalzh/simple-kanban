@@ -1,10 +1,13 @@
-.column-container>div {
-    float: left;
-    min-height: calc(100vh - 54px);
+.board-container {
+    display: flex;
+    flex-flow: column wrap;
+    align-content: flex-start;
+    height: calc(100vh - 40px);
 }
 
 .column {
-    width: 160px;
+    height: calc(100vh - 40px);
+    min-width: 160px;
     border: 1px solid #1829a5;
     border-radius: 4px;
     margin: 6px;
@@ -13,6 +16,10 @@
     -webkit-user-select: none;
     -moz-user-select: -moz-none;
     user-select: none;
+}
+
+.half-col {
+    height: calc(50vh - 34px);
 }
 
 .column.in-background {
@@ -52,6 +59,18 @@
     color: #772b13;
 }
 
+.task-container {
+    display: flex;
+    flex-flow: column nowrap;
+    align-content: flex-start;
+    overflow-y: hidden;
+    height: calc(100vh - 100px);
+}
+
+.half-col>.task-container {
+    height: calc(50vh - 78px);
+}
+
 .task {
     margin: 4px;
     padding: 4px;
@@ -61,6 +80,7 @@
     border-radius: 3px;
     cursor: move;
     min-height: 30px;
+    overflow: hidden;
 }
 
 .task-title {
@@ -76,12 +96,11 @@
 }
 
 .trash-zone {
-    float: left;
+    height: calc(100vh - 40px);
     width: 150px;
     border: 1px dashed #2C2C2C;
     border-radius: 4px;
     margin: 6px;
-    min-height: calc(100vh - 54px);
     text-align: center;
     font-size: 32px;
     font-family: "Helvetica", "Arial", sans-serif;

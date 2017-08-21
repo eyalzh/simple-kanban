@@ -122,9 +122,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     }
 
     private onRequestClose() {
-        const confirmationMessage = 'Are you sure you want to close the dialog? No changes will be saved.';
-        const changesDetected = this.state.longdesc !== this.props.longdesc;
-        debugger;
+        const confirmationMessage = "Are you sure you want to close the dialog? No changes will be saved.";
+        const changesDetected = this.state.longdesc !== (this.props.longdesc || "");
         if (!changesDetected || window.confirm(confirmationMessage)) {
             this.props.onCloseEditTask();
         }

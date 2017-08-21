@@ -1,7 +1,7 @@
 import * as React from "react";
 import ColumnComponent from "./ColumnComponent";
 import dispatcher from "../Dispatcher";
-import {Column} from "../model/column";
+import {Column} from "../model/Column";
 import {Priority} from "../Dispatcher";
 import TrashZone from "./TrashZone";
 import {BoardStore} from "../stores/BoardStore";
@@ -141,7 +141,7 @@ export default class Board extends React.Component<{}, BoardState> {
         });
 
         return (
-            <div>
+            <div className="board-container">
                 {columns}
                 <TrashZone onDrop={this.onMovedToTrash}/>
             </div>

@@ -1,4 +1,4 @@
-import {Column} from "../model/column";
+import {Column, ColumnOptions} from "../model/Column";
 import dispatcher from "../Dispatcher";
 import {getModel} from "../context";
 import NonEmptyColumnException from "../model/NonEmptyColumnException";
@@ -9,9 +9,9 @@ import {Template} from "../model/Templates/Template";
 import {createIndexedDBExportUrl} from "../model/util";
 import DataExporter from "../model/export/DataExporter";
 
-export function addColumn(columnName: string, wipLimit: number) {
+export function addColumn(columnName: string, wipLimit: number, options?: ColumnOptions) {
     getModel()
-        .addColumn(columnName, wipLimit)
+        .addColumn(columnName, wipLimit, options)
         .then(this.dispatchRefreshBoard);
 }
 
@@ -68,9 +68,9 @@ export function removeColumn(boardId: string, columnId: string) {
         });
 }
 
-export function editColumn(column: Column, newName: string, newWip: number) {
+export function editColumn(column: Column, newName: string, newWip: number, options?: ColumnOptions) {
     getModel()
-        .editColumn(column.id, newName, newWip)
+        .editColumn(column.id, newName, newWip, options)
         .then(this.dispatchRefreshBoard);
 }
 

@@ -5,8 +5,8 @@ class Sanitizer {
         return colName.trim().substr(0, 24);
     }
 
-    public sanitizeWipLimit(wipLimit: number, defaultWipLimit: number): number {
-        if (Number.isInteger(wipLimit) && wipLimit > 0) {
+    public sanitizeWipLimit(wipLimit: number | undefined, defaultWipLimit: number): number {
+        if (typeof wipLimit !== "undefined" && Number.isInteger(wipLimit) && wipLimit > 0) {
             return wipLimit;
         } else {
             return defaultWipLimit;

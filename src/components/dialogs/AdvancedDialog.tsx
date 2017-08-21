@@ -16,7 +16,6 @@ interface AdvancedDialogState {
     activeTab: string;
 }
 
-
 export default class AdvancedDialog extends React.Component<AdvancedDialogProps, AdvancedDialogState> {
 
     constructor() {

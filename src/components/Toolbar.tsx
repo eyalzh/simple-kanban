@@ -7,6 +7,7 @@ import {BoardStore} from "../stores/BoardStore";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
 import AdvancedDialog from "./dialogs/AdvancedDialog";
+import {ColumnOptions} from "../model/Column";
 
 interface ToolbarState {
     currentBoard: Board | null;
@@ -148,7 +149,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         });
     }
 
-    private onAddColSubmitted(columnName: string, wipLimit: number) {
+    private onAddColSubmitted(columnName: string, wipLimit: number, options?: ColumnOptions) {
 
         this.setState({
             isColBeingAdded: false
@@ -157,7 +158,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         if (columnName !== null) {
             const columnNameTrimmed = columnName.trim();
             if (columnNameTrimmed.length > 0) {
-                BoardActions.addColumn(columnNameTrimmed, wipLimit);
+                BoardActions.addColumn(columnNameTrimmed, wipLimit, options);
             }
         }
     }

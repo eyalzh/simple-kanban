@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Task} from "../model/task";
 import * as BoardActions from "../actions/boardActions";
-import {Column} from "../model/column";
+import {Column} from "../model/Column";
 import TaskEditDialog from "./dialogs/TaskEditDialog";
 import AnnotatedHashtagDiv from "./AnnotatedHashtagDiv";
 import {draggable, Referrable} from "./dragAndDrop";

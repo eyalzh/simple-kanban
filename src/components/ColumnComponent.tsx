@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Column} from "../model/column";
+import {Column, ColumnOptions, ColumnSize} from "../model/Column";
 import {Task} from "../model/task";
 import TaskComponent from "./TaskComponent";
 import * as BoardActions from "../actions/boardActions";
@@ -12,8 +12,6 @@ interface ColumnProps extends Referrable {
     column: Column;
     tasks: Array<Task>;
     inBackground?: boolean;
-    rightEar?: React.ReactNode;
-    leftEar?: React.ReactNode;
 }
 
 interface ColumnState {
@@ -57,41 +55,39 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
 
         const isAboveWipLimit = taskCount > this.props.column.wipLimit;
 
+        const isHalfCol = this.props.column.options && this.props.column.options.size === ColumnSize.HALF;
         const classNames = classSet({
             "column": true,
             "column-above-limit": isAboveWipLimit,
-            "in-background": this.props.inBackground
+            "in-background": this.props.inBackground,
+            "half-col": isHalfCol
         });
 
         return (
-            <div className="column-container">
-                {this.props.leftEar}
-                <div
-                    ref={this.props.innerRef}
-                    className={classNames}
-                    onDoubleClick={() => this.onAddTask()}>
+            <div
+                ref={this.props.innerRef}
+                className={classNames}
+                onDoubleClick={() => this.onAddTask()}>
 
-                    <div className="column-header" title="double click to edit" onDoubleClick={e => this.editColumn(e)}>
-                        <div>{this.props.column.name}</div>
-                        <div className="wip">{taskCount} / {this.props.column.wipLimit}</div>
-                    </div>
-                    <div className="task-container">
-                        {tasks}
-                    </div>
-                    {this.state.isTaskBeingAdded ? <TaskEditDialog
-                        opened={this.state.isTaskBeingAdded}
-                        onCloseEditTask={this.closeEditTask}
-                        onEditSubmitted={this.onTaskSubmitted}
-                        dialogTitle="Add a New Task"
-                    /> : null}
-                    {this.state.isBeingEdited ? <ColumnEditDialog
-                        opened={this.state.isBeingEdited}
-                        onEditClose={this.closeEditColumn}
-                        column={this.props.column}
-                        onEditSubmitted={this.onEditColumnSubmitted}
-                    /> : null}
+                <div className="column-header" title="double click to edit" onDoubleClick={e => this.editColumn(e)}>
+                    <div>{this.props.column.name}</div>
+                    <div className="wip">{taskCount} / {this.props.column.wipLimit}</div>
                 </div>
-                {this.props.rightEar}
+                <div className="task-container">
+                    {tasks}
+                </div>
+                {this.state.isTaskBeingAdded ? <TaskEditDialog
+                    opened={this.state.isTaskBeingAdded}
+                    onCloseEditTask={this.closeEditTask}
+                    onEditSubmitted={this.onTaskSubmitted}
+                    dialogTitle="Add a New Task"
+                /> : null}
+                {this.state.isBeingEdited ? <ColumnEditDialog
+                    opened={this.state.isBeingEdited}
+                    onEditClose={this.closeEditColumn}
+                    column={this.props.column}
+                    onEditSubmitted={this.onEditColumnSubmitted}
+                /> : null}
             </div>
         );
     }
@@ -105,11 +101,11 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
         e.stopPropagation();
     }
 
-    private onEditColumnSubmitted(name: string, wipLimit: number) {
+    private onEditColumnSubmitted(name: string, wipLimit: number, options: ColumnOptions) {
         if (name !== null && Number.isInteger(wipLimit) && wipLimit > 0) {
             name = name.trim();
             if (name.length > 0) {
-                BoardActions.editColumn(this.props.column, name, wipLimit);
+                BoardActions.editColumn(this.props.column, name, wipLimit, options);
             }
         }
 

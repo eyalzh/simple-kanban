@@ -1,4 +1,4 @@
-import {Column} from "./Column";
+import {Column, ColumnOptions} from "./Column";
 import {Task} from "./Task";
 import {generateUniqId, getCurrentTime} from "./util";
 import NonEmptyColumnException from "./NonEmptyColumnException";
@@ -148,7 +148,7 @@ export default class TaskModel {
         return cols;
     }
 
-    public async addColumn(name: string, wipLimit = 3): Promise<string> {
+    public async addColumn(name: string, wipLimit?: number, options?: ColumnOptions): Promise<string> {
 
         const currentBoard = await this.getCurrentBoard();
         if (currentBoard === null) {
@@ -161,7 +161,8 @@ export default class TaskModel {
         const newCol: Column = {
             id: newKey,
             name: sanitizer.sanitizeColName(name),
-            wipLimit: sanitizer.sanitizeWipLimit(wipLimit, 3)
+            wipLimit: sanitizer.sanitizeWipLimit(wipLimit, 3),
+            options
         };
 
         await this.db.addToStore(COLUMNS_MAP_NAME, newKey, newCol);
@@ -207,11 +208,12 @@ export default class TaskModel {
 
    }
 
-    public async editColumn(columnId: string, columnName: string, wipLimit: number) {
+    public async editColumn(columnId: string, columnName: string, wipLimit: number, options?: ColumnOptions) {
 
         await this.db.modifyStore<Column>(COLUMNS_MAP_NAME, columnId, (col) => {
             col.name = sanitizer.sanitizeColName(columnName);
             col.wipLimit = sanitizer.sanitizeWipLimit(wipLimit, 3);
+            col.options = options;
             return col;
         });
 

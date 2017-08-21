@@ -1,0 +1,14 @@
+.form-field-container {
+    display: flex;
+    padding-bottom: 20px;
+}
+
+.form-field-caption {
+    order: 1;
+    width: 80px;
+}
+
+.form-field {
+    order: 2;
+    flex: 1 1 auto;
+}
