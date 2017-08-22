@@ -11,6 +11,7 @@
 1. Remove column
 1. Column with name longer than allowed (should trim)
 1. Column WIP limits validations
+1. Half-sized columns (mixed with full-sized columns)
 1. Move column
 1. New task
 1. Edit task (name and description)
