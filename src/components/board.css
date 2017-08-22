@@ -7,7 +7,7 @@
 
 .column {
     height: calc(100vh - 40px);
-    min-width: 160px;
+    width: 160px;
     border: 1px solid #1829a5;
     border-radius: 4px;
     margin: 6px;
@@ -50,8 +50,10 @@
     color: #2C2C2C;
     padding: 2px;
     text-align: center;
-    font-family:  "Helvetica", "Arial", sans-serif;
+    font-family: "Helvetica", "Arial", sans-serif;
     cursor: pointer;
+    overflow-x: hidden;
+    white-space: nowrap;
 }
 
 .wip {
