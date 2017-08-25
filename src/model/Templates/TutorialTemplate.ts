@@ -19,7 +19,7 @@ export default class TutorialTemplate implements Template {
         await model.addTask(backlog, "Delete this task by dragging it to the 'Trash Zone'");
         await model.addTask(backlog, "Edit this task by double clicking on it",
             "# Detailed Description \n\n" +
-            "You can use [Markdown ](http://https://en.wikipedia.org/wiki/Markdown) syntax in the task's description " +
+            "You can use [Markdown](http://https://en.wikipedia.org/wiki/Markdown) syntax in the task's description " +
             "and see it rendered on the right.");
         await model.addTask(backlog, "Use #hashtags in tasks' text");
         await model.addTask(backlog, "Create a new board by pressing the 'Add Board' button at the upper right corner of the page");
