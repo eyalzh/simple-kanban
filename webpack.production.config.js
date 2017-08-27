@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const UglifyEsPlugin = require('uglify-es-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
 
@@ -10,7 +10,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']
+        extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js']
     },
 
     module: {
@@ -29,7 +29,9 @@ module.exports = {
                 'NODE_ENV': JSON.stringify('production')
             }
         }),
-        new UglifyEsPlugin()
+
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new UglifyJSPlugin({sourceMap: false})
     ]
 
 }
