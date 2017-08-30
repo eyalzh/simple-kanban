@@ -4,6 +4,7 @@ interface AnnotatedHashtagDivProps {
     text: string;
     appliedClassName: string;
     className?: string;
+    color?: string;
 }
 
 interface AnnotatedTextPart {
@@ -70,7 +71,7 @@ export default class AnnotatedHashtagDiv extends React.Component<AnnotatedHashta
         }
 
         return (
-            <div className={this.props.className}>{innerElement}</div>
+            <div className={this.props.className} style={{color: this.props.color}}>{innerElement}</div>
         );
 
     }

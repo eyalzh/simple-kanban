@@ -79,7 +79,7 @@ export default class DataExporter {
         const tasks = data.tasks;
         for (let task of tasks) {
             if (task.parentRef) {
-                await this.model.addTask(colRefMap[task.parentRef], task.props.desc, task.props.longdesc);
+                await this.model.addTask(colRefMap[task.parentRef], task.props.desc, task.props.longdesc, task.props.presentationalOptions);
             }
         }
 

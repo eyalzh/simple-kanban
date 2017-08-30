@@ -3,7 +3,7 @@ import dispatcher from "../Dispatcher";
 import {getModel} from "../context";
 import NonEmptyColumnException from "../model/NonEmptyColumnException";
 import {BoardStore} from "../stores/BoardStore";
-import {Task} from "../model/Task";
+import {Task, TaskPresentationalOptions} from "../model/Task";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
 import {createIndexedDBExportUrl} from "../model/util";
@@ -15,9 +15,9 @@ export function addColumn(columnName: string, wipLimit: number, options?: Column
         .then(this.dispatchRefreshBoard);
 }
 
-export function addTask(column: Column, taskDesc: string, taskLongDesc?: string) {
+export function addTask(column: Column, taskDesc: string, taskLongDesc?: string, presentationalOptions?: TaskPresentationalOptions) {
     getModel()
-        .addTask(column.id, taskDesc, taskLongDesc)
+        .addTask(column.id, taskDesc, taskLongDesc, presentationalOptions)
         .then(this.dispatchRefreshBoard);
 }
 
@@ -41,9 +41,9 @@ export function setOrder(boardId: string, columnIds: Array<string>) {
         .then(this.dispatchRefreshBoard);
 }
 
-export function editTask(taskId: string, newDesc: string, newLongDesc?: string) {
+export function editTask(taskId: string, newDesc: string, newLongDesc?: string, presentationalOptions?: TaskPresentationalOptions) {
     getModel()
-        .editTask(taskId, newDesc, newLongDesc)
+        .editTask(taskId, newDesc, newLongDesc, presentationalOptions)
         .then(this.dispatchRefreshBoard);
 }
 

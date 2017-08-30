@@ -6,6 +6,7 @@ import {DB} from "../src/model/DB/DB";
 import {Column} from "../src/model/Column";
 import 'mocha';
 import DataExporter from "../src/model/export/DataExporter";
+import {TaskPresentationalOptions} from "../src/model/Task";
 
 describe("task model", function () {
 
@@ -255,6 +256,26 @@ describe("task model", function () {
         expect(boards.map(board => board.name)).to.eql(["default", "default"]);
         expect(cols.map(col => col.name)).to.eql(["TODO", "TODO"]);
         expect(tasks.map(task => task.desc)).to.eql(["foo", "bar", "foo", "bar"]);
+
+    });
+
+    it("presentational options are persisted when adding a task", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const boardId = await taskModel.addBoard("foo");
+        await taskModel.setCurrentBoard(boardId);
+
+        const columnId = await taskModel.addColumn("bar");
+
+        const options: TaskPresentationalOptions = {
+            color: "#fff"
+        };
+        await taskModel.addTask(columnId, "title", "long desc", options);
+
+        const tasks = await taskModel.getTasks();
+
+        const actualOptions = tasks[0].presentationalOptions || {};
+        expect(actualOptions.color).to.equal("#fff");
 
     });
 

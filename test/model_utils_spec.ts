@@ -2,7 +2,7 @@ import {reorderArray} from "../src/model/util";
 import {expect} from "chai";
 import 'mocha';
 
-describe("utils", function () {
+describe("model utils", function () {
 
     it("reorderArray reorders a non-empty array (forward)", function () {
 

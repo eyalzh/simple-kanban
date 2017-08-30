@@ -1,5 +1,5 @@
 import {Column, ColumnOptions} from "./Column";
-import {Task} from "./Task";
+import {Task, TaskPresentationalOptions} from "./Task";
 import {generateUniqId, getCurrentTime} from "./util";
 import NonEmptyColumnException from "./NonEmptyColumnException";
 import {sanitizer} from "./sanitizer";
@@ -219,7 +219,7 @@ export default class TaskModel {
 
     }
 
-    public async addTask(columnId: string, desc: string, longdesc?: string): Promise<string> {
+    public async addTask(columnId: string, desc: string, longdesc?: string, presentationalOptions?: TaskPresentationalOptions): Promise<string> {
 
         const newKey = await generateUniqId(this.db, "task");
 
@@ -227,7 +227,8 @@ export default class TaskModel {
             id: newKey,
             desc: sanitizer.sanitizeTaskTitle(desc),
             longdesc: typeof longdesc !== "undefined" ? longdesc : "",
-            createdAt: getCurrentTime()
+            createdAt: getCurrentTime(),
+            presentationalOptions
         };
 
         await this.db.addToStore(TASKS_NAME, newKey, newTask);
@@ -261,11 +262,12 @@ export default class TaskModel {
 
     }
 
-    public async editTask(taskId: string, newDesc: string, newLongDesc?: string) {
+    public async editTask(taskId: string, newDesc: string, newLongDesc?: string, presentationalOptions?: TaskPresentationalOptions) {
         await this.db.modifyStore<Task>(TASKS_NAME, taskId, (task) => {
             task.desc = sanitizer.sanitizeTaskTitle(newDesc);
             task.longdesc = typeof newLongDesc !== "undefined" ? newLongDesc : "";
             task.lastUpdatedAt = getCurrentTime();
+            task.presentationalOptions = {...presentationalOptions};
             return task;
         });
     }

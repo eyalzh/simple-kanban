@@ -15,6 +15,7 @@
 1. Move column
 1. New task
 1. Edit task (name and description)
+1. Edit task (background color, both dark and light)
 1. Test markdown rendering in tasks
 1. Move task
 1. Remove task

@@ -5,6 +5,8 @@ import {Timestamp} from "../../model/Timestamp";
 import * as Modal from "react-modal";
 import AnnotatedHashtagDiv from "../AnnotatedHashtagDiv";
 import {baseModalStyle} from "./dialogStyle";
+import SelectColorField from "../fields/SelectColorField";
+import {TaskPresentationalOptions} from "../../model/Task";
 
 interface TaskEditDialogProps {
     dialogTitle: string;
@@ -12,17 +14,21 @@ interface TaskEditDialogProps {
     longdesc?: string;
     createdAt?: Timestamp;
     lastUpdatedAt?: Timestamp;
+    color?: string;
     opened: boolean;
     onCloseEditTask: () => void;
-    onEditSubmitted: (desc: string, longdesc: string) => void;
+    onEditSubmitted: (desc: string, longdesc: string, presentationalOptions: TaskPresentationalOptions) => void;
 }
 
 interface TaskEditDialogState {
     desc: string;
     longdesc: string;
+    color: string;
     creationDateString: string | null;
     lastUpdatedAtString: string | null;
 }
+
+const DEFAULT_COLOR = "#fff6a8";
 
 export default class TaskEditDialog extends React.Component<TaskEditDialogProps, TaskEditDialogState> {
 
@@ -37,6 +43,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
         this.onChange = this.onChange.bind(this);
         this.onLongDescChange = this.onLongDescChange.bind(this);
+        this.onColorChanged = this.onColorChanged.bind(this);
 
     }
 
@@ -48,6 +55,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         return {
             desc: props.desc || "",
             longdesc: props.longdesc || "",
+            color: props.color || DEFAULT_COLOR,
             creationDateString: TaskEditDialog.buildDateString(props.createdAt),
             lastUpdatedAtString: TaskEditDialog.buildDateString(this.props.lastUpdatedAt)
         };
@@ -81,6 +89,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                         </p>
                         <p>
                             <input
+                                type="text"
                                 value={this.state.desc}
                                 onChange={this.onChange}
                                 ref={(input) => {this.fieldInput = input;}}
@@ -93,6 +102,11 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                         <p>
                             <textarea value={this.state.longdesc} onChange={this.onLongDescChange}/>
                         </p>
+
+                        <p>
+                            Background Color <SelectColorField value={this.state.color} onChange={this.onColorChanged}/>
+                        </p>
+
                         <p>
                             <button onClick={() => this.onEditSubmitted()}>Submit</button>&nbsp;
                             <button onClick={this.onRequestClose}>Cancel</button>
@@ -139,8 +153,15 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         this.setState({longdesc});
     }
 
+    private onColorChanged(color: string) {
+        this.setState({color});
+    }
+
     private onEditSubmitted() {
-        this.props.onEditSubmitted(this.state.desc, this.state.longdesc);
+        const presentationalOptions = {
+            color: this.state.color
+        };
+        this.props.onEditSubmitted(this.state.desc, this.state.longdesc, presentationalOptions);
     }
 
     private onEditDialogOpen() {

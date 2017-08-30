@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Column, ColumnOptions, ColumnSize} from "../model/Column";
-import {Task} from "../model/task";
+import {Task, TaskPresentationalOptions} from "../model/task";
 import TaskComponent from "./TaskComponent";
 import * as BoardActions from "../actions/boardActions";
 import {classSet} from "../util";
@@ -120,9 +120,9 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
         this.setState({isBeingEdited: false});
     }
 
-    private onTaskSubmitted(desc: string, longdesc: string) {
+    private onTaskSubmitted(desc: string, longdesc: string, presentationalOptions: TaskPresentationalOptions) {
         if (desc) {
-            BoardActions.addTask(this.props.column, desc, longdesc);
+            BoardActions.addTask(this.props.column, desc, longdesc, presentationalOptions);
             this.setState({isTaskBeingAdded: false});
         }
     }

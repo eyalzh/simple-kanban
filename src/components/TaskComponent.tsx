@@ -5,6 +5,7 @@ import {Column} from "../model/Column";
 import TaskEditDialog from "./dialogs/TaskEditDialog";
 import AnnotatedHashtagDiv from "./AnnotatedHashtagDiv";
 import {draggable, Referrable} from "./dragAndDrop";
+import {calcColorBasedOnBackground} from "../util";
 
 interface TaskProps extends Referrable {
     task: Task;
@@ -32,21 +33,32 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
     render() {
 
-        const {desc, longdesc, createdAt, lastUpdatedAt} = this.props.task;
+        const {desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions} = this.props.task;
+
+        let bgColor;
+        if (presentationalOptions) {
+            bgColor = presentationalOptions.color;
+        }
 
         return (
             <div
                 ref={this.props.innerRef}
                 className="task"
-                onDoubleClick={e => this.editTask(e)}>
+                onDoubleClick={e => this.editTask(e)}
+                style={{backgroundColor: bgColor}}>
 
-                <AnnotatedHashtagDiv text={desc} appliedClassName="hashtag" className="task-title"/>
+                <AnnotatedHashtagDiv
+                    text={desc}
+                    appliedClassName="hashtag"
+                    className="task-title"
+                    color={calcColorBasedOnBackground(bgColor)} />
 
                 <TaskEditDialog
                     desc={desc}
                     longdesc={longdesc}
                     createdAt={createdAt}
                     lastUpdatedAt={lastUpdatedAt}
+                    color={bgColor}
                     opened={this.state.isBeingEdited}
                     onCloseEditTask={this.closeEditTask}
                     onEditSubmitted={this.onTaskSubmitted}
@@ -63,9 +75,9 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
     }
 
-    private onTaskSubmitted(desc, longdesc) {
+    private onTaskSubmitted(desc, longdesc, presentationalOptions) {
         if (desc) {
-            BoardActions.editTask(this.props.task.id, desc, longdesc);
+            BoardActions.editTask(this.props.task.id, desc, longdesc, presentationalOptions);
         }
         this.setState({isBeingEdited: false});
     }
