@@ -145,3 +145,27 @@
 .preview-section.visible {
     display: block !important;
 }
+
+@media (min-width: 2000px) {
+
+    .column {
+        width: 200px;
+    }
+
+    .task {
+        width: 182px;
+    }
+
+    .edit-section {
+        min-width: 840px;
+    }
+
+    .edit-task-form input[type="text"] {
+        width: 800px;
+    }
+
+    .edit-task-form textarea {
+        width: 800px;
+        font-size: 18px;
+    }
+}
