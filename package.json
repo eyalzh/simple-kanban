@@ -17,29 +17,29 @@
   "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.0.1",
-    "@types/mocha": "^2.2.41",
+    "@types/mocha": "^2.2.43",
     "@types/react": "^15.0.33",
     "@types/react-dom": "^15.5.1",
     "@types/react-modal": "^1.6.7",
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
-    "mocha": "^3.1.0",
+    "mocha": "^3.5.3",
     "react-addons-test-utils": "^15.2.1",
     "react-hot-loader": "^3.0.0-beta.7",
     "sinon": "^1.17.4",
     "style-loader": "^0.13.1",
-    "ts-loader": "^2.3.4",
+    "ts-loader": "^2.3.7",
     "ts-node": "^3.1.0",
     "tslint": "^3.15.1",
-    "typescript": "^2.5.1",
+    "typescript": "^2.5.2",
     "uglifyjs-webpack-plugin": "1.0.0-beta.2",
-    "webpack": "^3.5.5",
-    "webpack-dev-server": "^2.7.1"
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2"
   },
   "dependencies": {
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "react-modal": "^1.7.7",
-    "showdown": "^1.5.5"
+    "react-modal": "^2.3.2",
+    "showdown": "^1.7.4"
   }
 }
