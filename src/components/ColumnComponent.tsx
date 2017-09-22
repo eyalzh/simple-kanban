@@ -121,10 +121,7 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
     }
 
     private onTaskSubmitted(desc: string, longdesc: string, presentationalOptions: TaskPresentationalOptions) {
-        if (desc) {
-            BoardActions.addTask(this.props.column, desc, longdesc, presentationalOptions);
-            this.setState({isTaskBeingAdded: false});
-        }
+        BoardActions.addTask(this.props.column, desc, longdesc, presentationalOptions);
     }
 
 }

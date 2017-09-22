@@ -6,16 +6,12 @@ import * as Modal from "react-modal";
 import AnnotatedHashtagDiv from "../AnnotatedHashtagDiv";
 import {baseModalStyle} from "./dialogStyle";
 import SelectColorField from "../fields/SelectColorField";
-import {TaskPresentationalOptions} from "../../model/Task";
+import {Task, TaskPresentationalOptions} from "../../model/Task";
 
 interface TaskEditDialogProps {
     dialogTitle: string;
-    desc?: string;
-    longdesc?: string;
-    createdAt?: Timestamp;
-    lastUpdatedAt?: Timestamp;
-    color?: string;
     opened: boolean;
+    task?: Task;
     onCloseEditTask: () => void;
     onEditSubmitted: (desc: string, longdesc: string, presentationalOptions: TaskPresentationalOptions) => void;
 }
@@ -39,26 +35,35 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         this.state = this.getInitState(props);
 
         this.onRequestClose = this.onRequestClose.bind(this);
+        this.onEditSaveAndClose = this.onEditSaveAndClose.bind(this);
+        this.onEditSubmitted = this.onEditSubmitted.bind(this);
         this.onEditDialogOpen = this.onEditDialogOpen.bind(this);
-
         this.onChange = this.onChange.bind(this);
         this.onLongDescChange = this.onLongDescChange.bind(this);
         this.onColorChanged = this.onColorChanged.bind(this);
 
     }
 
-    componentWillReceiveProps(props) {
+    componentWillReceiveProps(props: TaskEditDialogProps) {
         this.setState(this.getInitState(props));
     }
 
-    private getInitState(props) {
-        return {
-            desc: props.desc || "",
-            longdesc: props.longdesc || "",
-            color: props.color || DEFAULT_COLOR,
-            creationDateString: TaskEditDialog.buildDateString(props.createdAt),
-            lastUpdatedAtString: TaskEditDialog.buildDateString(this.props.lastUpdatedAt)
-        };
+    private getInitState(props: TaskEditDialogProps) {
+
+        let desc = "", longdesc = "", color = DEFAULT_COLOR, createdAt, lastUpdatedAt, presentationalOptions;
+
+        if (props.task) {
+            ({desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions} = props.task);
+            if (presentationalOptions) {
+                color = presentationalOptions.color;
+            }
+        }
+
+        const creationDateString = TaskEditDialog.buildDateString(createdAt);
+        const lastUpdatedAtString = TaskEditDialog.buildDateString(lastUpdatedAt);
+
+        return {desc, longdesc, color, creationDateString, lastUpdatedAtString};
+
     }
 
     render() {
@@ -71,6 +76,24 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         });
 
         const {creationDateString, lastUpdatedAtString} = this.state;
+
+        let buttonEls;
+        if (this.props.task) {
+            buttonEls = (
+                <p>
+                    <button onClick={this.onEditSaveAndClose}>Save &amp; close</button>&nbsp;
+                    <button onClick={this.onEditSubmitted}>Save &amp; continue</button>&nbsp;
+                    <button onClick={this.onRequestClose}>Close</button>
+                </p>
+        );
+        } else {
+            buttonEls = (
+                <p>
+                    <button onClick={this.onEditSaveAndClose}>Add</button>&nbsp;
+                    <button onClick={this.onRequestClose}>Close</button>
+                </p>
+            );
+        }
 
         return (
             <Modal
@@ -93,7 +116,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                                 value={this.state.desc}
                                 onChange={this.onChange}
                                 ref={(input) => {this.fieldInput = input;}}
-                                onKeyPress={(ev) => {ev.key === "Enter" && this.onEditSubmitted();}}
+                                onKeyPress={(ev) => {ev.key === "Enter" && this.onEditSaveAndClose();}}
                             />
                         </p>
                         <p>
@@ -107,19 +130,16 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                             Background Color <SelectColorField value={this.state.color} onChange={this.onColorChanged}/>
                         </p>
 
-                        <p>
-                            <button onClick={() => this.onEditSubmitted()}>Submit</button>&nbsp;
-                            <button onClick={this.onRequestClose}>Cancel</button>
-                        </p>
+                        {buttonEls}
 
                         {creationDateString !== null ?
                             <div>Created on {creationDateString}</div>
-                            : <span />
+                            : null
                         }
 
                         {lastUpdatedAtString !== null ?
                             <div>Last updated on {lastUpdatedAtString}</div>
-                            : <span />
+                            : null
                         }
 
                     </div>
@@ -137,7 +157,11 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
     private onRequestClose() {
         const confirmationMessage = "Are you sure you want to close the dialog? No changes will be saved.";
-        const changesDetected = this.state.longdesc !== (this.props.longdesc || "");
+        let longdesc;
+        if (this.props.task) {
+            ({longdesc} = this.props.task);
+        }
+        const changesDetected = this.state.longdesc !== (longdesc || "");
         if (!changesDetected || window.confirm(confirmationMessage)) {
             this.props.onCloseEditTask();
         }
@@ -162,6 +186,11 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
             color: this.state.color
         };
         this.props.onEditSubmitted(this.state.desc, this.state.longdesc, presentationalOptions);
+    }
+
+    private onEditSaveAndClose() {
+        this.onEditSubmitted();
+        this.props.onCloseEditTask();
     }
 
     private onEditDialogOpen() {

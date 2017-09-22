@@ -33,7 +33,7 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
     render() {
 
-        const {desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions} = this.props.task;
+        const {desc, presentationalOptions} = this.props.task;
 
         let bgColor;
         if (presentationalOptions) {
@@ -54,11 +54,7 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
                     color={calcColorBasedOnBackground(bgColor)} />
 
                 <TaskEditDialog
-                    desc={desc}
-                    longdesc={longdesc}
-                    createdAt={createdAt}
-                    lastUpdatedAt={lastUpdatedAt}
-                    color={bgColor}
+                    task={this.props.task}
                     opened={this.state.isBeingEdited}
                     onCloseEditTask={this.closeEditTask}
                     onEditSubmitted={this.onTaskSubmitted}
@@ -76,10 +72,7 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
     }
 
     private onTaskSubmitted(desc, longdesc, presentationalOptions) {
-        if (desc) {
-            BoardActions.editTask(this.props.task.id, desc, longdesc, presentationalOptions);
-        }
-        this.setState({isBeingEdited: false});
+        BoardActions.editTask(this.props.task.id, desc, longdesc, presentationalOptions);
     }
 
     private closeEditTask() {
