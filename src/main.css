@@ -4,38 +4,6 @@ body {
     font-family: "Helvetica Neue", sans-serif;
 }
 
-.toolbar {
-    position: absolute;
-    top: 4px;
-    right: 7px;
-    clear: both;
-    height: 40px;
-    color: #fff;
-    line-height: 14px;
-    font-size: 14px;
-}
-
-.toolbar button {
-    margin: 2px;
-    border-radius: 6px;
-    background-color: transparent;
-    color: #fff;
-    font-size: 14px;
-    border: 0;
-    padding: 2px;
-    cursor: pointer;
-    text-decoration: underline;
-    text-transform: lowercase;
-}
-
-.toolbar select {
-    margin: 2px;
-}
-
-.toolbar .hidden {
-    display: none;
-}
-
 .remove-btn {
      color: red;
 }
@@ -76,7 +44,7 @@ body {
 
 .sub-section-title {
     width: 100%;
-    margin: 0px 8px 12px 0;
+    margin: 0 8px 12px 0;
     text-transform: uppercase;
     font-size: 14px;
     color: #5959b9;

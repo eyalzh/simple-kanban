@@ -1,8 +1,7 @@
 import { render } from "react-dom";
 import * as React from "react";
-import Nav from "./components/Nav";
+import Nav from "./components/nav/Nav";
 import Board from "./components/Board";
-import Toolbar from "./components/Toolbar";
 import taskModel from "./model/model";
 import {setModel, setCatalog} from "./context";
 import initializeModel from "./model/initializeModel";
@@ -32,7 +31,6 @@ taskModel.init()
             <div>
                 <Nav />
                 <Board  />
-                <Toolbar />
             </div>
             , cont);
 

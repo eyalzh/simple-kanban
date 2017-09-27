@@ -1,34 +1,33 @@
 import * as React from "react";
-import * as BoardActions from "../actions/boardActions";
-import dispatcher from "../Dispatcher";
-import ColumnEditDialog from "./dialogs/ColumnEditDialog";
-import BoardEditDialog from "./dialogs/BoardEditDialog";
-import {BoardStore} from "../stores/BoardStore";
-import {Board} from "../model/Board";
-import {Template} from "../model/Templates/Template";
-import AdvancedDialog from "./dialogs/AdvancedDialog";
-import {ColumnOptions} from "../model/Column";
+import * as BoardActions from "../../actions/boardActions";
+import ColumnEditDialog from "../dialogs/ColumnEditDialog";
+import BoardEditDialog from "../dialogs/BoardEditDialog";
+import {Board} from "../../model/Board";
+import {Template} from "../../model/Templates/Template";
+import AdvancedDialog from "../dialogs/AdvancedDialog";
+import {ColumnOptions} from "../../model/Column";
+
+interface ToolbarProps {
+    currentBoard: Board | null;
+}
 
 interface ToolbarState {
-    currentBoard: Board | null;
     isColBeingAdded: boolean;
     isBoardBeingAdded: boolean;
     advancedModeOn: boolean;
     boardBeingEdited: string | null | undefined;
-    boards: Array<Board> | null;
 }
 
-export default class Toolbar extends React.Component<{}, ToolbarState> {
+export default class Toolbar extends React.Component<ToolbarProps, ToolbarState> {
 
     constructor() {
         super();
+
         this.state = {
-            currentBoard: null,
             isColBeingAdded: false,
             isBoardBeingAdded: false,
             advancedModeOn: false,
-            boardBeingEdited: null,
-            boards: null
+            boardBeingEdited: null
         };
 
         this.onAddBoardClicked = this.onAddBoardClicked.bind(this);
@@ -39,54 +38,12 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         this.onFileImport = this.onFileImport.bind(this);
     }
 
-    componentWillMount() {
-        dispatcher.register((actionName, store: BoardStore) => {
-            switch (actionName) {
-                case "refreshBoard":
-                    this.syncSelBoard(store);
-                    break;
-            }
-        });
-    }
-
-    private syncSelBoard(store: BoardStore) {
-
-        const {currentBoard, boards} = store;
-
-        if (currentBoard !== null) {
-            this.setState({
-                currentBoard,
-                isColBeingAdded: false,
-                isBoardBeingAdded: false,
-                boardBeingEdited: null,
-                boards
-            });
-        }
-
-    }
-
     render() {
 
-        const boards = this.state.boards;
-        let boardOptions: Array<JSX.Element> = [];
         let boardName;
-        let boardSelector = <div />;
 
-        if (this.state.currentBoard && boards) {
-            boardOptions = boards.map((board) => {
-                return <option key={board.id} value={board.id}>{board.name}</option>;
-            });
-            boardName = this.state.currentBoard.name;
-
-            boardSelector = (
-                <select
-                    value={this.state.currentBoard.id}
-                    onChange={e => this.changeProfile(e)}
-                    title="Change board (Alt+B)">
-                    {boardOptions}
-                </select>
-            );
-
+        if (this.props.currentBoard) {
+            boardName = this.props.currentBoard.name;
         }
 
         const separator = <span> | </span>;
@@ -94,7 +51,6 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
         return (
             <div className="toolbar">
 
-                {boardSelector}{separator}
                 <button onClick={this.onAddBoardClicked}>Add board</button>{separator}
                 <button onClick={this.onEditBoardClicked}>Edit board</button>{separator}
                 <button onClick={this.onAddColStarted}>Add column</button>{separator}
@@ -184,7 +140,7 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
 
         this.setState({
             isBoardBeingAdded: true,
-            boardBeingEdited: this.state.currentBoard ? this.state.currentBoard.id : null
+            boardBeingEdited: this.props.currentBoard ? this.props.currentBoard.id : null
         });
 
     }
@@ -192,10 +148,6 @@ export default class Toolbar extends React.Component<{}, ToolbarState> {
     private onRemoveBoard() {
         this.setState({isBoardBeingAdded: false, boardBeingEdited: null});
         BoardActions.removeCurrentBoard();
-    }
-
-    private changeProfile(e: React.SyntheticEvent<HTMLSelectElement>) {
-        BoardActions.switchBoard(e.currentTarget.value);
     }
 
     private onAdvancedClicked() {
