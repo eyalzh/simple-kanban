@@ -1,17 +1,15 @@
 .nav {
     height: 25px;
     background-color: #1b2f40;
-    padding: 8px 0 0 0;
+    padding: 4px 0 4px 0;
     border-bottom: 2px solid #000000;
     box-shadow: 1px 0 6px 0 rgba(0,0,0,0.75);
 }
 
 .toolbar {
     position: absolute;
-    top: 4px;
+    top: 6px;
     right: 7px;
-    clear: both;
-    height: 40px;
     color: #fff;
     line-height: 14px;
     font-size: 14px;
@@ -37,6 +35,7 @@
 .Dropdown-root {
     position: relative;
     max-width: 300px;
+    top: 4px;
 }
 
 .Dropdown-control {
@@ -53,12 +52,13 @@
     border-width: 5px 5px 0;
     position: absolute;
     left: 6px;
-    top: 10px;
+    top: 8px;
     width: 0;
 }
 
 .Dropdown-placeholder {
     margin-left: 22px;
+    line-height: 20px;
 }
 
 .Dropdown-menu {
