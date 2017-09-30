@@ -76,18 +76,18 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
                 <div className="task-container">
                     {tasks}
                 </div>
-                {this.state.isTaskBeingAdded ? <TaskEditDialog
+                <TaskEditDialog
                     opened={this.state.isTaskBeingAdded}
                     onCloseEditTask={this.closeEditTask}
                     onEditSubmitted={this.onTaskSubmitted}
                     dialogTitle="Add a New Task"
-                /> : null}
-                {this.state.isBeingEdited ? <ColumnEditDialog
+                />
+                 <ColumnEditDialog
                     opened={this.state.isBeingEdited}
                     onEditClose={this.closeEditColumn}
                     column={this.props.column}
                     onEditSubmitted={this.onEditColumnSubmitted}
-                /> : null}
+                />
             </div>
         );
     }
