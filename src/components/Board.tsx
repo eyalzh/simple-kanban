@@ -8,6 +8,7 @@ import {BoardStore} from "../stores/BoardStore";
 import {Task} from "../model/Task";
 import * as BoardActions from "../actions/boardActions";
 import {reorderArray} from "../model/util";
+import {allowBinds, bind} from "../util";
 
 require("./board.css");
 
@@ -18,6 +19,7 @@ interface BoardState {
     columnIdBeingDragged: string | null;
 }
 
+@allowBinds
 export default class Board extends React.Component<{}, BoardState> {
 
     constructor() {
@@ -28,11 +30,6 @@ export default class Board extends React.Component<{}, BoardState> {
             columnTasks: null,
             columnIdBeingDragged: null
         };
-
-        this.onMovedToTrash = this.onMovedToTrash.bind(this);
-        this.onColumnBeingDragged = this.onColumnBeingDragged.bind(this);
-        this.onColumnDraggedEnd = this.onColumnDraggedEnd.bind(this);
-
     }
 
     componentWillMount() {
@@ -88,6 +85,7 @@ export default class Board extends React.Component<{}, BoardState> {
         this.setState({columns: newlyOrderedColumns});
     }
 
+    @bind
     private onMovedToTrash(type: string, data: any) {
 
         switch (type) {
@@ -104,10 +102,12 @@ export default class Board extends React.Component<{}, BoardState> {
 
     }
 
+    @bind
     private onColumnBeingDragged(columnId: string) {
         this.setState({columnIdBeingDragged: columnId});
     }
 
+    @bind
     private onColumnDraggedEnd() {
         this.setState({columnIdBeingDragged: null});
     }

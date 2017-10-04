@@ -5,6 +5,7 @@ import TabbedOptions from "../tabs/TabbedOptions";
 import Tab from "../tabs/Tab";
 import {dialogModalStyle} from "./dialogStyle";
 import TextUploadField from "../fields/TextUploadField";
+import {allowBinds, bind} from "../../util";
 
 interface AdvancedDialogProps {
     opened: boolean;
@@ -16,29 +17,14 @@ interface AdvancedDialogState {
     activeTab: string;
 }
 
+@allowBinds
 export default class AdvancedDialog extends React.Component<AdvancedDialogProps, AdvancedDialogState> {
 
     constructor() {
-
         super();
-
         this.state = {
             activeTab: "import-export"
         };
-
-        this.resetAllDataClicked = this.resetAllDataClicked.bind(this);
-        this.exportDB = this.exportDB.bind(this);
-        this.onTabChange = this.onTabChange.bind(this);
-        this.onImportFileRead = this.onImportFileRead.bind(this);
-
-    }
-
-    onTabChange(tabId) {
-        this.setState({activeTab: tabId});
-    }
-
-    onImportFileRead(text) {
-        this.props.onFileImport(text);
     }
 
     render() {
@@ -90,14 +76,26 @@ export default class AdvancedDialog extends React.Component<AdvancedDialogProps,
 
     }
 
+    @bind
     private resetAllDataClicked() {
         if (window.confirm("Wait, are you sure you want to reset ALL data?")) {
             BoardActions.clear();
         }
     }
 
+    @bind
     private exportDB() {
         BoardActions.exportData();
+    }
+
+    @bind
+    onTabChange(tabId) {
+        this.setState({activeTab: tabId});
+    }
+
+    @bind
+    onImportFileRead(text) {
+        this.props.onFileImport(text);
     }
 
 }

@@ -6,6 +6,7 @@ import {Board} from "../../model/Board";
 import {Template} from "../../model/Templates/Template";
 import AdvancedDialog from "../dialogs/AdvancedDialog";
 import {ColumnOptions} from "../../model/Column";
+import {allowBinds, bind} from "../../util";
 
 interface ToolbarProps {
     currentBoard: Board | null;
@@ -18,24 +19,17 @@ interface ToolbarState {
     boardBeingEdited: string | null | undefined;
 }
 
+@allowBinds
 export default class Toolbar extends React.Component<ToolbarProps, ToolbarState> {
 
     constructor() {
         super();
-
         this.state = {
             isColBeingAdded: false,
             isBoardBeingAdded: false,
             advancedModeOn: false,
             boardBeingEdited: null
         };
-
-        this.onAddBoardClicked = this.onAddBoardClicked.bind(this);
-        this.onEditBoardClicked = this.onEditBoardClicked.bind(this);
-        this.onAddColStarted = this.onAddColStarted.bind(this);
-        this.onAdvancedClicked = this.onAdvancedClicked.bind(this);
-        this.onAdvancedModeClose = this.onAdvancedModeClose.bind(this);
-        this.onFileImport = this.onFileImport.bind(this);
     }
 
     render() {
@@ -58,16 +52,16 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
 
                 <ColumnEditDialog
                     opened={this.state.isColBeingAdded}
-                    onEditClose={this.onColEditClose.bind(this)}
-                    onEditSubmitted={this.onAddColSubmitted.bind(this)}
+                    onEditClose={this.onColEditClose}
+                    onEditSubmitted={this.onAddColSubmitted}
                 />
                 <BoardEditDialog
-                    opened={this.state.isBoardBeingAdded}
+                    opened={this.state.isBoardBeingAdded || this.props.currentBoard === null}
                     boardId={this.state.boardBeingEdited}
                     boardName={boardName}
-                    onEditClose={this.onBoardEditClose.bind(this)}
-                    onEditSubmitted={this.onAddBoardSubmitted.bind(this)}
-                    onRemoveBoard={this.onRemoveBoard.bind(this)}
+                    onEditClose={this.onBoardEditClose}
+                    onEditSubmitted={this.onAddBoardSubmitted}
+                    onRemoveBoard={this.onRemoveBoard}
                 />
                 <AdvancedDialog
                     opened={this.state.advancedModeOn}
@@ -79,12 +73,14 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
         );
     }
 
+    @bind
     private onColEditClose() {
         this.setState({
             isColBeingAdded: false
         });
     }
 
+    @bind
     private onBoardEditClose() {
         this.setState({
             isBoardBeingAdded: false,
@@ -92,6 +88,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
         });
     }
 
+    @bind
     private onAddBoardClicked() {
         this.setState({
             isBoardBeingAdded: true,
@@ -99,12 +96,14 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
         });
     }
 
+    @bind
     private onAddColStarted() {
         this.setState({
             isColBeingAdded: true
         });
     }
 
+    @bind
     private onAddColSubmitted(columnName: string, wipLimit: number, options?: ColumnOptions) {
 
         this.setState({
@@ -119,6 +118,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
         }
     }
 
+    @bind
     private onAddBoardSubmitted(boardName: string, template: Template | undefined) {
 
         this.setState({isBoardBeingAdded: false});
@@ -136,6 +136,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
         }
     }
 
+    @bind
     private onEditBoardClicked() {
 
         this.setState({
@@ -145,23 +146,27 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
 
     }
 
+    @bind
     private onRemoveBoard() {
         this.setState({isBoardBeingAdded: false, boardBeingEdited: null});
         BoardActions.removeCurrentBoard();
     }
 
+    @bind
     private onAdvancedClicked() {
         this.setState({
             advancedModeOn: true
         });
     }
 
+    @bind
     private onAdvancedModeClose() {
         this.setState({
             advancedModeOn: false
         });
     }
 
+    @bind
     private onFileImport(text: string) {
         BoardActions.importFromJSON(text);
     }

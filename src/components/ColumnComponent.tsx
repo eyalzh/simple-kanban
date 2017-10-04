@@ -3,7 +3,7 @@ import {Column, ColumnOptions, ColumnSize} from "../model/Column";
 import {Task, TaskPresentationalOptions} from "../model/task";
 import TaskComponent from "./TaskComponent";
 import * as BoardActions from "../actions/boardActions";
-import {classSet} from "../util";
+import {allowBinds, bind, classSet} from "../util";
 import TaskEditDialog from "./dialogs/TaskEditDialog";
 import ColumnEditDialog from "./dialogs/ColumnEditDialog";
 import {draggable, droppable, Referrable} from "./dragAndDrop";
@@ -20,23 +20,16 @@ interface ColumnState {
     isHoverMode: boolean;
 }
 
+@allowBinds
 class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
 
     constructor() {
-
         super();
-
         this.state = {
             isTaskBeingAdded: false,
             isBeingEdited: false,
             isHoverMode: false
         };
-
-        this.closeEditTask = this.closeEditTask.bind(this);
-        this.onTaskSubmitted = this.onTaskSubmitted.bind(this);
-        this.closeEditColumn = this.closeEditColumn.bind(this);
-        this.onEditColumnSubmitted = this.onEditColumnSubmitted.bind(this);
-
     }
 
     render() {
@@ -67,7 +60,7 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
             <div
                 ref={this.props.innerRef}
                 className={classNames}
-                onDoubleClick={() => this.onAddTask()}>
+                onDoubleClick={this.onAddTask}>
 
                 <div className="column-header" title="double click to edit" onDoubleClick={e => this.editColumn(e)}>
                     <div>{this.props.column.name}</div>
@@ -92,6 +85,7 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
         );
     }
 
+    @bind
     private onAddTask() {
         this.setState({isTaskBeingAdded: true});
     }
@@ -101,6 +95,7 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
         e.stopPropagation();
     }
 
+    @bind
     private onEditColumnSubmitted(name: string, wipLimit: number, options: ColumnOptions) {
         if (name !== null && Number.isInteger(wipLimit) && wipLimit > 0) {
             name = name.trim();
@@ -112,14 +107,17 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
         this.setState({isBeingEdited: false});
     }
 
+    @bind
     private closeEditTask() {
         this.setState({isTaskBeingAdded: false});
     }
 
+    @bind
     private closeEditColumn() {
         this.setState({isBeingEdited: false});
     }
 
+    @bind
     private onTaskSubmitted(desc: string, longdesc: string, presentationalOptions: TaskPresentationalOptions) {
         BoardActions.addTask(this.props.column, desc, longdesc, presentationalOptions);
     }

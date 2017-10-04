@@ -5,7 +5,7 @@ import {Column} from "../model/Column";
 import TaskEditDialog from "./dialogs/TaskEditDialog";
 import AnnotatedHashtagDiv from "./AnnotatedHashtagDiv";
 import {draggable, Referrable} from "./dragAndDrop";
-import {calcColorBasedOnBackground} from "../util";
+import {allowBinds, bind, calcColorBasedOnBackground} from "../util";
 
 interface TaskProps extends Referrable {
     task: Task;
@@ -16,19 +16,14 @@ interface TaskState {
     isBeingEdited: boolean;
 }
 
+@allowBinds
 class TaskComponent extends React.Component<TaskProps, TaskState> {
 
     constructor() {
-
         super();
-
         this.state = {
             isBeingEdited: false
         };
-
-        this.closeEditTask = this.closeEditTask.bind(this);
-        this.onTaskSubmitted = this.onTaskSubmitted.bind(this);
-
     }
 
     render() {
@@ -68,13 +63,14 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
     private editTask(e: React.MouseEvent<HTMLElement>) {
         this.setState({isBeingEdited: true});
         e.stopPropagation();
-
     }
 
+    @bind
     private onTaskSubmitted(desc, longdesc, presentationalOptions) {
         BoardActions.editTask(this.props.task.id, desc, longdesc, presentationalOptions);
     }
 
+    @bind
     private closeEditTask() {
         this.setState({isBeingEdited: false});
     }

@@ -1,6 +1,7 @@
 
 import * as React from "react";
 import {TabProps} from "./Tab";
+import {allowBinds, bind} from "../../util";
 
 require("./tabs.css");
 
@@ -10,16 +11,8 @@ interface TabbedOptionsProps {
 
 }
 
+@allowBinds
 export default class TabbedOptions extends React.Component<TabbedOptionsProps, {}> {
-
-    constructor() {
-        super();
-        this.onTabClicked = this.onTabClicked.bind(this);
-    }
-
-    onTabClicked(tabId) {
-        this.props.onTabChange(tabId);
-    }
 
     render() {
 
@@ -54,6 +47,11 @@ export default class TabbedOptions extends React.Component<TabbedOptionsProps, {
 
             </div>
         );
+    }
+
+    @bind
+    onTabClicked(tabId) {
+        this.props.onTabChange(tabId);
     }
 
 }

@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Board} from "../../model/Board";
 import Dropdown from "react-dropdown";
+import {allowBinds, bind} from "../../util";
 
 interface BoardSelectorProps {
     currentBoard: Board | null;
@@ -13,12 +14,8 @@ interface BoardOption {
     label: string;
 }
 
+@allowBinds
 export default class BoardSelector extends React.Component<BoardSelectorProps, {}> {
-
-    constructor() {
-        super();
-        this.onChangeBoard = this.onChangeBoard.bind(this);
-    }
 
     render() {
 
@@ -41,6 +38,7 @@ export default class BoardSelector extends React.Component<BoardSelectorProps, {
 
     }
 
+    @bind
     onChangeBoard(selectedBoardOption: BoardOption) {
         this.props.changeBoard(selectedBoardOption.value);
     }

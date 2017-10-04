@@ -1,17 +1,21 @@
 import * as React from "react";
+import {allowBinds, bind} from "../../util";
 
 interface UploadFieldProps {
     accept: string;
     onFileRead: (text: string) => void;
 }
 
+@allowBinds
 export default class TextUploadField extends React.Component<UploadFieldProps, {}> {
 
-    constructor() {
-        super();
-        this.handleFiles = this.handleFiles.bind(this);
+    render() {
+        return (
+            <input type="file" accept={this.props.accept} onChange={this.handleFiles} />
+        );
     }
 
+    @bind
     handleFiles(event: React.FormEvent<HTMLInputElement>) {
         const files = event.currentTarget.files;
 
@@ -32,12 +36,6 @@ export default class TextUploadField extends React.Component<UploadFieldProps, {
             reader.readAsText(files[0]);
         }
 
-    }
-
-    render() {
-        return (
-            <input type="file" accept={this.props.accept} onChange={this.handleFiles} />
-        );
     }
 
 }

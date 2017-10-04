@@ -5,6 +5,7 @@ import {Board} from "../../model/Board";
 import Toolbar from "./Toolbar";
 import BoardSelector from "./BoardSelector";
 import * as BoardActions from "../../actions/boardActions";
+import {allowBinds, bind} from "../../util";
 
 require("./nav.css");
 
@@ -13,6 +14,7 @@ interface NavState {
     boards: Array<Board> | null;
 }
 
+@allowBinds
 export default class Nav extends React.Component<{}, NavState> {
 
     constructor() {
@@ -21,9 +23,6 @@ export default class Nav extends React.Component<{}, NavState> {
             currentBoard: null,
             boards: null
         };
-
-        this.changeBoard = this.changeBoard.bind(this);
-
     }
 
     componentWillMount() {
@@ -40,12 +39,10 @@ export default class Nav extends React.Component<{}, NavState> {
 
         const {currentBoard, boards} = store;
 
-        if (currentBoard !== null) {
-            this.setState({
-                currentBoard,
-                boards
-            });
-        }
+        this.setState({
+            currentBoard,
+            boards
+        });
 
     }
 
@@ -65,6 +62,7 @@ export default class Nav extends React.Component<{}, NavState> {
 
     }
 
+    @bind
     private changeBoard(selectedBoardId: string) {
         BoardActions.switchBoard(selectedBoardId);
     }

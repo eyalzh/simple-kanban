@@ -1,6 +1,6 @@
 import * as React from "react";
 import Markdown from "../Markdown";
-import {classSet} from "../../util";
+import {allowBinds, bind, classSet} from "../../util";
 import {Timestamp} from "../../model/Timestamp";
 import * as Modal from "react-modal";
 import AnnotatedHashtagDiv from "../AnnotatedHashtagDiv";
@@ -26,6 +26,7 @@ interface TaskEditDialogState {
 
 const DEFAULT_COLOR = "#fff6a8";
 
+@allowBinds
 export default class TaskEditDialog extends React.Component<TaskEditDialogProps, TaskEditDialogState> {
 
     private fieldInput: HTMLInputElement | null;
@@ -33,15 +34,6 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     constructor(props) {
         super(props);
         this.state = this.getInitState(props);
-
-        this.onRequestClose = this.onRequestClose.bind(this);
-        this.onEditSaveAndClose = this.onEditSaveAndClose.bind(this);
-        this.onEditSubmitted = this.onEditSubmitted.bind(this);
-        this.onEditDialogOpen = this.onEditDialogOpen.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.onLongDescChange = this.onLongDescChange.bind(this);
-        this.onColorChanged = this.onColorChanged.bind(this);
-
     }
 
     componentWillReceiveProps(props: TaskEditDialogProps) {
@@ -155,6 +147,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         );
     }
 
+    @bind
     private onRequestClose() {
         const confirmationMessage = "Are you sure you want to close the dialog? No changes will be saved.";
         let longdesc;
@@ -167,20 +160,24 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         }
     }
 
+    @bind
     private onChange(e: React.FormEvent<HTMLInputElement>) {
         const desc = e.currentTarget.value;
         this.setState({desc});
     }
 
+    @bind
     private onLongDescChange(e: React.FormEvent<HTMLTextAreaElement>) {
         const longdesc = e.currentTarget.value;
         this.setState({longdesc});
     }
 
+    @bind
     private onColorChanged(color: string) {
         this.setState({color});
     }
 
+    @bind
     private onEditSubmitted() {
         const presentationalOptions = {
             color: this.state.color
@@ -188,11 +185,13 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         this.props.onEditSubmitted(this.state.desc, this.state.longdesc, presentationalOptions);
     }
 
+    @bind
     private onEditSaveAndClose() {
         this.onEditSubmitted();
         this.props.onCloseEditTask();
     }
 
+    @bind
     private onEditDialogOpen() {
         if (this.fieldInput) {
             this.fieldInput.focus();

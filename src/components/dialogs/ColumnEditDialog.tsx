@@ -3,6 +3,7 @@ import * as Modal from "react-modal";
 import {Column, ColumnOptions, ColumnSize} from "../../model/Column";
 import {dialogContainerStyle, dialogModalStyle} from "./dialogStyle";
 import FormField from "../fields/FormField";
+import {allowBinds, bind} from "../../util";
 
 interface ColumnEditDialogProps {
     column?: Column;
@@ -17,6 +18,7 @@ interface ColumnEditDialogState {
     size: ColumnSize | undefined;
 }
 
+@allowBinds
 export default class ColumnEditDialog extends React.Component<ColumnEditDialogProps, ColumnEditDialogState> {
 
     private fieldInput: HTMLInputElement | null;
@@ -24,12 +26,6 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
     constructor(props) {
         super(props);
         this.state = this.getInitState(props);
-
-        this.onSizeChanged = this.onSizeChanged.bind(this);
-        this.onEditDialogOpen = this.onEditDialogOpen.bind(this);
-        this.onNameChange = this.onNameChange.bind(this);
-        this.onKeyPressed = this.onKeyPressed.bind(this);
-        this.onWipLimitChange = this.onWipLimitChange.bind(this);
     }
 
     componentWillReceiveProps(props) {
@@ -99,7 +95,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
                     </FormField>
 
                     <p>
-                        <button onClick={() => this.onEditSubmitted()}>Submit</button>&nbsp;
+                        <button onClick={this.onEditSubmitted}>Submit</button>&nbsp;
                         <button onClick={this.props.onEditClose}>Cancel</button>
                     </p>
                 </div>
@@ -108,27 +104,32 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
         );
     }
 
+    @bind
     private onKeyPressed(ev: React.KeyboardEvent<HTMLElement>) {
         if (ev.key === "Enter") {
             this.onEditSubmitted();
         }
     }
 
+    @bind
     private onNameChange(e: React.FormEvent<HTMLInputElement>) {
         const name = e.currentTarget.value;
         this.setState({name});
     }
 
+    @bind
     private onWipLimitChange(e: React.FormEvent<HTMLInputElement>) {
         const wipLimit = Number(e.currentTarget.value);
         this.setState({wipLimit});
     }
 
+    @bind
     private onSizeChanged(e: React.FormEvent<HTMLSelectElement>) {
         const size = Number(e.currentTarget.value);
         this.setState({size});
     }
 
+    @bind
     private onEditSubmitted() {
         const options = {
             size: this.state.size
@@ -136,6 +137,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
         this.props.onEditSubmitted(this.state.name, this.state.wipLimit, options);
     }
 
+    @bind
     private onEditDialogOpen() {
         if (this.fieldInput) {
             this.fieldInput.focus();

@@ -42,3 +42,24 @@ export function calcColorBasedOnBackground(color: string): string {
     return response;
 
 }
+
+export function bind(target, key) {
+    if (typeof target.__bindlist === 'undefined') {
+        target.__bindlist = [];
+    }
+    target.__bindlist.push(key);
+}
+
+export function allowBinds<T extends {new(...args:any[]):{}}>(constructor:T) {
+
+    const target = constructor;
+
+    return class extends constructor {
+        constructor(...args) {
+            super(...args);
+            (this['__bindlist'] || []).forEach(key => {
+                Object.defineProperty(this, key, {value: target.prototype[key].bind(this)});
+            });
+        }
+    }
+}

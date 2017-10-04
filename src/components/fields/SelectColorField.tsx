@@ -1,4 +1,5 @@
 import * as React from "react";
+import {allowBinds, bind} from "../../util";
 
 require("./fields.css");
 
@@ -7,17 +8,8 @@ interface SelectColorFieldProps {
     onChange: (color: string) => void;
 }
 
+@allowBinds
 export default class SelectColorField extends React.Component<SelectColorFieldProps, {}> {
-
-    constructor() {
-        super();
-        this.onChange = this.onChange.bind(this);
-    }
-
-    private onChange(ev: React.FormEvent<HTMLInputElement>) {
-        const value = ev.currentTarget.value;
-        this.props.onChange(value);
-    }
 
     render() {
         return <input
@@ -25,6 +17,12 @@ export default class SelectColorField extends React.Component<SelectColorFieldPr
             value={this.props.value}
             onChange={this.onChange}
             type="color" />;
+    }
+
+    @bind
+    private onChange(ev: React.FormEvent<HTMLInputElement>) {
+        const value = ev.currentTarget.value;
+        this.props.onChange(value);
     }
 
 }
