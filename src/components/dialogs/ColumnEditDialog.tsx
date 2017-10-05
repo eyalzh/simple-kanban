@@ -55,6 +55,8 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
 
     render() {
 
+        if (! this.props.opened) return null;
+
         const title = this.props.column ? "Edit Column" : "Add Column";
 
         return (

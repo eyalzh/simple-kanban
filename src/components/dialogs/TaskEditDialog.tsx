@@ -60,6 +60,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
     render() {
 
+        if (! this.props.opened) return null;
+
         const previewVisible = this.state.longdesc.length > 0;
 
         const previewClassnames = classSet({
