@@ -18,7 +18,7 @@ class Sanitizer {
     }
 
     public sanitizeBoardName(boardName: string): string {
-        return boardName.trim().substr(0, 24);
+        return boardName.trim().substr(0, 32);
     }
 
 }
