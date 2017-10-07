@@ -16,7 +16,7 @@ interface AnnotatedHashtagDivState {
     textParts: AnnotatedTextPart[];
 }
 
-export default class AnnotatedHashtagDiv extends React.Component<AnnotatedHashtagDivProps, AnnotatedHashtagDivState> {
+export default class AnnotatedHashtagDiv extends React.PureComponent<AnnotatedHashtagDivProps, AnnotatedHashtagDivState> {
 
     constructor() {
         super();
