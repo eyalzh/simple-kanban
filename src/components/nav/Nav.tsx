@@ -12,6 +12,7 @@ require("./nav.css");
 interface NavState {
     currentBoard: Board | null;
     boards: Array<Board> | null;
+    initialized: boolean;
 }
 
 @allowBinds
@@ -21,7 +22,8 @@ export default class Nav extends React.Component<{}, NavState> {
         super();
         this.state = {
             currentBoard: null,
-            boards: null
+            boards: null,
+            initialized: false
         };
     }
 
@@ -41,12 +43,20 @@ export default class Nav extends React.Component<{}, NavState> {
 
         this.setState({
             currentBoard,
-            boards
+            boards,
+            initialized: true
         });
 
     }
 
+    shouldComponentUpdate(_nextProps, nextState: NavState) {
+        const {currentBoard} = nextState;
+        return (currentBoard === null || this.state.currentBoard === null || currentBoard.id !== this.state.currentBoard.id);
+    }
+
     render() {
+
+        if (! this.state.initialized) return null;
 
         return (
             <div className="nav">
