@@ -83,7 +83,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         } else {
             buttonEls = (
                 <p>
-                    <button onClick={this.onEditSaveAndClose}>Add</button>&nbsp;
+                    <button onClick={this.onEditSaveAndClose}>Submit</button>&nbsp;
+                    <button onClick={this.onEditSaveAndNew}>Submit &amp; Another</button>&nbsp;
                     <button onClick={this.onRequestClose}>Close</button>
                 </p>
             );
@@ -110,7 +111,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                                 value={this.state.desc}
                                 onChange={this.onChange}
                                 ref={(input) => {this.fieldInput = input;}}
-                                onKeyPress={(ev) => {ev.key === "Enter" && this.onEditSaveAndClose();}}
+                                onKeyPress={this.onInputKeyPress}
                             />
                         </p>
                         <p>
@@ -197,6 +198,25 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     private onEditDialogOpen() {
         if (this.fieldInput) {
             this.fieldInput.focus();
+        }
+    }
+
+    @bind
+    private onEditSaveAndNew() {
+        this.onEditSubmitted();
+        this.setState(this.getInitState(this.props));
+    }
+
+    @bind
+    private onInputKeyPress(ev: React.KeyboardEvent<HTMLInputElement>) {
+        if (ev.key === "Enter" && this.state.desc.length > 0) {
+            const notInEditMode = !this.props.task;
+            const shiftUsed = ev.shiftKey;
+            if (shiftUsed && notInEditMode) {
+                this.onEditSaveAndNew();
+            } else {
+                this.onEditSaveAndClose();
+            }
         }
     }
 
