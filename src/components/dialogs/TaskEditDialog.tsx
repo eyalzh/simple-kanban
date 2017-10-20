@@ -37,10 +37,12 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     }
 
     componentWillReceiveProps(props: TaskEditDialogProps) {
-        this.setState(this.getInitState(props));
+        if (!props.task || this.props.task !== props.task) {
+            this.setState(this.getInitState(props));
+        }
     }
 
-    private getInitState(props: TaskEditDialogProps) {
+    private getInitState(props: TaskEditDialogProps): TaskEditDialogState  {
 
         let desc = "", longdesc = "", color = DEFAULT_COLOR, createdAt, lastUpdatedAt, presentationalOptions;
 
