@@ -35,7 +35,7 @@
 .Dropdown-root {
     position: relative;
     max-width: 360px;
-    top: 4px;
+    top: 2px;
 }
 
 .Dropdown-control {
@@ -52,13 +52,13 @@
     border-width: 5px 5px 0;
     position: absolute;
     left: 6px;
-    top: 8px;
+    top: 10px;
     width: 0;
 }
 
 .Dropdown-placeholder {
     margin-left: 22px;
-    line-height: 21px;
+    line-height: 24px;
 }
 
 .Dropdown-menu {
