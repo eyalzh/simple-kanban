@@ -51,7 +51,10 @@ export default class Nav extends React.Component<{}, NavState> {
 
     shouldComponentUpdate(_nextProps, nextState: NavState) {
         const {currentBoard} = nextState;
-        return (currentBoard === null || this.state.currentBoard === null || currentBoard.id !== this.state.currentBoard.id);
+        return (currentBoard === null
+            || this.state.currentBoard === null
+            || currentBoard.id !== this.state.currentBoard.id
+            || currentBoard.name !== this.state.currentBoard.name);
     }
 
     render() {
