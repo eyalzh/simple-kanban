@@ -59,14 +59,13 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
         return (
             <div
                 ref={this.props.innerRef}
-                className={classNames}
-                onDoubleClick={this.onAddTask}>
+                className={classNames}>
 
                 <div className="column-header" title="double click to edit" onDoubleClick={e => this.editColumn(e)}>
                     <div>{this.props.column.name}</div>
                     <div className="wip">{taskCount} / {this.props.column.wipLimit}</div>
                 </div>
-                <div className="task-container">
+                <div className="task-container" onDoubleClick={this.onAddTask}>
                     {tasks}
                 </div>
                 <TaskEditDialog
