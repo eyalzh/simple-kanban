@@ -16,9 +16,9 @@
   "author": "eyalzh@gmail.com",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "*",
     "@types/chai": "^4.0.1",
     "@types/mocha": "^2.2.43",
+    "@types/node": "*",
     "@types/react": "^16.0.0",
     "@types/react-dom": "^16.0.0",
     "chai": "^3.5.0",
@@ -31,7 +31,7 @@
     "ts-loader": "^2.3.7",
     "ts-node": "^3.1.0",
     "tslint": "^3.15.1",
-    "typescript": "^2.5.3",
+    "typescript": "^2.6.1",
     "uglifyjs-webpack-plugin": "1.0.0-beta.2",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"

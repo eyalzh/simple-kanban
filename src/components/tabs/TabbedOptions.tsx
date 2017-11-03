@@ -17,21 +17,26 @@ export default class TabbedOptions extends React.Component<TabbedOptionsProps, {
     render() {
 
         const tabs: Array<React.ReactElement<any>> = [];
-        const tabSections: Array<React.ReactElement<any>> = React.Children.map(this.props.children, (tab: React.ReactElement<TabProps>) => {
+        const tabSections: Array<React.ReactElement<any>> = React.Children.map(
+            this.props.children,
+            (tabChild: React.ReactChild) => {
 
-            tabs.push(<TabItem
-                key={tab.props.id}
-                id={tab.props.id}
-                name={tab.props.name}
-                active={this.props.activeTab === tab.props.id}
-                onClick={this.onTabClicked}
-            />);
+                const tab = tabChild as React.ReactElement<TabProps>;
 
-            return React.cloneElement<any, any>(tab, {
-                isVisible: this.props.activeTab === tab.props.id
-            });
+                tabs.push(<TabItem
+                    key={tab.props.id}
+                    id={tab.props.id}
+                    name={tab.props.name}
+                    active={this.props.activeTab === tab.props.id}
+                    onClick={this.onTabClicked}
+                />);
 
-        });
+                return React.cloneElement<any, any>(tab, {
+                    isVisible: this.props.activeTab === tab.props.id
+                });
+
+            }
+        );
 
         return (
 

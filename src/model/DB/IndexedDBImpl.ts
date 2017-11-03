@@ -60,8 +60,9 @@ export default class IndexedDBImpl implements DB {
                     reject(new Error("open database - blocked"));
                 });
 
-                request.addEventListener("error", (ev: ErrorEvent) => {
-                    reject(new Error(`open database - error: ${ev.message}`));
+                request.addEventListener("error", (ev: Event) => {
+                    const errorEvent = ev as ErrorEvent;
+                    reject(new Error(`open database - error: ${errorEvent.message}`));
                 });
             }
 
@@ -151,7 +152,12 @@ export default class IndexedDBImpl implements DB {
     }
 
     modifyStore<T>(storeName: string, key: string, modifier: (value: T) => T): Promise<void> {
-        return this.getDocumentByKey(storeName, key).then((value: T) => {
+
+        return this.getDocumentByKey<T | null>(storeName, key).then<void>((value: T | null) => {
+
+            if (value === null) {
+                return Promise.resolve();
+            }
 
             return new Promise<void>((resolve, reject) => {
 

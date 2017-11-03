@@ -138,7 +138,7 @@ export default class TaskModel {
 
         if (boardsToColsMap !== null) {
             for (let colId of boardsToColsMap) {
-                const col = await this.db.getDocumentByKey<Column>(COLUMNS_MAP_NAME, colId);
+                const col = await this.getColumnById(colId);
                 if (col) {
                     cols.push(col);
                 }
@@ -146,6 +146,14 @@ export default class TaskModel {
         }
 
         return cols;
+    }
+
+    public async getColumnById(columnId: string): Promise<Column | null> {
+        try {
+            return await this.db.getDocumentByKey<Column>(COLUMNS_MAP_NAME, columnId);
+        } catch (ex) {
+            return null;
+        }
     }
 
     public async addColumn(name: string, wipLimit?: number, options?: ColumnOptions): Promise<string> {
@@ -228,7 +236,8 @@ export default class TaskModel {
             desc: sanitizer.sanitizeTaskTitle(desc),
             longdesc: typeof longdesc !== "undefined" ? longdesc : "",
             createdAt: getCurrentTime(),
-            presentationalOptions
+            presentationalOptions,
+            baseColumnId: columnId
         };
 
         await this.db.addToStore(TASKS_NAME, newKey, newTask);

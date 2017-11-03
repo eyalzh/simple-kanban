@@ -58,6 +58,36 @@ describe("task model", function () {
 
     });
 
+    it("getColumnById should return the col of an existing column", async function() {
+
+        const taskModel = new TaskModel(storageMock);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
+
+        const colId = await taskModel.addColumn("foo");
+
+        const col = await taskModel.getColumnById(colId);
+
+        if (col === null) {
+            expect.fail(null, col,"getColumnById failed to find existing column");
+        } else {
+            expect(col.name).to.equal("foo");
+        }
+
+    });
+
+    it("getColumnById should return null for a column id that doesn't exist", async function() {
+        const taskModel = new TaskModel(storageMock);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
+
+        await taskModel.addColumn("foo");
+
+        const col = await taskModel.getColumnById("__non_existent_id__");
+
+        expect(col).to.equal(null);
+    });
+
     it("getTasks should return the list of tasks", async function () {
 
         const taskModel = new TaskModel(storageMock);
@@ -276,6 +306,40 @@ describe("task model", function () {
 
         const actualOptions = tasks[0].presentationalOptions || {};
         expect(actualOptions.color).to.equal("#fff");
+
+    });
+
+    it("base column should be saved on a new task", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const boardId = await taskModel.addBoard("foo");
+        await taskModel.setCurrentBoard(boardId);
+
+        const columnId = await taskModel.addColumn("bar");
+
+        await taskModel.addTask(columnId, "baz");
+
+        const tasks = await taskModel.getTasks();
+
+        expect(tasks[0].baseColumnId).to.equal(columnId);
+
+    });
+
+    it("base column should not change after moving a task", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const boardId = await taskModel.addBoard("foo");
+        await taskModel.setCurrentBoard(boardId);
+
+        const column1Id = await taskModel.addColumn("col1");
+        const column2Id = await taskModel.addColumn("col2");
+
+        const taskId = await taskModel.addTask(column1Id, "baz");
+        await taskModel.moveTask(taskId, column1Id, column2Id);
+
+        const tasks = await taskModel.getTasks();
+
+        expect(tasks[0].baseColumnId).to.equal(column1Id);
 
     });
 

@@ -24,4 +24,7 @@ export interface Task {
     // Presentational options
     presentationalOptions?: TaskPresentationalOptions;
 
+    // The column in which the task was originated
+    baseColumnId?: string;
+
 }
