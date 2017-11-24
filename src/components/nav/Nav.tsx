@@ -1,6 +1,6 @@
 import * as React from "react";
 import dispatcher from "../../Dispatcher";
-import {BoardStore} from "../../stores/BoardStore";
+import {FullStore} from "../../stores/BoardStore";
 import {Board} from "../../model/Board";
 import Toolbar from "./Toolbar";
 import BoardSelector from "./BoardSelector";
@@ -28,16 +28,16 @@ export default class Nav extends React.Component<{}, NavState> {
     }
 
     componentWillMount() {
-        dispatcher.register((actionName, store) => {
+        dispatcher.register((actionName, store: FullStore) => {
             switch (actionName) {
-                case "refreshBoard":
+                case "refreshFull":
                     this.syncSelBoard(store);
                     break;
             }
         });
     }
 
-    private syncSelBoard(store: BoardStore) {
+    private syncSelBoard(store: FullStore) {
 
         const {currentBoard, boards} = store;
 

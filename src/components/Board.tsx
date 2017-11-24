@@ -35,7 +35,8 @@ export default class Board extends React.Component<{}, BoardState> {
     componentWillMount() {
         dispatcher.register((actionName, store: BoardStore) => {
             switch (actionName) {
-                case "refreshBoard":
+                case "refreshFull":
+                case "refreshCurrentBoard":
                     this.syncState(store);
                     break;
             }

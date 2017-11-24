@@ -34,7 +34,7 @@ taskModel.init()
             </div>
             , cont);
 
-        BoardActions.dispatchRefreshBoard();
+        BoardActions.dispatchRefreshFull();
 
     })
 

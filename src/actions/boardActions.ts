@@ -2,7 +2,7 @@ import {Column, ColumnOptions} from "../model/Column";
 import dispatcher from "../Dispatcher";
 import {getModel} from "../context";
 import NonEmptyColumnException from "../model/NonEmptyColumnException";
-import {BoardStore} from "../stores/BoardStore";
+import {BoardStore, FullStore} from "../stores/BoardStore";
 import {Task, TaskPresentationalOptions} from "../model/Task";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
@@ -12,19 +12,19 @@ import DataExporter from "../model/export/DataExporter";
 export function addColumn(columnName: string, wipLimit: number, options?: ColumnOptions) {
     getModel()
         .addColumn(columnName, wipLimit, options)
-        .then(this.dispatchRefreshBoard);
+        .then(this.dispatchRefreshCurrentBoard);
 }
 
 export function addTask(column: Column, taskDesc: string, taskLongDesc?: string, presentationalOptions?: TaskPresentationalOptions) {
     getModel()
         .addTask(column.id, taskDesc, taskLongDesc, presentationalOptions)
-        .then(this.dispatchRefreshBoard);
+        .then(this.dispatchRefreshCurrentBoard);
 }
 
 export function deleteTask(columnId: string, taskId: string) {
     getModel()
         .deleteTask(columnId, taskId)
-        .then(this.dispatchRefreshBoard);
+        .then(this.dispatchRefreshCurrentBoard);
 }
 
 export function clear() {
@@ -38,26 +38,26 @@ export function clear() {
 export function setOrder(boardId: string, columnIds: Array<string>) {
     getModel()
         .setOrder(boardId, columnIds)
-        .then(this.dispatchRefreshBoard);
+        .then(this.dispatchRefreshCurrentBoard);
 }
 
 export function editTask(taskId: string, newDesc: string, newLongDesc?: string, presentationalOptions?: TaskPresentationalOptions) {
     getModel()
         .editTask(taskId, newDesc, newLongDesc, presentationalOptions)
-        .then(this.dispatchRefreshBoard);
+        .then(this.dispatchRefreshCurrentBoard);
 }
 
 export function moveTask(taskId: string, sourceColumnId: string, targetColumnId: string) {
     getModel()
         .moveTask(taskId, sourceColumnId, targetColumnId)
-        .then(this.dispatchRefreshBoard);
+        .then(this.dispatchRefreshCurrentBoard);
 }
 
 export function removeColumn(boardId: string, columnId: string) {
 
     getModel()
         .removeColumn(boardId, columnId)
-        .then(this.dispatchRefreshBoard)
+        .then(this.dispatchRefreshCurrentBoard)
         .catch(e => {
             if (e instanceof NonEmptyColumnException) {
                 alert("Cannot remove a column that has tasks");
@@ -71,13 +71,13 @@ export function removeColumn(boardId: string, columnId: string) {
 export function editColumn(column: Column, newName: string, newWip: number, options?: ColumnOptions) {
     getModel()
         .editColumn(column.id, newName, newWip, options)
-        .then(this.dispatchRefreshBoard);
+        .then(this.dispatchRefreshCurrentBoard);
 }
 
 export function switchBoard(boardId: string) {
     getModel()
         .setCurrentBoard(boardId)
-        .then(this.dispatchRefreshBoard);
+        .then(this.dispatchRefreshFull);
 }
 
 export function addBoard(boardName: string, template: Template | undefined) {
@@ -92,14 +92,14 @@ export function addBoard(boardName: string, template: Template | undefined) {
                 return template.applyOnModel(getModel());
             }
         })
-        .then(this.dispatchRefreshBoard);
+        .then(this.dispatchRefreshFull);
 
 }
 
 export function editCurrentBoard(boardName: string) {
     getModel()
         .editCurrentBoard(boardName)
-        .then(this.dispatchRefreshBoard);
+        .then(this.dispatchRefreshFull);
 }
 
 export function removeCurrentBoard() {
@@ -123,7 +123,7 @@ export function removeCurrentBoard() {
 
         }
 
-    })().then(this.dispatchRefreshBoard);
+    })().then(this.dispatchRefreshFull);
 
 }
 
@@ -140,34 +140,60 @@ export function exportData() {
 export function importFromJSON(json: string) {
     const model = getModel();
     const exporter = new DataExporter(model);
-    exporter.import(JSON.parse(json)).then(this.dispatchRefreshBoard);
+    exporter.import(JSON.parse(json)).then(this.dispatchRefreshFull);
 }
 
-export function dispatchRefreshBoard() {
+async function buildBoardStoreFromModel() {
+    const model = getModel();
+
+    const currentBoardId = await model.getCurrentBoard();
+
+    let currentBoard: Board | null = null;
+    let columnsInBoard: Array<Column> | null = null;
+    let columnTasks: Map<string, Array<Task>> = new Map();
+
+    if (currentBoardId !== null) {
+        currentBoard = await model.getBoardById(currentBoardId);
+        columnsInBoard = await model.getColumnsByBoard(currentBoardId);
+        for (let col of columnsInBoard) {
+            const tasks = await model.getTasksByColumn(col.id);
+            columnTasks.set(col.id, tasks);
+        }
+    }
+
+    const store: BoardStore = {currentBoard, columnsInBoard, columnTasks};
+    return store;
+}
+
+export function dispatchRefreshFull() {
 
     (async function() {
+
+        console.time("dispatchRefreshFull");
 
         const model = getModel();
 
         const boards = await model.getBoards();
-        const currentBoardId = await model.getCurrentBoard();
+        const boardStore = await buildBoardStoreFromModel();
+        const store: FullStore = {boards, ...boardStore};
 
-        let currentBoard: Board | null = null;
-        let columnsInBoard: Array<Column> | null = null;
-        let columnTasks: Map<string, Array<Task>> = new Map();
+        console.timeEnd("dispatchRefreshFull");
 
-        if (currentBoardId !== null) {
-            currentBoard = await model.getBoardById(currentBoardId);
-            columnsInBoard = await model.getColumnsByBoard(currentBoardId);
-            for (let col of columnsInBoard) {
-                const tasks = await model.getTasksByColumn(col.id);
-                columnTasks.set(col.id, tasks);
-            }
-        }
+        dispatcher.dispatch("refreshFull", store);
 
-        const store: BoardStore = {boards, currentBoard, columnsInBoard, columnTasks};
+    })();
 
-        dispatcher.dispatch("refreshBoard", store);
+}
+
+export function dispatchRefreshCurrentBoard() {
+
+    (async function() {
+
+        console.time("dispatchRefreshCurrentBoard");
+        const store = await buildBoardStoreFromModel();
+        console.timeEnd("dispatchRefreshCurrentBoard");
+
+        dispatcher.dispatch("refreshCurrentBoard", store);
 
     })();
 
