@@ -40,6 +40,6 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-modal": "^3.1.4",
-    "showdown": "^1.8.2"
+    "showdown": "1.7.5"
   }
 }
