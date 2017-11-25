@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Board} from "../../model/Board";
-import Dropdown from "react-dropdown";
 import {allowBinds, bind} from "../../util";
+import Dropdown, {DropdownOption} from "./Dropdown";
 
 interface BoardSelectorProps {
     currentBoard: Board | null;
@@ -9,24 +9,34 @@ interface BoardSelectorProps {
     changeBoard: (selectedBoardId: string) => void;
 }
 
-interface BoardOption {
-    value: string;
-    label: string;
-}
-
 @allowBinds
 export default class BoardSelector extends React.Component<BoardSelectorProps, {}> {
 
     render() {
 
-        let boardOptions: Array<BoardOption> | null = [];
+        let boardOptions: Array<DropdownOption> | null = [];
 
         let selectedBoard;
         const {boards, currentBoard} = this.props;
 
         if (boards && currentBoard) {
-            boardOptions = (this.props.boards || []).map((board) => ({value: board.id, label: board.name}));
-            selectedBoard = {value: currentBoard.id, label: currentBoard.name};
+
+            const archivedBoards: Board[] = [];
+            const activeBoards: Board[] = [];
+
+            boards.forEach(board => {
+               if (board.isArchived) {
+                   archivedBoards.push(board);
+               } else {
+                   activeBoards.push(board);
+               }
+            });
+
+            boardOptions = activeBoards
+                .concat(archivedBoards)
+                .map(board => ({value: board.id, label: board.name, data: {isArchived: board.isArchived}}));
+
+            selectedBoard = {value: currentBoard.id, label: currentBoard.name, data: {}};
         }
 
         return <Dropdown
@@ -34,12 +44,13 @@ export default class BoardSelector extends React.Component<BoardSelectorProps, {
             options={boardOptions}
             onChange={this.onChangeBoard}
             value={selectedBoard}
-            placeholder="No boards" />;
+            placeholder="No boards"
+            mapOptionToClass={(option) => option.data.isArchived ? "option-archived" : ""}/>;
 
     }
 
     @bind
-    onChangeBoard(selectedBoardOption: BoardOption) {
+    onChangeBoard(selectedBoardOption: DropdownOption) {
         this.props.changeBoard(selectedBoardOption.value);
     }
 

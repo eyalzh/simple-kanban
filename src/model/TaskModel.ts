@@ -198,7 +198,7 @@ export default class TaskModel {
         return this.db.getDocumentByKey<Board>(BOARD_MAP_NAME, currentBoardId);
     }
 
-    public async editCurrentBoard(boardName: string) {
+    public async editCurrentBoard(boardName: string, isArchived: boolean) {
 
         const currentBoard = await this.getCurrentBoard();
 
@@ -208,7 +208,8 @@ export default class TaskModel {
 
             const board: Board = {
                 id: currentBoard,
-                name: sanitizer.sanitizeBoardName(boardName)
+                name: sanitizer.sanitizeBoardName(boardName),
+                isArchived
             };
 
             await this.db.modifyStore<Board>(BOARD_MAP_NAME, currentBoard, () => board);

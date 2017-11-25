@@ -4,19 +4,20 @@ import {Template} from "../../model/Templates/Template";
 import * as Modal from "react-modal";
 import {dialogContainerStyle, dialogModalStyle} from "./dialogStyle";
 import {allowBinds, bind} from "../../util";
+import {Board} from "../../model/Board";
 
 interface BoardEditDialogProps {
     opened: boolean;
     onEditClose: () => void;
     onRemoveBoard: () => void;
-    onEditSubmitted: (boardName: string, selectedTemplate: Template | undefined) => void;
-    boardId?: string | null;
-    boardName?: string;
+    onEditSubmitted: (boardName: string, selectedTemplate: Template | undefined, isArchived: boolean) => void;
+    board?: Board | null;
 }
 
 interface BoardEditDialogState {
     name: string;
     selectedTemplate: string | undefined;
+    isArchived: boolean;
 }
 
 @allowBinds
@@ -24,40 +25,54 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
     private fieldInput: HTMLInputElement | null;
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         const catalog = getCatalog();
 
         this.state = {
             name: "",
-            selectedTemplate: catalog.getTemplates()[0].getName()
+            selectedTemplate: catalog.getTemplates()[0].getName(),
+            isArchived: false
         };
     }
 
     componentWillReceiveProps(props: BoardEditDialogProps) {
 
-        let name;
+        let name = "", isArchived: boolean = false;
 
-        if (typeof props.boardName !== "undefined" && props.boardId !== null) {
-            name = props.boardName;
-        } else {
-            name = "";
+        if (props.board) {
+            name = props.board.name;
+            isArchived = !!props.board.isArchived;
         }
 
-        this.setState({name});
+        this.setState({name, isArchived});
     }
 
     render() {
 
         let title;
         let removeBtn;
-        let templatesBox = <span />;
-        if (this.props.boardId !== null) {
+
+        let templatesBox: JSX.Element | null = null;
+        let archivedCheckbox: JSX.Element | null = null;
+
+        if (this.props.board) {
             title = "Edit Board";
             removeBtn = (
                 <button className="remove-btn" onClick={this.onRemoveBoard}>Remove board</button>
             );
+            archivedCheckbox = (
+                <div className="archived-section">
+                    <input
+                        type="checkbox"
+                        id="is-archived"
+                        onChange={this.onIsActiveChanged}
+                        checked={this.state.isArchived} />
+                    <label htmlFor="is-archived">Archived?</label>
+                </div>
+            );
+
         } else {
             title = "Add Board";
             removeBtn = <span />; // <div> cannot be a descendant of <p>
@@ -73,6 +88,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
                     </p>
                 </div>
             );
+
         }
 
         let buttons = (
@@ -104,7 +120,9 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
                             ref={(input) => {this.fieldInput = input;}}
                             onKeyPress={this.onKeyPressed} />
                     </p>
+
                     {templatesBox}
+                    {archivedCheckbox}
 
                     {buttons}
 
@@ -122,9 +140,14 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
     }
 
     @bind
-    private onNameChange(e: React.FormEvent<HTMLElement>) {
-        const name = (e.target as HTMLInputElement).value;
+    private onNameChange(e: React.FormEvent<HTMLInputElement>) {
+        const name = e.currentTarget.value;
         this.setState({name});
+    }
+
+    @bind
+    private onIsActiveChanged(e: React.FormEvent<HTMLInputElement>) {
+        this.setState({isArchived: e.currentTarget.checked});
     }
 
     @bind
@@ -134,7 +157,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
         if (this.state.selectedTemplate) {
             template = getCatalog().getTemplateByName(this.state.selectedTemplate);
         }
-        this.props.onEditSubmitted(this.state.name, template);
+        this.props.onEditSubmitted(this.state.name, template, this.state.isArchived);
     }
 
     @bind

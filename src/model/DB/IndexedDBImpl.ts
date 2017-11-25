@@ -75,7 +75,7 @@ export default class IndexedDBImpl implements DB {
     }
 
     setItem<T>(key: string, data: T|Map<T, any>): Promise<void> {
-        return this.modifyStore(INTERNAL_PROPERTY_STORE.storeName, key, () => data);
+        return this.putInStore(INTERNAL_PROPERTY_STORE.storeName, key, data);
     }
 
     getAll<T>(storeName: string): Promise<Array<T>> {
@@ -149,6 +149,25 @@ export default class IndexedDBImpl implements DB {
             });
 
         });
+
+    }
+
+    putInStore(storeName: string, key: string, value: any): Promise<void> {
+
+        return new Promise<void>((resolve, reject) => {
+
+            const request = this.db.transaction(storeName, "readwrite").objectStore(storeName).put(value, key);
+
+            request.addEventListener("success", () => {
+                resolve();
+            });
+
+            request.addEventListener("error", () => {
+                reject(new Error(`failed to add document with key ${key} to store ${storeName}`));
+            });
+
+        });
+
     }
 
     modifyStore<T>(storeName: string, key: string, modifier: (value: T) => T): Promise<void> {

@@ -34,12 +34,6 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
 
     render() {
 
-        let boardName;
-
-        if (this.props.currentBoard) {
-            boardName = this.props.currentBoard.name;
-        }
-
         const separator = <span> | </span>;
 
         return (
@@ -57,8 +51,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
                 />
                 <BoardEditDialog
                     opened={this.state.isBoardBeingAdded || this.props.currentBoard === null}
-                    boardId={this.state.boardBeingEdited}
-                    boardName={boardName}
+                    board={this.state.boardBeingEdited ? this.props.currentBoard : null}
                     onEditClose={this.onBoardEditClose}
                     onEditSubmitted={this.onAddBoardSubmitted}
                     onRemoveBoard={this.onRemoveBoard}
@@ -119,7 +112,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
     }
 
     @bind
-    private onAddBoardSubmitted(boardName: string, template: Template | undefined) {
+    private onAddBoardSubmitted(boardName: string, template: Template | undefined, isArchived: boolean) {
 
         this.setState({isBoardBeingAdded: false});
 
@@ -127,7 +120,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
             const boardNameTrimmed = boardName.trim();
             if (boardNameTrimmed.length > 0) {
                 if (this.state.boardBeingEdited !== null) {
-                    BoardActions.editCurrentBoard(boardNameTrimmed);
+                    BoardActions.editCurrentBoard(boardNameTrimmed, isArchived);
                 } else {
                     BoardActions.addBoard(boardNameTrimmed, template);
                 }

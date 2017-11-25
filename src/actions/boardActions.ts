@@ -96,9 +96,9 @@ export function addBoard(boardName: string, template: Template | undefined) {
 
 }
 
-export function editCurrentBoard(boardName: string) {
+export function editCurrentBoard(boardName: string, isArchived: boolean) {
     getModel()
-        .editCurrentBoard(boardName)
+        .editCurrentBoard(boardName, isArchived)
         .then(this.dispatchRefreshFull);
 }
 
@@ -169,15 +169,11 @@ export function dispatchRefreshFull() {
 
     (async function() {
 
-        console.time("dispatchRefreshFull");
-
         const model = getModel();
 
         const boards = await model.getBoards();
         const boardStore = await buildBoardStoreFromModel();
         const store: FullStore = {boards, ...boardStore};
-
-        console.timeEnd("dispatchRefreshFull");
 
         dispatcher.dispatch("refreshFull", store);
 
@@ -188,13 +184,8 @@ export function dispatchRefreshFull() {
 export function dispatchRefreshCurrentBoard() {
 
     (async function() {
-
-        console.time("dispatchRefreshCurrentBoard");
         const store = await buildBoardStoreFromModel();
-        console.timeEnd("dispatchRefreshCurrentBoard");
-
         dispatcher.dispatch("refreshCurrentBoard", store);
-
     })();
 
 }

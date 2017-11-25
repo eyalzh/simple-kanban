@@ -194,7 +194,7 @@ describe("task model", function () {
         await taskModel.addBoard("original name 2");
         await taskModel.setCurrentBoard(board1);
 
-        await taskModel.editCurrentBoard("new name");
+        await taskModel.editCurrentBoard("new name", false);
 
         const boards = await taskModel.getBoards();
 

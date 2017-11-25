@@ -83,6 +83,10 @@
     padding: 8px 10px;
 }
 
+.option-archived {
+    color: #ccc !important;
+}
+
 .Dropdown-option:last-child {
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px;
@@ -94,8 +98,7 @@
 }
 
 .Dropdown-option.is-selected {
-    background-color: #f2f9fc;
-    color: #333;
+    font-weight: bold;
 }
 
 .Dropdown-noresults {

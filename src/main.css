@@ -8,6 +8,11 @@ body {
      color: red;
 }
 
+.archived-section {
+    margin-top: 24px;
+    font-size: 14px;
+}
+
 .button-row {
     display: flex;
 }
