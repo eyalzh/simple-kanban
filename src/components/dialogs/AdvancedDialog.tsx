@@ -6,6 +6,7 @@ import Tab from "../tabs/Tab";
 import {dialogModalStyle} from "./dialogStyle";
 import TextUploadField from "../fields/TextUploadField";
 import {allowBinds, bind} from "../../util";
+import TutorialTemplate from "../../model/Templates/TutorialTemplate";
 
 interface AdvancedDialogProps {
     opened: boolean;
@@ -29,7 +30,7 @@ export default class AdvancedDialog extends React.Component<AdvancedDialogProps,
 
     render() {
 
-        const title = "Options";
+        const title = "General Options";
 
         return (
             <Modal isOpen={this.props.opened}
@@ -57,6 +58,13 @@ export default class AdvancedDialog extends React.Component<AdvancedDialogProps,
                             <div className="sub-section">
                                 <div className="sub-section-title">Data Management</div>
                                 <button className="remove-btn" onClick={this.resetAllDataClicked}>Reset all data</button>
+                            </div>
+                        </Tab>
+
+                        <Tab id="tutorial" name="tutorial">
+                            <div className="sub-section">
+                                <div className="sub-section-title">Tutorial</div>
+                                <button onClick={this.onAddTutorialBoard}>Add tutorial board</button>
                             </div>
                         </Tab>
 
@@ -96,6 +104,12 @@ export default class AdvancedDialog extends React.Component<AdvancedDialogProps,
     @bind
     onImportFileRead(text) {
         this.props.onFileImport(text);
+    }
+
+    @bind
+    onAddTutorialBoard() {
+        BoardActions.addBoard("Tutorial", new TutorialTemplate());
+        this.props.onClosed();
     }
 
 }
