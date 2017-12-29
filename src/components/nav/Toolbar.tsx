@@ -7,6 +7,7 @@ import {Template} from "../../model/Templates/Template";
 import AdvancedDialog from "../dialogs/AdvancedDialog";
 import {ColumnOptions} from "../../model/Column";
 import {allowBinds, bind} from "../../util";
+import Dropdown from "./Dropdown";
 
 interface ToolbarProps {
     currentBoard: Board | null;
@@ -19,30 +20,67 @@ interface ToolbarState {
     boardBeingEdited: string | null | undefined;
 }
 
+interface MenuAction {
+    value: string,
+    label: string,
+    handler: (value: string) => void;
+    section: string;
+}
+
+
 @allowBinds
 export default class Toolbar extends React.Component<ToolbarProps, ToolbarState> {
 
+    private menuActions: {[prop: string]: MenuAction};
+    private menuActionsArray: MenuAction[];
+
     constructor() {
+
         super();
+
         this.state = {
             isColBeingAdded: false,
             isBoardBeingAdded: false,
             advancedModeOn: false,
             boardBeingEdited: null
         };
+
+        this.menuActions = {
+            ADD_COL: {value: "1", label: "Add column", section: "column", handler: this.onAddColStarted.bind(this)},
+            ADD_BOARD: {value: "2", label: "Add new board", section: "board", handler: this.onAddBoardClicked.bind(this)},
+            EDIT_NAME: {value: "3", label: "Edit board", section: "board", handler: this.onEditBoardClicked.bind(this)},
+            RESET_BOARD: {value: "4", label: "Reset board", section: "board", handler: this.onEditBoardClicked.bind(this)},
+            REMOVE_BOARD: {value: "5", label: "Remove board", section: "board", handler: this.onRemoveBoard.bind(this)},
+            ADVANCED: {value: "6", label: "Options", section: "options", handler: this.onAdvancedClicked.bind(this)}
+        };
+        
+        this.menuActionsArray = [
+            this.menuActions.ADD_COL,
+            this.menuActions.EDIT_NAME,
+            this.menuActions.ADD_BOARD,
+            this.menuActions.RESET_BOARD,
+            this.menuActions.REMOVE_BOARD,
+            this.menuActions.ADVANCED
+        ];
+
     }
 
     render() {
 
-        const separator = <span> | </span>;
-
         return (
             <div className="toolbar">
 
-                <button onClick={this.onAddBoardClicked}>Add board</button>{separator}
-                <button onClick={this.onEditBoardClicked}>Edit board</button>{separator}
-                <button onClick={this.onAddColStarted}>Add column</button>{separator}
-                <button onClick={this.onAdvancedClicked}>Options</button>
+                <div style={{display: "flex"}}>
+                    <Dropdown
+                        options={this.menuActionsArray}
+                        value="0"
+                        placeholder="&#9776; menu"
+                        placement="left"
+                        showCaret={false}
+                        onChange={this.onEditBoardOptionSelected}
+                        mapOptionToClass={() => ""}
+                        className="action-menu"/>
+                </div>
 
                 <ColumnEditDialog
                     opened={this.state.isColBeingAdded}
@@ -129,7 +167,6 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
         }
     }
 
-    @bind
     private onEditBoardClicked() {
 
         this.setState({
@@ -137,6 +174,16 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
             boardBeingEdited: this.props.currentBoard ? this.props.currentBoard.id : null
         });
 
+    }
+
+    @bind
+    private onEditBoardOptionSelected(selectedValue: string) {
+
+        const action = this.menuActionsArray.find(action => action.value === selectedValue);
+
+        if (action) {
+            action.handler(selectedValue);
+        }
     }
 
     @bind

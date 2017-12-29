@@ -11,17 +11,12 @@
     top: 6px;
     right: 7px;
     color: #fff;
-    line-height: 14px;
     font-size: 14px;
 }
 
-.toolbar button {
+.toolbar .menu-item {
     margin: 2px;
-    border-radius: 6px;
-    background-color: transparent;
-    color: #fff;
     font-size: 14px;
-    border: 0;
     padding: 2px;
     cursor: pointer;
     text-decoration: underline;
@@ -32,10 +27,20 @@
     display: none;
 }
 
+.toolbar .separator {
+    line-height: 23px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
 .Dropdown-root {
     position: relative;
     max-width: 360px;
     top: 2px;
+}
+
+.board-selector {
+    left: 4px;
 }
 
 .Dropdown-control {
@@ -71,6 +76,7 @@
     overflow-y: auto;
     position: absolute;
     top: 100%;
+    min-width: 128px;
     max-width: 300px;
     z-index: 100;
 }
@@ -107,4 +113,27 @@
     cursor: default;
     display: block;
     padding: 8px 10px;
+}
+
+.action-menu .Dropdown-control {
+    font-size: 14px !important;
+}
+
+.action-menu .Dropdown-placeholder {
+    text-transform: uppercase !important;
+    margin-right: 4px !important;
+    margin-left: 4px !important;
+    cursor: pointer;
+}
+
+.Dropdown-left-placement {
+    left: -100%;
+}
+
+.Dropdown-section-start {
+    border-top: 1px solid #ccc;
+}
+
+.action-menu {
+    top: 0 !important;
 }

@@ -16,7 +16,7 @@ export default class BoardSelector extends React.Component<BoardSelectorProps, {
 
         let boardOptions: Array<DropdownOption> | null = [];
 
-        let selectedBoard;
+        let currentBoardId, currentBoardName;
         const {boards, currentBoard} = this.props;
 
         if (boards && currentBoard) {
@@ -34,24 +34,31 @@ export default class BoardSelector extends React.Component<BoardSelectorProps, {
 
             boardOptions = activeBoards
                 .concat(archivedBoards)
-                .map(board => ({value: board.id, label: board.name, data: {isArchived: board.isArchived}}));
+                .map(board => ({
+                    value: board.id,
+                    label: board.name,
+                    section: "board",
+                    data: {isArchived: board.isArchived}}));
 
-            selectedBoard = {value: currentBoard.id, label: currentBoard.name, data: {}};
+            currentBoardId =  currentBoard.id;
+            currentBoardName =  currentBoard.name;
         }
 
         return <Dropdown
             className="board-selector"
             options={boardOptions}
             onChange={this.onChangeBoard}
-            value={selectedBoard}
-            placeholder="No boards"
+            value={currentBoardId}
+            placement="right"
+            placeholder={currentBoardName || "No boards"}
+            showCaret={true}
             mapOptionToClass={(option) => option.data.isArchived ? "option-archived" : ""}/>;
 
     }
 
     @bind
-    onChangeBoard(selectedBoardOption: DropdownOption) {
-        this.props.changeBoard(selectedBoardOption.value);
+    onChangeBoard(boardId: string) {
+        this.props.changeBoard(boardId);
     }
 
 }
