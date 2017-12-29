@@ -17,7 +17,7 @@ interface DropdownProps {
     mapOptionToClass: (option: DropdownOption) => string;
     className: string;
     showCaret: boolean;
-    placement: "left" | "right"
+    placement: "left" | "right";
 }
 
 interface DropdownState {
@@ -123,9 +123,9 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
         const placeHolderValue = this.props.placeholder;
 
         let dropdownMenuClassSet = classSet({
-            ['Dropdown-menu']: true,
-            ['Dropdown-left-placement']: this.props.placement === "left"
-        })
+            ["Dropdown-menu"]: true,
+            ["Dropdown-left-placement"]: this.props.placement === "left"
+        });
 
         const menu = this.state.isOpen ? <div className={dropdownMenuClassSet}>{this.buildMenu()}</div> : null;
 

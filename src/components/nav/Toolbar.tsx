@@ -21,8 +21,8 @@ interface ToolbarState {
 }
 
 interface MenuAction {
-    value: string,
-    label: string,
+    value: string;
+    label: string;
     handler: (value: string) => void;
     section: string;
 }
@@ -53,7 +53,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
             REMOVE_BOARD: {value: "5", label: "Remove board", section: "board", handler: this.onRemoveBoard.bind(this)},
             ADVANCED: {value: "6", label: "Options", section: "options", handler: this.onAdvancedClicked.bind(this)}
         };
-        
+
         this.menuActionsArray = [
             this.menuActions.ADD_COL,
             this.menuActions.EDIT_NAME,
