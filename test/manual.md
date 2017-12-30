@@ -6,6 +6,7 @@
 1. Remove board
 1. Edit board's name
 1. Archive board
+1. Reset board (all tasks return to base columns)
 1. Board with name longer than allowed (should trim)
 1. New column
 1. Edit column

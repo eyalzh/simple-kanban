@@ -49,7 +49,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
             ADD_COL: {value: "1", label: "Add column", section: "column", handler: this.onAddColStarted.bind(this)},
             ADD_BOARD: {value: "2", label: "Add new board", section: "board", handler: this.onAddBoardClicked.bind(this)},
             EDIT_NAME: {value: "3", label: "Edit board", section: "board", handler: this.onEditBoardClicked.bind(this)},
-            RESET_BOARD: {value: "4", label: "Reset board", section: "board", handler: this.onEditBoardClicked.bind(this)},
+            RESET_BOARD: {value: "4", label: "Reset board", section: "board", handler: this.onResetBoard.bind(this)},
             REMOVE_BOARD: {value: "5", label: "Remove board", section: "board", handler: this.onRemoveBoard.bind(this)},
             ADVANCED: {value: "6", label: "Options", section: "options", handler: this.onAdvancedClicked.bind(this)}
         };
@@ -186,13 +186,15 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
         }
     }
 
-    @bind
     private onRemoveBoard() {
         this.setState({isBoardBeingAdded: false, boardBeingEdited: null});
         BoardActions.removeCurrentBoard();
     }
 
-    @bind
+    private onResetBoard() {
+        BoardActions.resetCurrentBoard();
+    }
+
     private onAdvancedClicked() {
         this.setState({
             advancedModeOn: true

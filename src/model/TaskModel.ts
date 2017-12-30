@@ -249,6 +249,10 @@ export default class TaskModel {
 
     public async moveTask(taskId: string, sourceColumnId: string, targetColumnId: string) {
 
+        if (sourceColumnId === targetColumnId) {
+            return;
+        }
+
         await this.db.modifyStore<Array<string>>(COL_TASK_MAP_NAME, sourceColumnId, (tasks) => {
             return tasks.filter(task => task !== taskId);
         });
@@ -315,6 +319,28 @@ export default class TaskModel {
 
             await this.db.deleteStoreItem(BOARD_MAP_NAME, boardId);
             await this.db.deleteStoreItem(BOARD_COL_MAP_NAME, boardId);
+
+        }
+    }
+
+    public async resetCurrentBoard() {
+
+        const boardId = await this.getCurrentBoard();
+
+        if (boardId !== null) {
+
+            const cols = await this.getColumnsByBoard(boardId);
+
+            for (const col of cols) {
+                const tasks = await this.getTasksByColumn(col.id);
+
+                for (const task of tasks) {
+                    if (task && task.baseColumnId) {
+                        await this.moveTask(task.id, col.id, task.baseColumnId);
+                    }
+                }
+
+            }
 
         }
     }

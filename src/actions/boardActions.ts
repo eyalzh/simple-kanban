@@ -127,6 +127,12 @@ export function removeCurrentBoard() {
 
 }
 
+export function resetCurrentBoard() {
+    getModel()
+        .resetCurrentBoard()
+        .then(this.dispatchRefreshCurrentBoard);
+}
+
 export function exportData() {
 
     const model = getModel();
