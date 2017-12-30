@@ -52,16 +52,12 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
     render() {
 
         let title;
-        let removeBtn;
 
         let templatesBox: JSX.Element | null = null;
         let archivedCheckbox: JSX.Element | null = null;
 
         if (this.props.board) {
             title = "Edit Board";
-            removeBtn = (
-                <button className="remove-btn" onClick={this.onRemoveBoard}>Remove board</button>
-            );
             archivedCheckbox = (
                 <div className="archived-section">
                     <input
@@ -75,7 +71,6 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
         } else {
             title = "Add Board";
-            removeBtn = <span />; // <div> cannot be a descendant of <p>
             const catalog = getCatalog();
             templatesBox = (
                 <div>
@@ -95,7 +90,6 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
             <p>
                 <button onClick={this.onEditSubmitted}>Submit</button>&nbsp;
                 <button onClick={this.props.onEditClose}>Cancel</button>&nbsp;
-                {removeBtn}
             </p>
         );
 
@@ -158,11 +152,6 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
             template = getCatalog().getTemplateByName(this.state.selectedTemplate);
         }
         this.props.onEditSubmitted(this.state.name, template, this.state.isArchived);
-    }
-
-    @bind
-    private onRemoveBoard() {
-        this.props.onRemoveBoard();
     }
 
     @bind
