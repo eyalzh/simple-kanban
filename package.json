@@ -4,7 +4,7 @@
   "description": "Lightweight Kanban Board",
   "scripts": {
     "dev": "webpack-dev-server --inline --hot --content-base .",
-    "build": "webpack --config webpack.production.config.js",
+    "build": "webpack --config webpack.production.config.js --display-modules",
     "test": "mocha --require ts-node/register test/**/*.ts",
     "lint": "tslint src/**/*.ts src/**/*.tsx"
   },
@@ -17,7 +17,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.0.10",
-    "@types/lodash.debounce": "^4.0.3",
     "@types/mocha": "^2.2.45",
     "@types/node": "^8.5.2",
     "@types/react": "16.0.9",

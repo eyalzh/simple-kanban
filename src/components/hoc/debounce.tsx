@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Component} from "react";
-import {debounce} from "lodash";
+import * as debounce from "lodash.debounce";
 
 export function debounceRender<P>(Comp: new() => Component<P, {}>, delayMs: number): new() => Component<P, {}> {
 
