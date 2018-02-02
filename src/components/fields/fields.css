@@ -3,12 +3,17 @@
     padding-bottom: 20px;
 }
 
+.form-field-direction-column {
+    flex-direction: column;
+}
+
 .form-field-caption {
     order: 1;
     width: 80px;
 }
 
 .form-field {
+    padding-top: 2px;
     order: 2;
     flex: 1 1 auto;
 }

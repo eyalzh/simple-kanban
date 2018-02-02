@@ -2,7 +2,7 @@ import * as React from "react";
 import {getCatalog} from "../../context";
 import {Template} from "../../model/Templates/Template";
 import * as Modal from "react-modal";
-import {dialogContainerStyle, dialogModalStyle} from "./dialogStyle";
+import {dialogContainerStyle, dialogModalStyle} from "./dialogModalStyle";
 import {allowBinds, bind} from "../../util";
 import {Board} from "../../model/Board";
 

@@ -4,7 +4,7 @@ import ColumnEditDialog from "../dialogs/ColumnEditDialog";
 import BoardEditDialog from "../dialogs/BoardEditDialog";
 import {Board} from "../../model/Board";
 import {Template} from "../../model/Templates/Template";
-import AdvancedDialog from "../dialogs/AdvancedDialog";
+import AdvancedDialog from "../dialogs/OptionsDialog";
 import {ColumnOptions} from "../../model/Column";
 import {allowBinds, bind} from "../../util";
 import Dropdown from "./Dropdown";

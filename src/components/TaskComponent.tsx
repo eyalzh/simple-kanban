@@ -4,7 +4,7 @@ import * as BoardActions from "../actions/boardActions";
 import {Column} from "../model/Column";
 import TaskEditDialog from "./dialogs/TaskEditDialog";
 import AnnotatedHashtagDiv from "./AnnotatedHashtagDiv";
-import {draggable, Referrable} from "./dragAndDrop";
+import {draggable, Referrable} from "./hoc/dragAndDrop";
 import {allowBinds, bind, calcColorBasedOnBackground} from "../util";
 
 interface TaskProps extends Referrable {

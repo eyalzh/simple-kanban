@@ -7,6 +7,7 @@ import {setModel, setCatalog} from "./context";
 import initializeModel from "./model/initializeModel";
 import * as BoardActions from "./actions/boardActions";
 import TemplateCatalog from "./model/Templates/TemplateCatalog";
+import * as Modal from "react-modal";
 
 require("./main.css");
 
@@ -34,6 +35,8 @@ taskModel.init()
             </div>
             , cont);
 
+
+        Modal.setAppElement(cont);
         BoardActions.dispatchRefreshFull();
 
     })

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as Modal from "react-modal";
 import {Column, ColumnOptions, ColumnSize} from "../../model/Column";
-import {dialogContainerStyle, dialogModalStyle} from "./dialogStyle";
+import {dialogContainerStyle, dialogModalStyle} from "./dialogModalStyle";
 import FormField from "../fields/FormField";
 import {allowBinds, bind} from "../../util";
 

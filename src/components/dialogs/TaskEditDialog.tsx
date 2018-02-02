@@ -4,9 +4,11 @@ import {allowBinds, bind, classSet} from "../../util";
 import {Timestamp} from "../../model/Timestamp";
 import * as Modal from "react-modal";
 import AnnotatedHashtagDiv from "../AnnotatedHashtagDiv";
-import {baseModalStyle} from "./dialogStyle";
+import {rightSideModalStyle} from "./dialogModalStyle";
 import SelectColorField from "../fields/SelectColorField";
 import {Task, TaskPresentationalOptions} from "../../model/Task";
+import FormField from "../fields/FormField";
+import ActionDialog from "./ActionDialog";
 
 interface TaskEditDialogProps {
     dialogTitle: string;
@@ -78,79 +80,96 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         let buttonEls;
         if (this.props.task) {
             buttonEls = (
-                <p>
+                <div>
                     <button onClick={this.onEditSaveAndClose}>Save &amp; close</button>&nbsp;
                     <button onClick={this.onEditSubmitted}>Save &amp; continue</button>&nbsp;
                     <button onClick={this.onRequestClose}>Close</button>
-                </p>
+                </div>
         );
         } else {
             buttonEls = (
-                <p>
+                <div>
                     <button onClick={this.onEditSaveAndClose}>Submit</button>&nbsp;
                     <button onClick={this.onEditSaveAndNew}>Submit &amp; Another</button>&nbsp;
                     <button onClick={this.onRequestClose}>Close</button>
-                </p>
+                </div>
             );
         }
 
         return (
-            <Modal
-                isOpen={this.props.opened}
-                onRequestClose={this.onRequestClose}
-                onAfterOpen={this.onEditDialogOpen}
-                style={baseModalStyle}
-                contentLabel="Edit Task Dialog">
+            <div>
+                <ActionDialog
+                    title="Edit Task"
+                    opened={this.props.opened}
+                    onRequestClose={this.onRequestClose}
+                    onOpen={this.onEditDialogOpen}
+                    buttons={buttonEls}
+                    >
 
-                <div className="edit-task-form">
-                    <div className="edit-section">
+                    <div className="edit-task-form">
+                        <div className="edit-section">
 
-                        <h1>{this.props.dialogTitle}</h1>
-                        <p>
-                            Title:
-                        </p>
-                        <p>
-                            <input
-                                type="text"
-                                value={this.state.desc}
-                                onChange={this.onChange}
-                                ref={(input) => {this.fieldInput = input;}}
-                                onKeyPress={this.onInputKeyPress}
-                            />
-                        </p>
-                        <p>
-                            Description:
-                        </p>
-                        <p>
-                            <textarea value={this.state.longdesc} onChange={this.onLongDescChange}/>
-                        </p>
+                            <FormField caption="Title" direction="column">
+                                <input
+                                    type="text"
+                                    value={this.state.desc}
+                                    onChange={this.onChange}
+                                    ref={(input) => {this.fieldInput = input;}}
+                                    onKeyPress={this.onInputKeyPress}
+                                />
+                            </FormField>
 
-                        <p>
-                            Background Color <SelectColorField value={this.state.color} onChange={this.onColorChanged}/>
-                        </p>
+                            <FormField caption="Description" direction="column">
+                                <textarea value={this.state.longdesc} onChange={this.onLongDescChange}/>
+                            </FormField>
 
-                        {buttonEls}
+                            <div className="color-section">
+                                <div>
+                                    <SelectColorField value={this.state.color} onChange={this.onColorChanged}/> Background
+                                </div>
+                                <div>
+                                    <SelectColorField value={this.state.color} onChange={this.onColorChanged}/> Side
+                                </div>
+                            </div>
 
-                        {creationDateString !== null ?
-                            <div>Created on {creationDateString}</div>
-                            : null
-                        }
 
-                        {lastUpdatedAtString !== null ?
-                            <div>Last updated on {lastUpdatedAtString}</div>
-                            : null
-                        }
+
+                            {creationDateString !== null ?
+                                <div>Created on {creationDateString}</div>
+                                : null
+                            }
+
+                            {lastUpdatedAtString !== null ?
+                                <div>Last updated on {lastUpdatedAtString}</div>
+                                : null
+                            }
+
+                        </div>
+
+
 
                     </div>
 
-                    <div className={previewClassnames}>
-                        <h2><AnnotatedHashtagDiv text={this.state.desc} appliedClassName="hashtag" /></h2>
-                        <Markdown text={this.state.longdesc} />
-                    </div>
+                    <Modal
+                        isOpen={this.props.opened}
+                        onRequestClose={this.onRequestClose}
+                        onAfterOpen={this.onEditDialogOpen}
+                        style={rightSideModalStyle}
+                        shouldCloseOnOverlayClick={false}
+                        contentLabel="Edit Task">
 
-                </div>
+                        <div className={previewClassnames}>
+                            <div className="soft-modal-title">preview</div>
+                            <h2><AnnotatedHashtagDiv text={this.state.desc} appliedClassName="hashtag" /></h2>
+                            <Markdown text={this.state.longdesc} />
+                        </div>
 
-            </Modal>
+                    </Modal>
+
+                </ActionDialog>
+
+            </div>
+
         );
     }
 

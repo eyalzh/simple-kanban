@@ -1,11 +1,12 @@
 import * as React from "react";
 import * as showdown from "showdown";
+import {debounceRender} from "./hoc/debounce";
 
 interface MarkdownProps {
     text: string;
 }
 
-export default class Markdown extends React.PureComponent<MarkdownProps, {}> {
+class MarkdownComponent extends React.PureComponent<MarkdownProps, {}> {
 
     render() {
 
@@ -20,3 +21,7 @@ export default class Markdown extends React.PureComponent<MarkdownProps, {}> {
     }
 
 }
+
+const debounceDelayMs = 200;
+const DebouncedMarkdown = debounceRender<MarkdownProps>(MarkdownComponent, debounceDelayMs);
+export default DebouncedMarkdown;

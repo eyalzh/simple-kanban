@@ -1,0 +1,109 @@
+
+.edit-task-form {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+
+.edit-task-form input[type="text"] {
+    width: 600px;
+}
+
+.edit-task-form textarea {
+    width: 600px;
+    height: calc(100vh - 441px);
+}
+
+.edit-section {
+    min-width: 640px;
+}
+
+.edit-section div {
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.preview-section {
+    overflow: auto;
+    height: calc(100vh - 216px);
+    width: 520px;
+    margin-left: 20px;
+}
+
+.soft-modal-title {
+    color: #999;
+    text-transform: uppercase;
+    position: absolute;
+    width: 80px;
+    margin-left: -40px;
+    left: 50%;
+    top: 3px;
+    font-size: 10px;
+}
+
+.enable-markdown-preview {
+    position: relative;
+    left: 455px;
+    text-decoration: underline;
+    top: 12px;
+}
+
+.color-section {
+    display: flex;
+    justify-content: space-between;
+    width: 220px;
+}
+
+.dialog-title {
+    position: relative;
+    top: -20px;
+    left: -20px;
+    width: calc(100% + 22px);
+    background-color: #d7dee8;
+    color: #000;
+    height: 20px;
+    line-height: 22px;
+    padding: 4px 0 4px 18px;
+    font-weight: bold;
+}
+
+.dialog-main-container {
+    background-color: #fff;
+    position: relative;
+    top: -20px;
+    left: -20px;
+    margin-right: -60px;
+    width: 100%;
+    padding: 20px;
+}
+
+.dialog-buttons-bar {
+    background-color: #f5f5f5;
+    position: relative;
+    top: -20px;
+    left: -20px;
+    padding: 10px 20px 10px 20px;
+    width: 100%;
+    border-radius: 0 0 4px 4px;
+    border-top: 1px solid #d2d2d2;
+}
+
+
+
+@media (min-width: 2000px) {
+
+    .edit-section {
+        min-width: 840px;
+    }
+
+    .edit-task-form input[type="text"] {
+        width: 800px;
+    }
+
+    .edit-task-form textarea {
+        width: 800px;
+        font-size: 18px;
+    }
+}

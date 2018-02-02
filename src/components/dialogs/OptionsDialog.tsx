@@ -3,23 +3,23 @@ import * as Modal from "react-modal";
 import * as BoardActions from "../../actions/boardActions";
 import TabbedOptions from "../tabs/TabbedOptions";
 import Tab from "../tabs/Tab";
-import {dialogModalStyle} from "./dialogStyle";
+import {dialogModalStyle} from "./dialogModalStyle";
 import TextUploadField from "../fields/TextUploadField";
 import {allowBinds, bind} from "../../util";
 import TutorialTemplate from "../../model/Templates/TutorialTemplate";
 
-interface AdvancedDialogProps {
+interface OptionsDialogProps {
     opened: boolean;
     onClosed: () => void;
     onFileImport: (text: string) => void;
 }
 
-interface AdvancedDialogState {
+interface OptionsDialogState {
     activeTab: string;
 }
 
 @allowBinds
-export default class AdvancedDialog extends React.Component<AdvancedDialogProps, AdvancedDialogState> {
+export default class OptionsDialog extends React.Component<OptionsDialogProps, OptionsDialogState> {
 
     constructor() {
         super();

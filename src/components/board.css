@@ -110,43 +110,6 @@
     -moz-user-select: none;
 }
 
-.edit-task-form {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: row;
-    flex-direction: row;
-}
-
-.edit-task-form input[type="text"] {
-    width: 500px;
-}
-
-.edit-task-form textarea {
-    width: 500px;
-    height: calc(100vh - 441px);
-}
-
-.edit-section {
-    min-width: 540px;
-    border-right: 1px solid #c0c4e0;
-}
-
-.edit-section div {
-    font-family: "Helvetica", "Arial", sans-serif;
-    font-weight: 600;
-    font-size: 12px;
-}
-
-.preview-section {
-    overflow: auto;
-    height: calc(100vh - 125px);
-    margin-left: 20px;
-    display: none;
-}
-
-.preview-section.visible {
-    display: block !important;
-}
 
 @media (min-width: 2000px) {
 
@@ -158,16 +121,4 @@
         width: 182px;
     }
 
-    .edit-section {
-        min-width: 840px;
-    }
-
-    .edit-task-form input[type="text"] {
-        width: 800px;
-    }
-
-    .edit-task-form textarea {
-        width: 800px;
-        font-size: 18px;
-    }
 }
