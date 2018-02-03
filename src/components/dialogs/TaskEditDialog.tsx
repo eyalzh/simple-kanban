@@ -1,6 +1,6 @@
 import * as React from "react";
 import Markdown from "../Markdown";
-import {allowBinds, bind, classSet} from "../../util";
+import {allowBinds, bind} from "../../util";
 import {Timestamp} from "../../model/Timestamp";
 import * as Modal from "react-modal";
 import AnnotatedHashtagDiv from "../AnnotatedHashtagDiv";
@@ -9,6 +9,7 @@ import SelectColorField from "../fields/SelectColorField";
 import {Task, TaskPresentationalOptions} from "../../model/Task";
 import FormField from "../fields/FormField";
 import ActionDialog from "./ActionDialog";
+import {ReactElement} from "react";
 
 interface TaskEditDialogProps {
     dialogTitle: string;
@@ -68,16 +69,11 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
         if (! this.props.opened) return null;
 
-        const previewVisible = this.state.longdesc.length > 0;
-
-        const previewClassnames = classSet({
-            "preview-section": true,
-            "visible": previewVisible
-        });
-
         const {creationDateString, lastUpdatedAtString} = this.state;
 
-        let buttonEls;
+        let buttonEls: ReactElement<any>,
+            info: ReactElement<any> | null = null;
+
         if (this.props.task) {
             buttonEls = (
                 <div>
@@ -85,7 +81,15 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                     <button onClick={this.onEditSubmitted}>Save &amp; continue</button>&nbsp;
                     <button onClick={this.onRequestClose}>Close</button>
                 </div>
-        );
+            );
+
+            info =  (
+                <div className="dialog-date-section">
+                    {creationDateString !== null ? <div><b>Created</b> {creationDateString}</div> : null}
+                    {lastUpdatedAtString !== null ? <div><b>Last updated</b> {lastUpdatedAtString}</div> : null}
+                </div>
+            )
+
         } else {
             buttonEls = (
                 <div>
@@ -104,6 +108,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                     onRequestClose={this.onRequestClose}
                     onOpen={this.onEditDialogOpen}
                     buttons={buttonEls}
+                    info={info}
                     >
 
                     <div className="edit-task-form">
@@ -132,21 +137,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                                 </div>
                             </div>
 
-
-
-                            {creationDateString !== null ?
-                                <div>Created on {creationDateString}</div>
-                                : null
-                            }
-
-                            {lastUpdatedAtString !== null ?
-                                <div>Last updated on {lastUpdatedAtString}</div>
-                                : null
-                            }
-
                         </div>
-
-
 
                     </div>
 
@@ -158,8 +149,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                         shouldCloseOnOverlayClick={false}
                         contentLabel="Edit Task">
 
-                        <div className={previewClassnames}>
-                            <div className="soft-modal-title">preview</div>
+                        <div className="preview-section">
+                            <div className="soft-modal-title">markdown</div>
                             <h2><AnnotatedHashtagDiv text={this.state.desc} appliedClassName="hashtag" /></h2>
                             <Markdown text={this.state.longdesc} />
                         </div>

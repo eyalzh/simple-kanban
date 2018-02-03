@@ -12,6 +12,8 @@ interface DialogProps {
 
     title: string;
     buttons: ReactElement<any>;
+    info: ReactElement<any> | null
+
 }
 
 export default class ActionDialog extends React.Component<DialogProps, {}> {
@@ -34,6 +36,7 @@ export default class ActionDialog extends React.Component<DialogProps, {}> {
 
                 <div className="dialog-buttons-bar">
                     {this.props.buttons}
+                    {this.props.info}
                 </div>
 
             </Modal>
