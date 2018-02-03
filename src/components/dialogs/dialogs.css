@@ -13,6 +13,7 @@
 .edit-task-form textarea {
     width: calc(100% - 30px);
     height: calc(100vh - 441px);
+    resize: vertical;
 }
 
 .edit-section {
@@ -28,7 +29,7 @@
 
 .preview-section {
     overflow: auto;
-    height: calc(100vh - 216px);
+    height: calc(100vh - 243px);
     width: 36vw;
     max-width: 600px;
     margin-left: 20px;
