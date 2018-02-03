@@ -20,13 +20,12 @@ export const dialogModalStyle = {
 export const leftSideModalStyle = {
     ...baseModalStyle,
     content : {
-        top                   : "20%",
-        left                  : "15%",
+        top                   : "100px",
+        left                  : "100px",
         right                 : "auto",
         bottom                : "auto",
         backgroundColor       : "transparent",
         border                : "0",
-        transform             : "translate(-15%, -20%)",
         zIndex                : "2"
     }
 };
@@ -37,11 +36,10 @@ export const rightSideModalStyle = {
         pointerEvents     : "none"
     },
     content : {
-        top                   : "calc(20% - 8px)",
+        top                   : "100px",
         right                 : "auto",
-        left                  : "calc(20% + 336px)",
+        left                  : "calc(140px + 38vw)",
         bottom                : "auto",
-        transform             : "translate(25%, -20%)",
         pointerEvents         : "auto"
     }
 };
