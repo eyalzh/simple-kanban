@@ -31,7 +31,7 @@ const DEFAULT_COLOR = "#fff6a8";
 @allowBinds
 export default class TaskEditDialog extends React.Component<TaskEditDialogProps, TaskEditDialogState> {
 
-    private fieldInput: HTMLInputElement | null;
+    private fieldInput: HTMLInputElement | null = null;
 
     constructor(props) {
         super(props);

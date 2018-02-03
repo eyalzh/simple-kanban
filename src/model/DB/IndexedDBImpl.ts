@@ -16,8 +16,8 @@ interface ExtendedIDBObjectStore extends IDBObjectStore {
 export default class IndexedDBImpl implements DB {
 
     private dbFactory: IDBFactory;
-    private db: IDBDatabase;
-    private stores: Array<DBStoreDescriptor>;
+    private db!: IDBDatabase;
+    private stores: Array<DBStoreDescriptor> = [];
 
     constructor(dbFactory: IDBFactory) {
         this.dbFactory = dbFactory;

@@ -23,7 +23,7 @@ interface BoardEditDialogState {
 @allowBinds
 export default class BoardEditDialog extends React.Component<BoardEditDialogProps, BoardEditDialogState> {
 
-    private fieldInput: HTMLInputElement | null;
+    private fieldInput: HTMLInputElement | null = null;
 
     constructor(props) {
         super(props);

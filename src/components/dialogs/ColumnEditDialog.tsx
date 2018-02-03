@@ -21,7 +21,7 @@ interface ColumnEditDialogState {
 @allowBinds
 export default class ColumnEditDialog extends React.Component<ColumnEditDialogProps, ColumnEditDialogState> {
 
-    private fieldInput: HTMLInputElement | null;
+    private fieldInput: HTMLInputElement | null = null;
 
     constructor(props) {
         super(props);

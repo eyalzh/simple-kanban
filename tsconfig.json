@@ -5,6 +5,7 @@
         "sourceMap": true,
         "jsx": "react",
         "strictNullChecks": true,
+        "strictPropertyInitialization": true,
         "experimentalDecorators": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
