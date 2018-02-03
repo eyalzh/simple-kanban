@@ -7,16 +7,17 @@
 }
 
 .edit-task-form input[type="text"] {
-    width: 600px;
+    width: calc(100% - 30px);
 }
 
 .edit-task-form textarea {
-    width: 600px;
+    width: calc(100% - 30px);
     height: calc(100vh - 441px);
 }
 
 .edit-section {
-    min-width: 640px;
+    width: 38vw;
+    max-width: 640px;
 }
 
 .edit-section div {
@@ -28,7 +29,8 @@
 .preview-section {
     overflow: auto;
     height: calc(100vh - 216px);
-    width: 520px;
+    width: 36vw;
+    max-width: 600px;
     margin-left: 20px;
 }
 

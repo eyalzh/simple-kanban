@@ -7,7 +7,7 @@
 
 .column {
     height: calc(100vh - 40px);
-    width: 170px;
+    width: 180px;
     border: 1px solid #1829a5;
     border-radius: 4px;
     margin: 6px 3px 3px 6px;
@@ -77,7 +77,7 @@
     margin: 4px;
     padding: 4px;
     background-color: #fff6a8;
-    width: 152px;
+    width: 162px;
     border: 1px solid #2C2C2C;
     border-radius: 3px;
     cursor: move;
