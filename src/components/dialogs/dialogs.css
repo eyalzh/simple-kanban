@@ -56,7 +56,12 @@
 .color-section {
     display: flex;
     justify-content: space-between;
-    width: 220px;
+    width: 320px;
+}
+
+.reset-color-btn {
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .dialog-title {

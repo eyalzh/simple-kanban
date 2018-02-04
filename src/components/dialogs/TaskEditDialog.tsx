@@ -130,10 +130,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
                             <div className="color-section">
                                 <div>
-                                    <SelectColorField value={this.state.color} onChange={this.onColorChanged}/> Background
-                                </div>
-                                <div>
-                                    <SelectColorField value={this.state.color} onChange={this.onColorChanged}/> Side
+                                    <SelectColorField value={this.state.color} onChange={this.onColorChanged}/>
+                                    &nbsp;Background (<span className="reset-color-btn" onClick={this.onResetColors}>reset</span>)
                                 </div>
                             </div>
 
@@ -192,6 +190,11 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     @bind
     private onColorChanged(color: string) {
         this.setState({color});
+    }
+
+    @bind
+    private onResetColors() {
+        this.setState({color: DEFAULT_COLOR});
     }
 
     @bind
