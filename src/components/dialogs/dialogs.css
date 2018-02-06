@@ -13,6 +13,7 @@
 .edit-task-form textarea {
     width: calc(100% - 30px);
     height: calc(100vh - 441px);
+    max-height: 600px;
     resize: vertical;
 }
 
