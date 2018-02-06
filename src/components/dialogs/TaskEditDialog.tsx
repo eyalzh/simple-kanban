@@ -88,7 +88,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                     {creationDateString !== null ? <div><b>Created</b> {creationDateString}</div> : null}
                     {lastUpdatedAtString !== null ? <div><b>Last updated</b> {lastUpdatedAtString}</div> : null}
                 </div>
-            )
+            );
 
         } else {
             buttonEls = (

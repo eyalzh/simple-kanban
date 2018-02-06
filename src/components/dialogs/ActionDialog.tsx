@@ -12,7 +12,7 @@ interface DialogProps {
 
     title: string;
     buttons: ReactElement<any>;
-    info: ReactElement<any> | null
+    info: ReactElement<any> | null;
 
 }
 
