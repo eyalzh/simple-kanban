@@ -28,11 +28,16 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
     render() {
 
-        const {desc, presentationalOptions} = this.props.task;
+        const {desc, presentationalOptions, counters} = this.props.task;
 
         let bgColor;
         if (presentationalOptions) {
             bgColor = presentationalOptions.color;
+        }
+
+        let counterValue: number | null = null;
+        if (counters && counters.length > 0) {
+            counterValue = counters[0].value;
         }
 
         return (
@@ -44,6 +49,7 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
                 <AnnotatedHashtagDiv
                     text={desc}
+                    counterValue={counterValue}
                     appliedClassName="hashtag"
                     className="task-title"
                     color={calcColorBasedOnBackground(bgColor)} />

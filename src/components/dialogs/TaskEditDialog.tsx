@@ -149,7 +149,12 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
                         <div className="preview-section">
                             <div className="soft-modal-title">markdown</div>
-                            <h2><AnnotatedHashtagDiv text={this.state.desc} appliedClassName="hashtag" /></h2>
+                            <h2>
+                                <AnnotatedHashtagDiv
+                                    text={this.state.desc}
+                                    appliedClassName="hashtag"
+                                    counterValue={null}/>
+                            </h2>
                             <Markdown text={this.state.longdesc} />
                         </div>
 

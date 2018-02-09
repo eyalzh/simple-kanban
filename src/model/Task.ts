@@ -4,6 +4,10 @@ export interface TaskPresentationalOptions {
     color?: string;
 }
 
+export interface Counter {
+    value: number;
+}
+
 export interface Task {
 
     // The auto generated ID of the task
@@ -26,5 +30,7 @@ export interface Task {
 
     // The column in which the task was originated
     baseColumnId?: string;
+
+    counters?: Counter[];
 
 }

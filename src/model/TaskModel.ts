@@ -5,6 +5,8 @@ import NonEmptyColumnException from "./NonEmptyColumnException";
 import {sanitizer} from "./sanitizer";
 import {DB} from "./DB/DB";
 import {Board} from "./Board";
+import ColumnEffectsFactory from "./effects/ColumnEffectsFactory";
+import ColumnEffectsHelper from "./effects/ColumnEffectsHelper";
 
 const SELECTED_BOARD_KEY = "selectedBoard";
 const BOARD_MAP_NAME = "boardMap";
@@ -166,11 +168,14 @@ export default class TaskModel {
         await this.db.getDocumentByKey(BOARD_COL_MAP_NAME, currentBoard);
 
         const newKey = await generateUniqId(this.db, "col");
+        const sanitizedName = sanitizer.sanitizeColName(name);
+
         const newCol: Column = {
             id: newKey,
-            name: sanitizer.sanitizeColName(name),
+            name: sanitizedName,
             wipLimit: sanitizer.sanitizeWipLimit(wipLimit, 3),
-            options
+            options,
+            effects: ColumnEffectsHelper.parseEffectsFromName(sanitizedName)
         };
 
         await this.db.addToStore(COLUMNS_MAP_NAME, newKey, newCol);
@@ -223,6 +228,7 @@ export default class TaskModel {
             col.name = sanitizer.sanitizeColName(columnName);
             col.wipLimit = sanitizer.sanitizeWipLimit(wipLimit, 3);
             col.options = options;
+            col.effects = ColumnEffectsHelper.parseEffectsFromName( col.name);
             return col;
         });
 
@@ -238,7 +244,8 @@ export default class TaskModel {
             longdesc: typeof longdesc !== "undefined" ? longdesc : "",
             createdAt: getCurrentTime(),
             presentationalOptions,
-            baseColumnId: columnId
+            baseColumnId: columnId,
+            counters: [{value:1}]
         };
 
         await this.db.addToStore(TASKS_NAME, newKey, newTask);
@@ -260,6 +267,21 @@ export default class TaskModel {
         await this.db.modifyStore<Array<string>>(COL_TASK_MAP_NAME, targetColumnId, (tasks) => {
             return tasks.concat(taskId);
         });
+
+        const col = await this.getColumnById(targetColumnId);
+        if (col && col.effects) {
+            await this.db.modifyStore<Task>(TASKS_NAME, taskId, (task) => {
+                let newTask = task;
+                (col.effects || []).forEach(({id,config}) => {
+                    const effect = ColumnEffectsFactory.getColumnEffectById(id);
+                    if (effect) {
+                        newTask = effect.modifyTask(newTask, config);
+                    }
+                });
+                return newTask;
+            });
+
+        }
 
     }
 

@@ -145,6 +145,54 @@ describe("task model", function () {
 
     });
 
+    it("moveTask should modify the counter in the task based on the column increment effect", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
+
+        const firstCol = await taskModel.addColumn("foo");
+        const secondCol = await taskModel.addColumn("bar +1");
+
+        const taskKey = await taskModel.addTask(firstCol, "baz");
+        await taskModel.moveTask(taskKey, firstCol, secondCol);
+
+        const tasks = await taskModel.getTasksByColumn(secondCol);
+        const firstTask = tasks[0];
+
+        if (typeof firstTask.counters === "undefined") {
+            expect.fail("task has not counters", "task should have counters");
+        } else {
+            expect(firstTask.counters[0].value).to.equal(2);
+        }
+
+    });
+
+    it("editColumn with increment effect should apply", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
+
+        const firstCol = await taskModel.addColumn("foo");
+        const secondCol = await taskModel.addColumn("bar");
+        await taskModel.editColumn(secondCol, "bar +1", 3);
+
+        const taskKey = await taskModel.addTask(firstCol, "baz");
+        await taskModel.moveTask(taskKey, firstCol, secondCol);
+
+        const tasks = await taskModel.getTasksByColumn(secondCol);
+        const firstTask = tasks[0];
+
+        if (typeof firstTask.counters === "undefined") {
+            expect.fail("task has not counters", "task should have counters");
+        } else {
+            expect(firstTask.counters[0].value).to.equal(2);
+        }
+
+    });
+
+
     it("editTask should update the lastUpdatedAt property of the task", async function () {
 
         const taskModel = new TaskModel(storageMock);

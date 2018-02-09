@@ -4,6 +4,11 @@ export interface ColumnOptions {
     size?: ColumnSize;
 }
 
+export interface ColumnEffectConfig {
+    id: string;
+    config: any;
+}
+
 export interface Column {
 
     id: string;
@@ -11,5 +16,6 @@ export interface Column {
     wipLimit: number;
 
     options?: ColumnOptions;
+    effects?: ColumnEffectConfig[];
 
 }

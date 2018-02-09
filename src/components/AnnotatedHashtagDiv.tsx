@@ -3,6 +3,7 @@ import * as React from "react";
 interface AnnotatedHashtagDivProps {
     text: string;
     appliedClassName: string;
+    counterValue: number | null;
     className?: string;
     color?: string;
 }
@@ -10,6 +11,7 @@ interface AnnotatedHashtagDivProps {
 interface AnnotatedTextPart {
     text: string;
     isAnnotated: boolean;
+    isCounter: boolean;
 }
 
 interface AnnotatedHashtagDivState {
@@ -42,7 +44,8 @@ export default class AnnotatedHashtagDiv extends React.PureComponent<AnnotatedHa
             text.split(/(#\S+)/g).map((expr) => {
                 parts.push({
                     text: expr,
-                    isAnnotated: expr.indexOf("#") !== -1
+                    isAnnotated: expr.indexOf("#") !== -1,
+                    isCounter: expr === "#1"
                 });
             });
         }
@@ -56,7 +59,12 @@ export default class AnnotatedHashtagDiv extends React.PureComponent<AnnotatedHa
 
         if (this.state.textParts.length > 0) {
             innerElement = this.state.textParts.map((part, i) => {
-                if (part.isAnnotated) {
+                if (part.isCounter) {
+                    return (
+                        <i key={i}>({this.props.counterValue})</i>
+                    )
+                }
+                else if (part.isAnnotated) {
                     return (
                         <span key={i} className={this.props.appliedClassName}>{part.text}</span>
                     );
