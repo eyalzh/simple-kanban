@@ -62,7 +62,7 @@ export default class AnnotatedHashtagDiv extends React.PureComponent<AnnotatedHa
                 if (part.isCounter) {
                     return (
                         <i key={i}>({this.props.counterValue})</i>
-                    )
+                    );
                 }
                 else if (part.isAnnotated) {
                     return (

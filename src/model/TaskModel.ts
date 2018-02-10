@@ -245,7 +245,7 @@ export default class TaskModel {
             createdAt: getCurrentTime(),
             presentationalOptions,
             baseColumnId: columnId,
-            counters: [{value:1}]
+            counters: [{value: 1}]
         };
 
         await this.db.addToStore(TASKS_NAME, newKey, newTask);
@@ -272,7 +272,7 @@ export default class TaskModel {
         if (col && col.effects) {
             await this.db.modifyStore<Task>(TASKS_NAME, taskId, (task) => {
                 let newTask = task;
-                (col.effects || []).forEach(({id,config}) => {
+                (col.effects || []).forEach(({id, config}) => {
                     const effect = ColumnEffectsFactory.getColumnEffectById(id);
                     if (effect) {
                         newTask = effect.modifyTask(newTask, config);

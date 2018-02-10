@@ -2,8 +2,8 @@ import {ColumnEffect, MatchPatternResult} from "./ColumnEffectsFactory";
 import {Task} from "../Task";
 
 interface Configuration {
-    op: 1 | -1,
-    delta: number
+    op: 1 | -1;
+    delta: number;
 }
 
 export default class ColumnEffectIncrement implements ColumnEffect {

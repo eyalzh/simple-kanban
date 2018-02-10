@@ -13,7 +13,7 @@ export default class ColumnEffectsHelper {
             if (effect) {
                 const matchedPattern = effect.matchPattern(name);
                 if (matchedPattern.matched) {
-                    effectIds.push({id: effectId, config:matchedPattern.config});
+                    effectIds.push({id: effectId, config: matchedPattern.config});
                 }
             }
         });
