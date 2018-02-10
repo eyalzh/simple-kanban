@@ -245,7 +245,7 @@ export default class TaskModel {
             createdAt: getCurrentTime(),
             presentationalOptions,
             baseColumnId: columnId,
-            counters: [{value: 1}]
+            counters: [{value: 0}]
         };
 
         await this.db.addToStore(TASKS_NAME, newKey, newTask);

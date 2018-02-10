@@ -2,11 +2,17 @@ import {ColumnEffect, MatchPatternResult} from "./ColumnEffectsFactory";
 import {Task} from "../Task";
 
 interface Configuration {
-    op: 1 | -1;
+    op: 1 | -1 | 0;
     delta: number;
 }
 
 export default class ColumnEffectIncrement implements ColumnEffect {
+
+    static signMap = {
+        "+": 1,
+        "-": -1,
+        "=": 0
+    };
 
     modifyTask(task: Task, config: Configuration): Task {
 
@@ -15,19 +21,25 @@ export default class ColumnEffectIncrement implements ColumnEffect {
         }
 
         const counters = [...task.counters];
-        counters.forEach(counter => counter.value += config.op * config.delta);
+        counters.forEach(counter => {
+            if (config.op === 0) {
+                counter.value = config.delta;
+            } else {
+                counter.value += config.op * config.delta;
+            }
+        });
         const newTask = {...task, counters};
         return newTask;
     }
 
     matchPattern(str: string): MatchPatternResult<Configuration | null> {
-        const matchedValues: RegExpExecArray | null = /\W([+-])(\d+)/g.exec(str);
+        const matchedValues: RegExpExecArray | null = /([+-=])(\d+)/g.exec(str);
 
         if (matchedValues) {
             return {
                 matched: true,
                 config: {
-                    op: matchedValues[1] === "+" ? 1 : -1,
+                    op: ColumnEffectIncrement.getOpFromSign(matchedValues[1]),
                     delta: parseInt(matchedValues[2], 10)
                 }
             };
@@ -38,6 +50,10 @@ export default class ColumnEffectIncrement implements ColumnEffect {
             };
         }
 
+    }
+
+    static getOpFromSign(sign: string) {
+        return ColumnEffectIncrement.signMap[sign] || 0;
     }
 
 }

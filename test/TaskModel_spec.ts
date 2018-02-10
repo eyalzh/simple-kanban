@@ -163,7 +163,32 @@ describe("task model", function () {
         if (typeof firstTask.counters === "undefined") {
             expect.fail("task has not counters", "task should have counters");
         } else {
-            expect(firstTask.counters[0].value).to.equal(2);
+            expect(firstTask.counters[0].value).to.equal(1);
+        }
+
+    });
+
+    it("moveTask to a column with a reset to 0 op should change the counter to 0", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const board = await taskModel.addBoard("default");
+        await taskModel.setCurrentBoard(board);
+
+        const firstCol = await taskModel.addColumn("col1");
+        const secondCol = await taskModel.addColumn("col2 +1");
+        const thirdCol = await taskModel.addColumn("col3 =0");
+
+        const taskKey = await taskModel.addTask(firstCol, "baz");
+        await taskModel.moveTask(taskKey, firstCol, secondCol);
+        await taskModel.moveTask(taskKey, secondCol, thirdCol);
+
+        const tasks = await taskModel.getTasksByColumn(thirdCol);
+        const firstTask = tasks[0];
+
+        if (typeof firstTask.counters === "undefined") {
+            expect.fail("task has not counters", "task should have counters");
+        } else {
+            expect(firstTask.counters[0].value).to.equal(0);
         }
 
     });
@@ -187,7 +212,7 @@ describe("task model", function () {
         if (typeof firstTask.counters === "undefined") {
             expect.fail("task has not counters", "task should have counters");
         } else {
-            expect(firstTask.counters[0].value).to.equal(2);
+            expect(firstTask.counters[0].value).to.equal(1);
         }
 
     });
