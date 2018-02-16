@@ -8,6 +8,7 @@
 .column {
     height: calc(100vh - 40px);
     width: 180px;
+    overflow-x: hidden;
     border: 1px solid #1829a5;
     border-radius: 4px;
     margin: 6px 3px 3px 6px;
@@ -65,8 +66,11 @@
     display: flex;
     flex-flow: column nowrap;
     align-content: flex-start;
-    overflow-y: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     height: calc(100vh - 100px);
+    width: 100%;
+    padding-right: 17px;
 }
 
 .half-col>.task-container {
