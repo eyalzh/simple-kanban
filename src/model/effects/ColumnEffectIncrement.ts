@@ -33,7 +33,7 @@ export default class ColumnEffectIncrement implements ColumnEffect {
     }
 
     matchPattern(str: string): MatchPatternResult<Configuration | null> {
-        const matchedValues: RegExpExecArray | null = /([+-=])(\d+)/g.exec(str);
+        const matchedValues: RegExpExecArray | null = /([+\-=])(\d+)/g.exec(str);
 
         if (matchedValues) {
             return {
