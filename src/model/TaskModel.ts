@@ -304,6 +304,7 @@ export default class TaskModel {
             task.longdesc = typeof newLongDesc !== "undefined" ? newLongDesc : "";
             task.lastUpdatedAt = getCurrentTime();
             task.presentationalOptions = {...presentationalOptions};
+            task.counters = task.counters || [{value: 0}];
             return task;
         });
     }
