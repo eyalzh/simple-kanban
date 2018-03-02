@@ -7,11 +7,7 @@ const INTERNAL_PROPERTY_STORE: DBStoreDescriptor = {
 
 export default class LocalStorageDB implements DB {
 
-    private storage: Storage;
-
-    constructor(storage: Storage) {
-        this.storage = storage;
-    }
+    constructor(private storage: Storage) {}
 
     init(stores: Array<DBStoreDescriptor>): Promise<void> {
         return new Promise<void>((resolve) => {

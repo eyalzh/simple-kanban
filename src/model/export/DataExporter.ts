@@ -1,4 +1,3 @@
-
 import TaskModel from "../TaskModel";
 import {DataElement, KanbanExportedData} from "./KanbanExportedData";
 
@@ -6,11 +5,7 @@ const DATA_VERSION = 1;
 
 export default class DataExporter {
 
-    private model: TaskModel;
-
-    constructor(model: TaskModel) {
-        this.model = model;
-    }
+    constructor(private model: TaskModel) {}
 
     async export(): Promise<KanbanExportedData> {
 

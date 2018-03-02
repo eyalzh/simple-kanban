@@ -20,11 +20,7 @@ export enum FLAGS {TUTORIAL_ADDED}
 
 export default class TaskModel {
 
-    private db: DB;
-
-    constructor(db: DB) {
-        this.db = db;
-    }
+    constructor(private db: DB) {}
 
     public async init(): Promise<void> {
         return await this.db.init([
