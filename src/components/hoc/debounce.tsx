@@ -2,11 +2,15 @@ import * as React from "react";
 import {Component} from "react";
 import * as debounce from "lodash.debounce";
 
+interface CancellableFunction extends Function {
+    cancel: () => void;
+}
+
 export function debounceRender<P>(Comp: new() => Component<P, {}>, delayMs: number): new() => Component<P, {}> {
 
     return class extends Component<P, {}> {
 
-        private debounceUpdate: Function;
+        private debounceUpdate: CancellableFunction;
 
         constructor() {
             super();
@@ -22,6 +26,10 @@ export function debounceRender<P>(Comp: new() => Component<P, {}>, delayMs: numb
 
         shouldComponentUpdate() {
             return false;
+        }
+
+        componentWillUnmount() {
+            this.debounceUpdate.cancel();
         }
 
         render() {
