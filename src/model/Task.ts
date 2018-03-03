@@ -2,6 +2,7 @@ import {Timestamp} from "./Timestamp";
 
 export interface TaskPresentationalOptions {
     color?: string;
+    sideColor?: string;
 }
 
 export interface Counter {

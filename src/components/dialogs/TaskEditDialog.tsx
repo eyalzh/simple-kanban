@@ -23,6 +23,7 @@ interface TaskEditDialogState {
     desc: string;
     longdesc: string;
     color: string;
+    sideColor?: string;
     creationDateString: string | null;
     lastUpdatedAtString: string | null;
 }
@@ -49,19 +50,20 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
     private getInitState(props: TaskEditDialogProps): TaskEditDialogState  {
 
-        let desc = "", longdesc = "", color = DEFAULT_COLOR, createdAt, lastUpdatedAt, presentationalOptions;
+        let desc = "", longdesc = "", color = DEFAULT_COLOR, sideColor = DEFAULT_COLOR, createdAt, lastUpdatedAt, presentationalOptions;
 
         if (props.task) {
             ({desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions} = props.task);
             if (presentationalOptions) {
                 color = presentationalOptions.color;
+                sideColor = presentationalOptions.sideColor;
             }
         }
 
         const creationDateString = TaskEditDialog.buildDateString(createdAt);
         const lastUpdatedAtString = TaskEditDialog.buildDateString(lastUpdatedAt);
 
-        return {desc, longdesc, color, creationDateString, lastUpdatedAtString};
+        return {desc, longdesc, color, sideColor, creationDateString, lastUpdatedAtString};
 
     }
 
@@ -133,6 +135,10 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                                     <SelectColorField value={this.state.color} onChange={this.onColorChanged}/>
                                     &nbsp;Background (<span className="reset-color-btn" onClick={this.onResetColors}>reset</span>)
                                 </div>
+                                <div>
+                                    <SelectColorField value={this.state.sideColor} onChange={this.onSideColorChanged}/>
+                                    &nbsp;Side color (<span className="reset-color-btn" onClick={this.onResetSideColor}>reset</span>)
+                                </div>
                             </div>
 
                         </div>
@@ -198,14 +204,25 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     }
 
     @bind
+    onSideColorChanged(sideColor: string) {
+        this.setState({sideColor});
+    }
+
+    @bind
     private onResetColors() {
         this.setState({color: DEFAULT_COLOR});
     }
 
     @bind
+    private onResetSideColor() {
+        this.setState({sideColor: DEFAULT_COLOR});
+    }
+
+    @bind
     private onEditSubmitted() {
         const presentationalOptions = {
-            color: this.state.color
+            color: this.state.color,
+            sideColor: this.state.sideColor
         };
         this.props.onEditSubmitted(this.state.desc, this.state.longdesc, presentationalOptions);
     }

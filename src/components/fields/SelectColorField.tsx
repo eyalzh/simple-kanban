@@ -4,7 +4,7 @@ import {allowBinds, bind} from "../../util";
 require("./fields.css");
 
 interface SelectColorFieldProps {
-    value: string;
+    value?: string;
     onChange: (color: string) => void;
 }
 

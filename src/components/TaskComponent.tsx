@@ -30,9 +30,10 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
         const {desc, presentationalOptions, counters} = this.props.task;
 
-        let bgColor;
+        let bgColor, sideColor;
         if (presentationalOptions) {
             bgColor = presentationalOptions.color;
+            sideColor = presentationalOptions.sideColor;
         }
 
         let counterValue: number | null = null;
@@ -61,6 +62,8 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
                     onEditSubmitted={this.onTaskSubmitted}
                     dialogTitle="Edit Task"
                 />
+
+                {sideColor ? <div className="side-color-marker" style={{backgroundColor: sideColor}} /> : null}
 
             </div>
         );
