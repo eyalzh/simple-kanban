@@ -7,11 +7,11 @@
 }
 
 .edit-task-form input[type="text"] {
-    width: calc(100% - 30px);
+    width: 100%;
 }
 
 .edit-task-form textarea {
-    width: calc(100% - 30px);
+    width: 100%;
     height: calc(100vh - 441px);
     max-height: 600px;
     resize: vertical;
@@ -22,10 +22,11 @@
     max-width: 640px;
 }
 
-.edit-section div {
+.edit-section > div {
     font-family: "Helvetica", "Arial", sans-serif;
     font-weight: 600;
     font-size: 12px;
+    width: calc(100% - 30px);
 }
 
 .preview-section {
@@ -54,10 +55,24 @@
     top: 12px;
 }
 
-.color-section {
+.additional-actions {
     display: flex;
     justify-content: space-between;
-    width: 320px;
+}
+
+.color-section {
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+    /*width: 360px;*/
+}
+
+.set-base-section {
+    padding-top: 22px;
+}
+
+.set-base-section label {
+    line-height: 27px;
+    padding: 0 4px 0 4px;
 }
 
 .reset-color-btn {

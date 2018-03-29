@@ -1,15 +1,21 @@
 .form-field-container {
     display: flex;
-    padding-bottom: 20px;
+    padding-bottom: 12px;
 }
 
 .form-field-direction-column {
     flex-direction: column;
+    padding-bottom: 20px;
 }
 
 .form-field-caption {
     order: 1;
-    width: 80px;
+    width: 120px;
+    align-self: center;
+}
+
+.form-field-direction-column .form-field-caption {
+    align-self: flex-start;
 }
 
 .form-field {

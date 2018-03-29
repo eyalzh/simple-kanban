@@ -20,7 +20,7 @@ export const dialogModalStyle = {
 export const leftSideModalStyle = {
     ...baseModalStyle,
     content : {
-        top                   : "100px",
+        top                   : "60px",
         left                  : "100px",
         right                 : "auto",
         bottom                : "auto",
@@ -36,7 +36,7 @@ export const rightSideModalStyle = {
         pointerEvents     : "none"
     },
     content : {
-        top                   : "100px",
+        top                   : "60px",
         right                 : "auto",
         left                  : "calc(140px + 38vw)",
         bottom                : "auto",

@@ -10,6 +10,7 @@ import {Task, TaskPresentationalOptions} from "../../model/Task";
 import FormField from "../fields/FormField";
 import ActionDialog from "./ActionDialog";
 import {ReactElement} from "react";
+import CollapsableFieldSet from "../fields/CollapsableFieldSet";
 
 interface TaskEditDialogProps {
     dialogTitle: string;
@@ -130,16 +131,25 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                                 <textarea value={this.state.longdesc} onChange={this.onLongDescChange}/>
                             </FormField>
 
-                            <div className="color-section">
-                                <div>
-                                    <SelectColorField value={this.state.color} onChange={this.onColorChanged}/>
-                                    &nbsp;Background (<span className="reset-color-btn" onClick={this.onResetColors}>reset</span>)
-                                </div>
-                                <div>
-                                    <SelectColorField value={this.state.sideColor} onChange={this.onSideColorChanged}/>
-                                    &nbsp;Side color (<span className="reset-color-btn" onClick={this.onResetSideColor}>reset</span>)
-                                </div>
-                            </div>
+                            <CollapsableFieldSet label="Advanced">
+
+                                <FormField caption="Background color">
+                                    <SelectColorField value={this.state.color} onChange={this.onColorChanged}/> (<span
+                                    className="reset-color-btn" onClick={this.onResetColors}>reset</span>)
+                                </FormField>
+                                <FormField caption="Side color">
+                                    <SelectColorField value={this.state.sideColor}
+                                                      onChange={this.onSideColorChanged}/> (<span
+                                    className="reset-color-btn" onClick={this.onResetSideColor}>reset</span>)
+                                </FormField>
+                                <FormField caption="Base column">
+                                    <select>
+                                        <option>base col</option>
+                                    </select>
+                                </FormField>
+
+                            </CollapsableFieldSet>
+
 
                         </div>
 
