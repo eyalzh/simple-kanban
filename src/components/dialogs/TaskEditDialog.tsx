@@ -254,7 +254,6 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
             color: this.state.color,
             sideColor: this.state.sideColor
         };
-        console.log("onEditSubmitted - this.state.baseColumnId", this.state.baseColumnId);
         this.props.onEditSubmitted(this.state.desc, this.state.longdesc, presentationalOptions, this.state.baseColumnId);
     }
 

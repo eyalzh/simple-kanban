@@ -79,7 +79,6 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
     @bind
     private onTaskSubmitted(desc, longdesc, presentationalOptions, baseColumnId) {
-        console.log("baseColumnId", baseColumnId);
         BoardActions.editTask(this.props.task.id, desc, longdesc, presentationalOptions, baseColumnId);
     }
 
