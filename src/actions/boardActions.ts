@@ -15,9 +15,9 @@ export function addColumn(columnName: string, wipLimit: number, options?: Column
         .then(this.dispatchRefreshCurrentBoard);
 }
 
-export function addTask(column: Column, taskDesc: string, taskLongDesc?: string, presentationalOptions?: TaskPresentationalOptions) {
+export function addTask(column: Column, taskDesc: string, taskLongDesc?: string, presentationalOptions?: TaskPresentationalOptions, baseColumnId?: string) {
     getModel()
-        .addTask(column.id, taskDesc, taskLongDesc, presentationalOptions)
+        .addTask(column.id, taskDesc, taskLongDesc, presentationalOptions, baseColumnId)
         .then(this.dispatchRefreshCurrentBoard);
 }
 
@@ -41,9 +41,9 @@ export function setOrder(boardId: string, columnIds: Array<string>) {
         .then(this.dispatchRefreshCurrentBoard);
 }
 
-export function editTask(taskId: string, newDesc: string, newLongDesc?: string, presentationalOptions?: TaskPresentationalOptions) {
+export function editTask(taskId: string, newDesc: string, newLongDesc?: string, presentationalOptions?: TaskPresentationalOptions, baseColumnId?: string) {
     getModel()
-        .editTask(taskId, newDesc, newLongDesc, presentationalOptions)
+        .editTask(taskId, newDesc, newLongDesc, presentationalOptions, baseColumnId)
         .then(this.dispatchRefreshCurrentBoard);
 }
 

@@ -136,6 +136,7 @@ export default class Board extends React.Component<{}, BoardState> {
                     onDragEnd={this.onColumnDraggedEnd}
                     onDragEnter={this.onDragEnter.bind(this, column.id)}
                     inBackground={this.state.columnIdBeingDragged !== null && this.state.columnIdBeingDragged !== column.id}
+                    columnList={this.state.columns}
                 />
             );
 

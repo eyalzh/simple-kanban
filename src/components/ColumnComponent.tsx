@@ -12,6 +12,7 @@ interface ColumnProps extends Referrable {
     column: Column;
     tasks: Array<Task>;
     inBackground?: boolean;
+    columnList: Column[] | null;
 }
 
 interface ColumnState {
@@ -42,7 +43,9 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
                     data={{id: task.id, sourceColumnId: this.props.column.id}}
                     key={task.id}
                     task={task}
-                    column={this.props.column} />
+                    column={this.props.column}
+                    columnList={this.props.columnList}
+                />
             );
         });
 
@@ -73,6 +76,8 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
                     onCloseEditTask={this.closeEditTask}
                     onEditSubmitted={this.onTaskSubmitted}
                     dialogTitle="Add a New Task"
+                    columnList={this.props.columnList}
+                    currentColumnId={this.props.column.id}
                 />
                  <ColumnEditDialog
                     opened={this.state.isBeingEdited}
@@ -117,8 +122,8 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
     }
 
     @bind
-    private onTaskSubmitted(desc: string, longdesc: string, presentationalOptions: TaskPresentationalOptions) {
-        BoardActions.addTask(this.props.column, desc, longdesc, presentationalOptions);
+    private onTaskSubmitted(desc: string, longdesc: string, presentationalOptions: TaskPresentationalOptions, baseColumnId?: string) {
+        BoardActions.addTask(this.props.column, desc, longdesc, presentationalOptions, baseColumnId);
     }
 
 }

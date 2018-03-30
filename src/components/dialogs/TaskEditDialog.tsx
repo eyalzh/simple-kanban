@@ -11,13 +11,16 @@ import FormField from "../fields/FormField";
 import ActionDialog from "./ActionDialog";
 import {ReactElement} from "react";
 import CollapsableFieldSet from "../fields/CollapsableFieldSet";
+import {Column} from "../../model/Column";
 
 interface TaskEditDialogProps {
     dialogTitle: string;
     opened: boolean;
     task?: Task;
     onCloseEditTask: () => void;
-    onEditSubmitted: (desc: string, longdesc: string, presentationalOptions: TaskPresentationalOptions) => void;
+    onEditSubmitted: (desc: string, longdesc: string, presentationalOptions: TaskPresentationalOptions, baseColumnId?: string) => void;
+    columnList: Column[] | null;
+    currentColumnId: string;
 }
 
 interface TaskEditDialogState {
@@ -27,6 +30,7 @@ interface TaskEditDialogState {
     sideColor?: string;
     creationDateString: string | null;
     lastUpdatedAtString: string | null;
+    baseColumnId?: string;
 }
 
 const DEFAULT_COLOR = "#fff6a8";
@@ -51,20 +55,27 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
     private getInitState(props: TaskEditDialogProps): TaskEditDialogState  {
 
-        let desc = "", longdesc = "", color = DEFAULT_COLOR, sideColor = DEFAULT_COLOR, createdAt, lastUpdatedAt, presentationalOptions;
+        let desc = "",
+          longdesc = "",
+          color = DEFAULT_COLOR,
+          sideColor = DEFAULT_COLOR,
+          createdAt,
+          lastUpdatedAt,
+          presentationalOptions,
+          baseColumnId: string | undefined = props.currentColumnId;
 
         if (props.task) {
-            ({desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions} = props.task);
-            if (presentationalOptions) {
-                color = presentationalOptions.color;
-                sideColor = presentationalOptions.sideColor;
-            }
+          ({ desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions, baseColumnId } = props.task);
+          if (presentationalOptions) {
+            color = presentationalOptions.color;
+            sideColor = presentationalOptions.sideColor;
+          }
         }
 
         const creationDateString = TaskEditDialog.buildDateString(createdAt);
         const lastUpdatedAtString = TaskEditDialog.buildDateString(lastUpdatedAt);
 
-        return {desc, longdesc, color, sideColor, creationDateString, lastUpdatedAtString};
+        return { desc, longdesc, color, sideColor, creationDateString, lastUpdatedAtString, baseColumnId };
 
     }
 
@@ -101,6 +112,15 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                     <button onClick={this.onRequestClose}>Close</button>
                 </div>
             );
+        }
+
+        let columnOptions: JSX.Element[] = [];
+        if (this.props.columnList) {
+            columnOptions = this.props.columnList.map(column => {
+                return (
+                    <option key={column.id} value={column.id}>{column.name}</option>
+                );
+            });
         }
 
         return (
@@ -143,8 +163,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                                     className="reset-color-btn" onClick={this.onResetSideColor}>reset</span>)
                                 </FormField>
                                 <FormField caption="Base column">
-                                    <select>
-                                        <option>base col</option>
+                                    <select onChange={this.onBaseColChanged} value={this.state.baseColumnId}>
+                                        {columnOptions}
                                     </select>
                                 </FormField>
 
@@ -234,7 +254,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
             color: this.state.color,
             sideColor: this.state.sideColor
         };
-        this.props.onEditSubmitted(this.state.desc, this.state.longdesc, presentationalOptions);
+        console.log("onEditSubmitted - this.state.baseColumnId", this.state.baseColumnId);
+        this.props.onEditSubmitted(this.state.desc, this.state.longdesc, presentationalOptions, this.state.baseColumnId);
     }
 
     @bind
@@ -267,6 +288,12 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                 this.onEditSaveAndClose();
             }
         }
+    }
+
+    @bind
+    private onBaseColChanged(ev: React.FormEvent<HTMLSelectElement>) {
+        const baseColumnId = ev.currentTarget.value;
+        this.setState({baseColumnId});
     }
 
     static buildDateString(timestamp: Timestamp | undefined): string | null {

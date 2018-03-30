@@ -18,7 +18,7 @@ export default class CollapsableFieldSet extends React.Component<CollapsableFiel
         super();
         this.state = {
             isExpanded: false
-        }
+        };
     }
 
     render() {
@@ -44,7 +44,7 @@ export default class CollapsableFieldSet extends React.Component<CollapsableFiel
     onToggleClicked() {
         this.setState({
             isExpanded: !this.state.isExpanded
-        })
+        });
     }
 
 }

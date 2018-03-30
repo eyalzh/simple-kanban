@@ -16,8 +16,10 @@
 1. Half-sized columns (mixed with full-sized columns)
 1. Move column
 1. New task
-1. Edit task (name and description)
-1. Edit task (background color, both dark and light)
+1. Edit task - Name and description
+1. Edit task - Change a task's base column
+1. Edit task - Background color, both dark and light
+1. Edit task - Side color
 1. Test markdown rendering in tasks
 1. Move task
 1. Remove task

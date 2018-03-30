@@ -10,6 +10,7 @@ import {allowBinds, bind, calcColorBasedOnBackground} from "../util";
 interface TaskProps extends Referrable {
     task: Task;
     column: Column;
+    columnList: Column[] | null;
 }
 
 interface TaskState {
@@ -61,6 +62,8 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
                     onCloseEditTask={this.closeEditTask}
                     onEditSubmitted={this.onTaskSubmitted}
                     dialogTitle="Edit Task"
+                    columnList={this.props.columnList}
+                    currentColumnId={this.props.column.id}
                 />
 
                 {sideColor ? <div className="side-color-marker" style={{backgroundColor: sideColor}} /> : null}
@@ -75,8 +78,9 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
     }
 
     @bind
-    private onTaskSubmitted(desc, longdesc, presentationalOptions) {
-        BoardActions.editTask(this.props.task.id, desc, longdesc, presentationalOptions);
+    private onTaskSubmitted(desc, longdesc, presentationalOptions, baseColumnId) {
+        console.log("baseColumnId", baseColumnId);
+        BoardActions.editTask(this.props.task.id, desc, longdesc, presentationalOptions, baseColumnId);
     }
 
     @bind

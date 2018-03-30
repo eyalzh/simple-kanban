@@ -382,7 +382,7 @@ describe("task model", function () {
 
     });
 
-    it("base column should be saved on a new task", async function () {
+    it("base column should be saved on a new task based on column in which the task is created", async function () {
 
         const taskModel = new TaskModel(storageMock);
         const boardId = await taskModel.addBoard("foo");
@@ -397,6 +397,24 @@ describe("task model", function () {
         expect(tasks[0].baseColumnId).to.equal(columnId);
 
     });
+
+    it("base column should be saved on a new task based on specified base column", async function () {
+
+        const taskModel = new TaskModel(storageMock);
+        const boardId = await taskModel.addBoard("foo");
+        await taskModel.setCurrentBoard(boardId);
+
+        const columnId1 = await taskModel.addColumn("col1");
+        const columnId2 = await taskModel.addColumn("col2");
+
+        await taskModel.addTask(columnId1, "baz", "", undefined, columnId2);
+
+        const tasks = await taskModel.getTasks();
+
+        expect(tasks[0].baseColumnId).to.equal(columnId2);
+
+    });
+
 
     it("base column should not change after moving a task", async function () {
 

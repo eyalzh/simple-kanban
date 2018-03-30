@@ -230,7 +230,7 @@ export default class TaskModel {
 
     }
 
-    public async addTask(columnId: string, desc: string, longdesc?: string, presentationalOptions?: TaskPresentationalOptions): Promise<string> {
+    public async addTask(columnId: string, desc: string, longdesc?: string, presentationalOptions?: TaskPresentationalOptions, baseColumnId?: string): Promise<string> {
 
         const newKey = await generateUniqId(this.db, "task");
 
@@ -240,7 +240,7 @@ export default class TaskModel {
             longdesc: typeof longdesc !== "undefined" ? longdesc : "",
             createdAt: getCurrentTime(),
             presentationalOptions,
-            baseColumnId: columnId,
+            baseColumnId: typeof baseColumnId !== "undefined" ? baseColumnId : columnId,
             counters: [{value: 0}]
         };
 
@@ -294,13 +294,16 @@ export default class TaskModel {
 
     }
 
-    public async editTask(taskId: string, newDesc: string, newLongDesc?: string, presentationalOptions?: TaskPresentationalOptions) {
+    public async editTask(taskId: string, newDesc: string, newLongDesc?: string, presentationalOptions?: TaskPresentationalOptions, baseColumnId?: string) {
         await this.db.modifyStore<Task>(TASKS_NAME, taskId, (task) => {
             task.desc = sanitizer.sanitizeTaskTitle(newDesc);
             task.longdesc = typeof newLongDesc !== "undefined" ? newLongDesc : "";
             task.lastUpdatedAt = getCurrentTime();
             task.presentationalOptions = {...presentationalOptions};
             task.counters = task.counters || [{value: 0}];
+            if (typeof baseColumnId !== "undefined") {
+                task.baseColumnId = baseColumnId;
+            }
             return task;
         });
     }
