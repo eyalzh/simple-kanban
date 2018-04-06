@@ -16,7 +16,8 @@ export default class BoardSelector extends React.Component<BoardSelectorProps, {
 
         let boardOptions: Array<DropdownOption> | null = [];
 
-        let currentBoardId, currentBoardName;
+        let currentBoardId;
+        let currentBoardName;
         const {boards, currentBoard} = this.props;
 
         if (boards && currentBoard) {

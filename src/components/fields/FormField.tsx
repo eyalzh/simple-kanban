@@ -1,7 +1,7 @@
 import * as React from "react";
 import {classSet} from "../../util";
 
-require("./fields.css");
+import "./fields.css";
 
 interface FormFieldProps {
     caption: string;

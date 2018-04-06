@@ -40,7 +40,7 @@ export function draggable<P>(Comp: new() => Component<P & Referrable, {}>): new(
             }
         }
 
-        render () {
+        render() {
             const { innerRef, ...newProps } = this.props as any;
             return <Comp innerRef={this.onRefUpdate} {...newProps}/>;
         }

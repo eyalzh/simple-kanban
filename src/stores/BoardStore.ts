@@ -11,4 +11,3 @@ export interface BoardStore {
 export interface FullStore extends BoardStore {
     boards: Array<Board>;
 }
-

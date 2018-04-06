@@ -14,4 +14,3 @@ if (config.useIndexedDB) {
 const taskModel = new TaskModel(dbImpl);
 
 export default taskModel;
-

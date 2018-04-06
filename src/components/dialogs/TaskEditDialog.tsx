@@ -53,35 +53,11 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         }
     }
 
-    private getInitState(props: TaskEditDialogProps): TaskEditDialogState  {
-
-        let desc = "",
-          longdesc = "",
-          color = DEFAULT_COLOR,
-          sideColor = DEFAULT_COLOR,
-          createdAt,
-          lastUpdatedAt,
-          presentationalOptions,
-          baseColumnId: string | undefined = props.currentColumnId;
-
-        if (props.task) {
-          ({ desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions, baseColumnId } = props.task);
-          if (presentationalOptions) {
-            color = presentationalOptions.color;
-            sideColor = presentationalOptions.sideColor;
-          }
-        }
-
-        const creationDateString = TaskEditDialog.buildDateString(createdAt);
-        const lastUpdatedAtString = TaskEditDialog.buildDateString(lastUpdatedAt);
-
-        return { desc, longdesc, color, sideColor, creationDateString, lastUpdatedAtString, baseColumnId };
-
-    }
-
     render() {
 
-        if (! this.props.opened) return null;
+        if (! this.props.opened) {
+            return null;
+        }
 
         const {creationDateString, lastUpdatedAtString} = this.state;
 
@@ -142,7 +118,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                                     type="text"
                                     value={this.state.desc}
                                     onChange={this.onChange}
-                                    ref={(input) => {this.fieldInput = input;}}
+                                    ref={(input) => { this.fieldInput = input; }}
                                     onKeyPress={this.onInputKeyPress}
                                 />
                             </FormField>
@@ -169,7 +145,6 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                                 </FormField>
 
                             </CollapsableFieldSet>
-
 
                         </div>
 
@@ -203,6 +178,32 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         );
     }
 
+    private getInitState(props: TaskEditDialogProps): TaskEditDialogState  {
+
+        let desc = "",
+            longdesc = "",
+            color = DEFAULT_COLOR,
+            sideColor = DEFAULT_COLOR,
+            createdAt,
+            lastUpdatedAt,
+            presentationalOptions,
+            baseColumnId: string | undefined = props.currentColumnId;
+
+        if (props.task) {
+            ({ desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions, baseColumnId } = props.task);
+            if (presentationalOptions) {
+                color = presentationalOptions.color;
+                sideColor = presentationalOptions.sideColor;
+            }
+        }
+
+        const creationDateString = TaskEditDialog.buildDateString(createdAt);
+        const lastUpdatedAtString = TaskEditDialog.buildDateString(lastUpdatedAt);
+
+        return { desc, longdesc, color, sideColor, creationDateString, lastUpdatedAtString, baseColumnId };
+
+    }
+
     @bind
     private onRequestClose() {
         const confirmationMessage = "Are you sure you want to close the dialog? No changes will be saved.";
@@ -234,7 +235,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     }
 
     @bind
-    onSideColorChanged(sideColor: string) {
+    private onSideColorChanged(sideColor: string) {
         this.setState({sideColor});
     }
 

@@ -3,7 +3,7 @@ import {leftSideModalStyle} from "./dialogModalStyle";
 import * as Modal from "react-modal";
 import {ReactElement} from "react";
 
-require("./dialogs.css");
+import "./dialogs.css";
 
 interface DialogProps {
     opened: boolean;

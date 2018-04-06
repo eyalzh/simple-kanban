@@ -1,7 +1,7 @@
 import * as React from "react";
 import {allowBinds, bind, classSet} from "../../util";
 
-require("./collapsable.css");
+import "./collapsable.css";
 
 interface CollapsableFieldSetProps {
     label: string;

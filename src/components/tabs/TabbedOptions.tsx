@@ -3,7 +3,7 @@ import * as React from "react";
 import {TabProps} from "./Tab";
 import {allowBinds, bind} from "../../util";
 
-require("./tabs.css");
+import "./tabs.css";
 
 interface TabbedOptionsProps {
     activeTab: string;

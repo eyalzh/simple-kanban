@@ -19,4 +19,3 @@ export function setCatalog(catalog: TemplateCatalog) {
 export function getCatalog(): TemplateCatalog {
     return templateCatalog;
 }
-

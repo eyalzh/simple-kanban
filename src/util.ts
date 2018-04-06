@@ -1,7 +1,7 @@
-export function classSet(classNames: Object) {
+export function classSet(classNames: object) {
     let names = "";
 
-    for (let name in classNames) {
+    for (const name in classNames) {
         if (!classNames.hasOwnProperty(name) || !classNames[name]) {
             continue;
         }
@@ -18,7 +18,9 @@ export function calcColorBasedOnBackground(color: string): string {
         return "#000";
     }
 
-    if (cache[color]) return cache[color];
+    if (cache[color]) {
+        return cache[color];
+    }
 
     if (color.length !== 7) {
         throw new Error("expected a 7 character string");
@@ -32,10 +34,11 @@ export function calcColorBasedOnBackground(color: string): string {
 
     const luminance = 1 - ( 0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
-    if (luminance < 0.5)
+    if (luminance < 0.5) {
         response = "#000"; // bright colors - black font
-    else
+    } else {
         response = "#fff"; // dark colors - white font
+    }
 
     cache[color] = response;
 
@@ -57,6 +60,7 @@ export function allowBinds<T extends {new(...args: any[]): {}}>(constructor: T) 
     return class extends constructor {
         constructor(...args) {
             super(...args);
+            // tslint:disable-next-line
             (this["__bindlist"] || []).forEach(key => {
                 Object.defineProperty(this, key, {value: target.prototype[key].bind(this)});
             });

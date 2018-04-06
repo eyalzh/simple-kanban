@@ -13,7 +13,7 @@ export interface ColumnEffect {
 
 type EffectObjType = {[id: string]: new() => ColumnEffect};
 const effectIdMapper: Readonly<EffectObjType> = Object.freeze({
-    "increment": ColumnEffectIncrement,
+    increment: ColumnEffectIncrement,
 });
 
 export default class ColumnEffectsFactory {

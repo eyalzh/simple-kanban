@@ -44,7 +44,6 @@ export const rightSideModalStyle = {
     }
 };
 
-
 export const dialogContainerStyle = {
   minWidth      : "300px",
   minHeight     : "300px"

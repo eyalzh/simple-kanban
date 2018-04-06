@@ -53,7 +53,7 @@ export default class AnnotatedHashtagDiv extends React.PureComponent<AnnotatedHa
         return parts;
     }
 
-    render () {
+    render() {
 
         let innerElement;
 
@@ -63,8 +63,7 @@ export default class AnnotatedHashtagDiv extends React.PureComponent<AnnotatedHa
                     return (
                         <i key={i}>({this.props.counterValue})</i>
                     );
-                }
-                else if (part.isAnnotated) {
+                } else if (part.isAnnotated) {
                     return (
                         <span key={i} className={this.props.appliedClassName}>{part.text}</span>
                     );

@@ -9,7 +9,7 @@ import * as BoardActions from "./actions/boardActions";
 import TemplateCatalog from "./model/Templates/TemplateCatalog";
 import * as Modal from "react-modal";
 
-require("./main.css");
+import "./main.css";
 
 setModel(taskModel);
 setCatalog(new TemplateCatalog());
@@ -34,7 +34,6 @@ taskModel.init()
                 <Board  />
             </div>
             , cont);
-
 
         Modal.setAppElement(cont);
         BoardActions.dispatchRefreshFull();

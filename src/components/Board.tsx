@@ -10,7 +10,7 @@ import * as BoardActions from "../actions/boardActions";
 import {reorderArray} from "../model/util";
 import {allowBinds, bind} from "../util";
 
-require("./board.css");
+import "./board.css";
 
 interface BoardState {
     columns: Array<Column> | null;
@@ -43,6 +43,43 @@ export default class Board extends React.Component<{}, BoardState> {
         }, Priority.FIRST);
     }
 
+    render() {
+
+        let columns;
+        columns = (this.state.columns || []).map((column) => {
+
+            let tasks;
+            if (this.state.columnTasks) {
+                tasks = this.state.columnTasks.get(column.id) || [];
+            }
+
+            return (
+                <ColumnComponent
+                    key={column.id}
+                    column={column}
+                    tasks={tasks}
+                    type="column"
+                    data={{id: column.id}}
+                    filterTypeFunc={(type, data) => !(type === "task" && data.sourceColumnId === column.id)}
+                    onDrop={this.onDropColumn.bind(this, column.id)}
+                    onDragStart={this.onColumnBeingDragged.bind(this, column.id)}
+                    onDragEnd={this.onColumnDraggedEnd}
+                    onDragEnter={this.onDragEnter.bind(this, column.id)}
+                    inBackground={this.state.columnIdBeingDragged !== null && this.state.columnIdBeingDragged !== column.id}
+                    columnList={this.state.columns}
+                />
+            );
+
+        });
+
+        return (
+            <div className="board-container">
+                {columns}
+                <TrashZone onDrop={this.onMovedToTrash}/>
+            </div>
+        );
+    }
+
     private syncState(store: BoardStore) {
 
         if (store.currentBoard !== null) {
@@ -50,7 +87,7 @@ export default class Board extends React.Component<{}, BoardState> {
             this.setState({
                 boardId,
                 columns: store.columnsInBoard,
-                columnTasks: store.columnTasks
+                columnTasks: store.columnTasks,
             });
         }
     }
@@ -111,43 +148,6 @@ export default class Board extends React.Component<{}, BoardState> {
     @bind
     private onColumnDraggedEnd() {
         this.setState({columnIdBeingDragged: null});
-    }
-
-    render() {
-
-        let columns;
-        columns = (this.state.columns || []).map((column) => {
-
-            let tasks;
-            if (this.state.columnTasks) {
-                tasks = this.state.columnTasks.get(column.id) || [];
-            }
-
-            return (
-                <ColumnComponent
-                    key={column.id}
-                    column={column}
-                    tasks={tasks}
-                    type="column"
-                    data={{id: column.id}}
-                    filterTypeFunc={(type, data) => !(type === "task" && data.sourceColumnId === column.id)}
-                    onDrop={this.onDropColumn.bind(this, column.id)}
-                    onDragStart={this.onColumnBeingDragged.bind(this, column.id)}
-                    onDragEnd={this.onColumnDraggedEnd}
-                    onDragEnter={this.onDragEnter.bind(this, column.id)}
-                    inBackground={this.state.columnIdBeingDragged !== null && this.state.columnIdBeingDragged !== column.id}
-                    columnList={this.state.columns}
-                />
-            );
-
-        });
-
-        return (
-            <div className="board-container">
-                {columns}
-                <TrashZone onDrop={this.onMovedToTrash}/>
-            </div>
-        );
     }
 
 }

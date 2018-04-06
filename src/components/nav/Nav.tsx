@@ -7,7 +7,7 @@ import BoardSelector from "./BoardSelector";
 import * as BoardActions from "../../actions/boardActions";
 import {allowBinds, bind} from "../../util";
 
-require("./nav.css");
+import "./nav.css";
 
 interface NavState {
     currentBoard: Board | null;
@@ -37,18 +37,7 @@ export default class Nav extends React.Component<{}, NavState> {
         });
     }
 
-    private syncSelBoard(store: FullStore) {
-
-        const {currentBoard, boards} = store;
-
-        this.setState({
-            currentBoard,
-            boards,
-            initialized: true
-        });
-
-    }
-
+    // tslint:disable-next-line
     shouldComponentUpdate(_nextProps, nextState: NavState) {
         const {currentBoard} = nextState;
         return (currentBoard === null
@@ -60,7 +49,9 @@ export default class Nav extends React.Component<{}, NavState> {
 
     render() {
 
-        if (! this.state.initialized) return null;
+        if (! this.state.initialized) {
+            return null;
+        }
 
         return (
             <div className="nav">
@@ -73,6 +64,18 @@ export default class Nav extends React.Component<{}, NavState> {
                 />
             </div>
         );
+
+    }
+
+    private syncSelBoard(store: FullStore) {
+
+        const {currentBoard, boards} = store;
+
+        this.setState({
+            currentBoard,
+            boards,
+            initialized: true
+        });
 
     }
 

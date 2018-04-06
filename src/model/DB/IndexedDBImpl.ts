@@ -208,7 +208,6 @@ export default class IndexedDBImpl implements DB {
         });
     }
 
-
     clear(): Promise<void> {
 
         return new Promise<void>((resolve) => {
@@ -223,7 +222,7 @@ export default class IndexedDBImpl implements DB {
 
         return new Promise<void>((resolve) => {
 
-            for (let store of this.stores) {
+            for (const store of this.stores) {
 
                 const storeName = store.storeName;
                 const request = this.db.transaction(storeName, "readwrite").objectStore(storeName).openCursor();
@@ -256,7 +255,7 @@ export default class IndexedDBImpl implements DB {
 
         return new Promise<any>((resolve, reject) => {
 
-            let storeObj = {};
+            const storeObj = {};
 
             const request = this.db.transaction(storeName, "readonly").objectStore(storeName).openCursor();
 

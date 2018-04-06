@@ -86,7 +86,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
         }
 
-        let buttons = (
+        const buttons = (
             <p>
                 <button onClick={this.onEditSubmitted}>Submit</button>&nbsp;
                 <button onClick={this.props.onEditClose}>Cancel</button>&nbsp;
@@ -111,7 +111,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
                         <input
                             value={this.state.name}
                             onChange={this.onNameChange}
-                            ref={(input) => {this.fieldInput = input;}}
+                            ref={(input) => { this.fieldInput = input; }}
                             onKeyPress={this.onKeyPressed} />
                     </p>
 

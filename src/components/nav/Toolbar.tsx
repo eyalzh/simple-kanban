@@ -27,7 +27,6 @@ interface MenuAction {
     section: string;
 }
 
-
 @allowBinds
 export default class Toolbar extends React.Component<ToolbarProps, ToolbarState> {
 
@@ -179,7 +178,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
     @bind
     private onEditBoardOptionSelected(selectedValue: string) {
 
-        const action = this.menuActionsArray.find(action => action.value === selectedValue);
+        const action = this.menuActionsArray.find(menuAction => menuAction.value === selectedValue);
 
         if (action) {
             action.handler(selectedValue);

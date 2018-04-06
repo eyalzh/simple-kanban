@@ -1,7 +1,7 @@
 import * as React from "react";
 import {allowBinds, bind} from "../../util";
 
-require("./fields.css");
+import "./fields.css";
 
 interface SelectColorFieldProps {
     value?: string;

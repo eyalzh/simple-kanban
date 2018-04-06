@@ -15,10 +15,22 @@ export function addColumn(columnName: string, wipLimit: number, options?: Column
         .then(this.dispatchRefreshCurrentBoard);
 }
 
-export function addTask(column: Column, taskDesc: string, taskLongDesc?: string, presentationalOptions?: TaskPresentationalOptions, baseColumnId?: string) {
-    getModel()
-        .addTask(column.id, taskDesc, taskLongDesc, presentationalOptions, baseColumnId)
-        .then(this.dispatchRefreshCurrentBoard);
+export function addTask(
+  column: Column,
+  taskDesc: string,
+  taskLongDesc?: string,
+  presentationalOptions?: TaskPresentationalOptions,
+  baseColumnId?: string
+) {
+  getModel()
+    .addTask(
+      column.id,
+      taskDesc,
+      taskLongDesc,
+      presentationalOptions,
+      baseColumnId
+    )
+    .then(this.dispatchRefreshCurrentBoard);
 }
 
 export function deleteTask(columnId: string, taskId: string) {
@@ -41,10 +53,16 @@ export function setOrder(boardId: string, columnIds: Array<string>) {
         .then(this.dispatchRefreshCurrentBoard);
 }
 
-export function editTask(taskId: string, newDesc: string, newLongDesc?: string, presentationalOptions?: TaskPresentationalOptions, baseColumnId?: string) {
-    getModel()
-        .editTask(taskId, newDesc, newLongDesc, presentationalOptions, baseColumnId)
-        .then(this.dispatchRefreshCurrentBoard);
+export function editTask(
+  taskId: string,
+  newDesc: string,
+  newLongDesc?: string,
+  presentationalOptions?: TaskPresentationalOptions,
+  baseColumnId?: string
+) {
+  getModel()
+    .editTask(taskId, newDesc, newLongDesc, presentationalOptions, baseColumnId)
+    .then(this.dispatchRefreshCurrentBoard);
 }
 
 export function moveTask(taskId: string, sourceColumnId: string, targetColumnId: string) {
@@ -104,7 +122,7 @@ export function editCurrentBoard(boardName: string, isArchived: boolean) {
 
 export function removeCurrentBoard() {
 
-    (async function () {
+    (async () => {
 
         const currentBoard = await getModel().getCurrentBoard();
         if (currentBoard !== null) {
@@ -156,12 +174,12 @@ async function buildBoardStoreFromModel() {
 
     let currentBoard: Board | null = null;
     let columnsInBoard: Array<Column> | null = null;
-    let columnTasks: Map<string, Array<Task>> = new Map();
+    const columnTasks: Map<string, Array<Task>> = new Map();
 
     if (currentBoardId !== null) {
         currentBoard = await model.getBoardById(currentBoardId);
         columnsInBoard = await model.getColumnsByBoard(currentBoardId);
-        for (let col of columnsInBoard) {
+        for (const col of columnsInBoard) {
             const tasks = await model.getTasksByColumn(col.id);
             columnTasks.set(col.id, tasks);
         }
@@ -173,7 +191,7 @@ async function buildBoardStoreFromModel() {
 
 export function dispatchRefreshFull() {
 
-    (async function() {
+    (async () => {
 
         const model = getModel();
 

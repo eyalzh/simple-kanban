@@ -32,30 +32,11 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
         this.setState(this.getInitState(props));
     }
 
-    private getInitState(props) {
-
-        const defaultColumnValues = {
-            name: "",
-            wipLimit: 3,
-            size: ColumnSize.FULL
-        };
-
-        if (props.column) {
-            const {name, wipLimit, options} = props.column;
-            let size = ColumnSize.FULL;
-            if (options && typeof options.size !== "undefined") {
-                size = options.size;
-            }
-            return {name, wipLimit, size};
-        } else {
-            return defaultColumnValues;
-        }
-
-    }
-
     render() {
 
-        if (! this.props.opened) return null;
+        if (! this.props.opened) {
+            return null;
+        }
 
         const title = this.props.column ? "Edit Column" : "Add Column";
 
@@ -74,7 +55,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
                         <input
                             value={this.state.name}
                             onChange={this.onNameChange}
-                            ref={(input) => {this.fieldInput = input;}}
+                            ref={(input) => { this.fieldInput = input; }}
                             onKeyPress={this.onKeyPressed} />
                     </FormField>
 
@@ -104,6 +85,27 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
 
             </Modal>
         );
+    }
+
+    private getInitState(props) {
+
+        const defaultColumnValues = {
+            name: "",
+            wipLimit: 3,
+            size: ColumnSize.FULL
+        };
+
+        if (props.column) {
+            const {name, wipLimit, options} = props.column;
+            let size = ColumnSize.FULL;
+            if (options && typeof options.size !== "undefined") {
+                size = options.size;
+            }
+            return {name, wipLimit, size};
+        } else {
+            return defaultColumnValues;
+        }
+
     }
 
     @bind

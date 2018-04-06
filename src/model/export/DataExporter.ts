@@ -18,11 +18,11 @@ export default class DataExporter {
             parentRef: null
         }));
 
-        let exportedCols: Array<DataElement> = [];
-        let exportedTasks: Array<DataElement> = [];
-        for (let board of boards) {
+        const exportedCols: Array<DataElement> = [];
+        const exportedTasks: Array<DataElement> = [];
+        for (const board of boards) {
             const colsInBoard = await this.model.getColumnsByBoard(board.id);
-            for (let col of colsInBoard) {
+            for (const col of colsInBoard) {
                 exportedCols.push({
                     ref: col.id,
                     parentRef: board.id,
@@ -55,15 +55,15 @@ export default class DataExporter {
     async import(data: KanbanExportedData): Promise<void> {
 
         const boards = data.boards;
-        let boardRefMap: Map<string, string> = new Map();
-        for (let board of boards) {
+        const boardRefMap: Map<string, string> = new Map();
+        for (const board of boards) {
             const id = await this.model.addBoard(board.props.name);
             boardRefMap[board.ref] = id;
         }
 
         const cols = data.cols;
-        let colRefMap: Map<string, string> = new Map();
-        for (let col of cols) {
+        const colRefMap: Map<string, string> = new Map();
+        for (const col of cols) {
             if (col.parentRef) {
                 await this.model.setCurrentBoard(boardRefMap[col.parentRef]);
                 const id = await this.model.addColumn(col.props.name, col.props.wipLimit);
@@ -72,7 +72,7 @@ export default class DataExporter {
         }
 
         const tasks = data.tasks;
-        for (let task of tasks) {
+        for (const task of tasks) {
             if (task.parentRef) {
                 await this.model.addTask(colRefMap[task.parentRef], task.props.desc, task.props.longdesc, task.props.presentationalOptions);
             }

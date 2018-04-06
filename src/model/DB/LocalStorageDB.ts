@@ -56,7 +56,6 @@ export default class LocalStorageDB implements DB {
         });
     }
 
-
     setItem<T>(key: string, data: T | Map<T, any>): Promise<void> {
         return this.addToStore(INTERNAL_PROPERTY_STORE.storeName, key, data);
     }

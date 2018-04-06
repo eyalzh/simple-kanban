@@ -1,0 +1,36 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "max-line-length": {
+      "options": [140]
+    },
+    "member-access": false,
+    "ordered-imports": false,
+    "arrow-parens": false,
+    "only-arrow-functions": false,
+    "trailing-comma": false,
+    "no-console": false,
+    "interface-name": [true, "never-prefix"],
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "public-static-field",
+          "public-instance-field",
+          "private-static-field",
+          "private-instance-field",
+          "public-constructor",
+          "private-constructor",
+          "public-instance-method",
+          "protected-instance-method",
+          "private-instance-method"
+        ]
+      }
+    ],
+    "object-literal-sort-keys": false,
+    "max-classes-per-file": [true, 3],
+    "array-type": false,
+    "one-variable-per-declaration": false,
+    "interface-over-type-literal": false
+  }
+}

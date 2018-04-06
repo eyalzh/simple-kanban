@@ -7,6 +7,7 @@ export default class EmptyTemplate implements Template {
     }
 
     public async applyOnModel() {
+        return Promise.resolve();
     }
 
 }

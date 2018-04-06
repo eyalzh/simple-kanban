@@ -29,7 +29,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
 
     private mounted: boolean;
 
-    constructor () {
+    constructor() {
         super();
         this.state = {
             isOpen: false
@@ -107,7 +107,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     }
 
     @bind
-    handleDocumentClick (event) {
+    handleDocumentClick(event) {
         if (this.mounted) {
             if (!findDOMNode(this).contains(event.target)) {
                 if (this.state.isOpen) {
@@ -117,19 +117,19 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
         }
     }
 
-    render () {
+    render() {
         const {className} = this.props;
 
         const placeHolderValue = this.props.placeholder;
 
-        let dropdownMenuClassSet = classSet({
+        const dropdownMenuClassSet = classSet({
             ["Dropdown-menu"]: true,
             ["Dropdown-left-placement"]: this.props.placement === "left"
         });
 
         const menu = this.state.isOpen ? <div className={dropdownMenuClassSet}>{this.buildMenu()}</div> : null;
 
-        let dropdownClassSet = classSet({
+        const dropdownClassSet = classSet({
             [className]: true,
             [`Dropdown-root`]: true,
             "is-open": this.state.isOpen

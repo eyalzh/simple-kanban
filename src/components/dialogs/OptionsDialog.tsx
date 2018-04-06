@@ -71,7 +71,8 @@ export default class OptionsDialog extends React.Component<OptionsDialogProps, O
                         <Tab  id="about" name="about">
                             <div className="section-title">About</div>
                             <p>
-                                For more info about this project, please see the <a href="https://github.com/eyalzh/simple-kanban" target="_blank">github page</a>
+                                For more info about this project,
+                                please see the <a href="https://github.com/eyalzh/simple-kanban" target="_blank">github page</a>
                             </p>
                         </Tab>
 
@@ -97,17 +98,17 @@ export default class OptionsDialog extends React.Component<OptionsDialogProps, O
     }
 
     @bind
-    onTabChange(tabId) {
+    private onTabChange(tabId) {
         this.setState({activeTab: tabId});
     }
 
     @bind
-    onImportFileRead(text) {
+    private onImportFileRead(text) {
         this.props.onFileImport(text);
     }
 
     @bind
-    onAddTutorialBoard() {
+    private onAddTutorialBoard() {
         BoardActions.addBoard("Tutorial", new TutorialTemplate());
         this.props.onClosed();
     }

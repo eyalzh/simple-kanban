@@ -93,12 +93,12 @@ export default class TaskModel {
 
     public async getTasksByColumn(columnId: string): Promise<Array<Task>> {
 
-        let tasks: Array<Task> = [];
+        const tasks: Array<Task> = [];
         const columnTasks = await this.db.getDocumentByKey<Array<string>>(COL_TASK_MAP_NAME, columnId);
 
         if (columnTasks) {
 
-            for (let taskId of columnTasks) {
+            for (const taskId of columnTasks) {
                 const task =  await this.db.getDocumentByKey<Task>(TASKS_NAME, taskId);
                 if (task) {
                     tasks.push(task);
@@ -131,11 +131,11 @@ export default class TaskModel {
 
     public async getColumnsByBoard(boardId: string): Promise<Array<Column>> {
 
-        let cols: Array<Column> = [];
+        const cols: Array<Column> = [];
         const boardsToColsMap = await this.db.getDocumentByKey<Array<string>>(BOARD_COL_MAP_NAME, boardId);
 
         if (boardsToColsMap !== null) {
-            for (let colId of boardsToColsMap) {
+            for (const colId of boardsToColsMap) {
                 const col = await this.getColumnById(colId);
                 if (col) {
                     cols.push(col);
@@ -230,7 +230,12 @@ export default class TaskModel {
 
     }
 
-    public async addTask(columnId: string, desc: string, longdesc?: string, presentationalOptions?: TaskPresentationalOptions, baseColumnId?: string): Promise<string> {
+    public async addTask(
+        columnId: string,
+        desc: string,
+        longdesc?: string,
+        presentationalOptions?: TaskPresentationalOptions,
+        baseColumnId?: string): Promise<string> {
 
         const newKey = await generateUniqId(this.db, "task");
 
@@ -294,7 +299,12 @@ export default class TaskModel {
 
     }
 
-    public async editTask(taskId: string, newDesc: string, newLongDesc?: string, presentationalOptions?: TaskPresentationalOptions, baseColumnId?: string) {
+    public async editTask(
+        taskId: string,
+        newDesc: string,
+        newLongDesc?: string,
+        presentationalOptions?: TaskPresentationalOptions,
+        baseColumnId?: string) {
         await this.db.modifyStore<Task>(TASKS_NAME, taskId, (task) => {
             task.desc = sanitizer.sanitizeTaskTitle(newDesc);
             task.longdesc = typeof newLongDesc !== "undefined" ? newLongDesc : "";

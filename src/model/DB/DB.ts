@@ -20,6 +20,6 @@ export interface DB {
     deleteStoreItem(storeName: string, key: string): Promise<void>;
 
     clear(): Promise<void>;
-    runMaintenance():  Promise<void>;
+    runMaintenance(): Promise<void>;
 
 }
