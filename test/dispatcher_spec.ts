@@ -1,20 +1,20 @@
 import {expect} from "chai";
 import {Dispatcher, Priority} from "../src/Dispatcher";
-import 'mocha';
+import "mocha";
 
-describe("dispatcher", function () {
+describe("dispatcher", function() {
 
-    it("should boardcast all registered functions when an event is fired", function () {
+    it("should boardcast all registered functions when an event is fired", function() {
 
         let func1Called = false;
         let func2Called = false;
         const dispatcher = new Dispatcher();
 
-        dispatcher.register(function () {
+        dispatcher.register(function() {
             func1Called = true;
         });
 
-        dispatcher.register(function () {
+        dispatcher.register(function() {
             func2Called = true;
         });
 
@@ -25,16 +25,16 @@ describe("dispatcher", function () {
 
     });
 
-    it("should broadcast the event based on priority", function () {
+    it("should broadcast the event based on priority", function() {
 
-        let callOrder: Array<number> = [];
+        const callOrder: Array<number> = [];
         const dispatcher = new Dispatcher();
 
-        dispatcher.register(function () {
+        dispatcher.register(function() {
             callOrder.push(1);
         }, Priority.LAST);
 
-        dispatcher.register(function () {
+        dispatcher.register(function() {
             callOrder.push(2);
         }, Priority.FIRST);
 
@@ -44,12 +44,12 @@ describe("dispatcher", function () {
 
     });
 
-    it("removeListener should remove the callback and not call it on the next dispatch", function () {
+    it("removeListener should remove the callback and not call it on the next dispatch", function() {
 
         const dispatcher = new Dispatcher();
         let funcCalled = false;
 
-        const fn = function () {
+        const fn = function() {
             funcCalled = true;
         };
 
@@ -62,17 +62,17 @@ describe("dispatcher", function () {
 
     });
 
-    it("removeListener should only remove the callback specified and still call other callbacks", function () {
+    it("removeListener should only remove the callback specified and still call other callbacks", function() {
 
         const dispatcher = new Dispatcher();
         let funcCalled = false;
         let otherFuncCalled = false;
 
-        const fnToBeRemoved = function () {
+        const fnToBeRemoved = function() {
             funcCalled = true;
         };
 
-        const someOtherFn = function () {
+        const someOtherFn = function() {
             otherFuncCalled = true;
         };
 
@@ -87,17 +87,17 @@ describe("dispatcher", function () {
 
     });
 
-    it("should still dispatch a callback after removing a different callback (complex scenario)", function () {
+    it("should still dispatch a callback after removing a different callback (complex scenario)", function() {
 
         const dispatcher = new Dispatcher();
         let firstCount = 0;
         let secondCount = 0;
 
-        const firstFn = function () {
+        const firstFn = function() {
             firstCount++;
         };
 
-        const secondFn = function () {
+        const secondFn = function() {
             secondCount++;
         };
 
@@ -112,6 +112,5 @@ describe("dispatcher", function () {
         expect(secondCount).to.equal(1);
 
     });
-
 
 });

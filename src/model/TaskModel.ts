@@ -20,10 +20,10 @@ export enum FLAGS {TUTORIAL_ADDED}
 
 export default class TaskModel {
 
-    constructor(private db: DB) {}
+    constructor(private readonly db: DB) {}
 
     public async init(): Promise<void> {
-        return await this.db.init([
+        return this.db.init([
             {
                 storeName: BOARD_MAP_NAME,
                 storeKey: "id"
@@ -52,7 +52,7 @@ export default class TaskModel {
     }
 
     public async getCurrentBoard(): Promise<string | null> {
-       return await this.db.getItem<string>(SELECTED_BOARD_KEY);
+       return this.db.getItem<string>(SELECTED_BOARD_KEY);
     }
 
     public async setCurrentBoard(boardId: string) {
@@ -60,7 +60,7 @@ export default class TaskModel {
     }
 
     public async getBoards(): Promise<Array<Board>> {
-        return await this.db.getAll<Board>(BOARD_MAP_NAME);
+        return this.db.getAll<Board>(BOARD_MAP_NAME);
     }
 
     public async getNextBoard(): Promise<Board | null> {
@@ -84,11 +84,11 @@ export default class TaskModel {
     }
 
     public async getColumns(): Promise<Array<Column>> {
-        return await this.db.getAll<Column>(COLUMNS_MAP_NAME);
+        return this.db.getAll<Column>(COLUMNS_MAP_NAME);
     }
 
     public async getTasks(): Promise<Array<Task>> {
-        return await this.db.getAll<Task>(TASKS_NAME);
+        return this.db.getAll<Task>(TASKS_NAME);
     }
 
     public async getTasksByColumn(columnId: string): Promise<Array<Task>> {

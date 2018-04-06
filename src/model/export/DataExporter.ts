@@ -5,7 +5,7 @@ const DATA_VERSION = 1;
 
 export default class DataExporter {
 
-    constructor(private model: TaskModel) {}
+    constructor(private readonly model: TaskModel) {}
 
     async export(): Promise<KanbanExportedData> {
 

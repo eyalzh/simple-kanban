@@ -6,7 +6,7 @@ export interface TabProps {
     isVisible?: boolean;
 }
 
-export default class Tab extends React.Component<TabProps, {}> {
+export default class Tab extends React.Component<TabProps> {
 
     render() {
 

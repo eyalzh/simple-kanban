@@ -12,7 +12,7 @@ interface TabbedOptionsProps {
 }
 
 @allowBinds
-export default class TabbedOptions extends React.Component<TabbedOptionsProps, {}> {
+export default class TabbedOptions extends React.Component<TabbedOptionsProps> {
 
     render() {
 

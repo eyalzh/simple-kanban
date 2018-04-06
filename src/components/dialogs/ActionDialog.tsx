@@ -16,7 +16,7 @@ interface DialogProps {
 
 }
 
-export default class ActionDialog extends React.Component<DialogProps, {}> {
+export default class ActionDialog extends React.Component<DialogProps> {
 
     render() {
         return (

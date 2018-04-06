@@ -5,7 +5,7 @@ import BrainstormingTemplate from "./BrainstormingTemplate";
 
 export default class TemplateCatalog {
 
-    private templates: Array<Template>;
+    private readonly templates: Array<Template>;
 
     constructor() {
         this.templates = [

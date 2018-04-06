@@ -6,11 +6,11 @@ interface CancellableFunction extends Function {
     cancel: () => void;
 }
 
-export function debounceRender<P>(Comp: new() => Component<P, {}>, delayMs: number): new() => Component<P, {}> {
+export function debounceRender<P>(Comp: new() => Component<P>, delayMs: number): new() => Component<P> {
 
-    return class extends Component<P, {}> {
+    return class extends Component<P> {
 
-        private debounceUpdate: CancellableFunction;
+        private readonly debounceUpdate: CancellableFunction;
 
         constructor() {
             super();

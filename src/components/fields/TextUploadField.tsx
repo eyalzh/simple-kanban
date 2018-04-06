@@ -7,7 +7,7 @@ interface UploadFieldProps {
 }
 
 @allowBinds
-export default class TextUploadField extends React.Component<UploadFieldProps, {}> {
+export default class TextUploadField extends React.Component<UploadFieldProps> {
 
     render() {
         return (

@@ -102,9 +102,9 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
     @bind
     private onEditColumnSubmitted(name: string, wipLimit: number, options: ColumnOptions) {
         if (name !== null && Number.isInteger(wipLimit) && wipLimit > 0) {
-            name = name.trim();
-            if (name.length > 0) {
-                BoardActions.editColumn(this.props.column, name, wipLimit, options);
+            const trimmedName = name.trim();
+            if (trimmedName.length > 0) {
+                BoardActions.editColumn(this.props.column, trimmedName, wipLimit, options);
             }
         }
 

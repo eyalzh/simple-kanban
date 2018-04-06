@@ -3,7 +3,7 @@
  */
 export class MapBasedStorage implements Storage {
 
-    private data: Map<string, any>;
+    private readonly data: Map<string, any>;
 
     get length() {
         return this.data.size;

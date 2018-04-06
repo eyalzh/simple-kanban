@@ -9,7 +9,7 @@ interface SelectColorFieldProps {
 }
 
 @allowBinds
-export default class SelectColorField extends React.Component<SelectColorFieldProps, {}> {
+export default class SelectColorField extends React.Component<SelectColorFieldProps> {
 
     render() {
         return <input

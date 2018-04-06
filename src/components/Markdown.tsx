@@ -6,7 +6,7 @@ interface MarkdownProps {
     text: string;
 }
 
-class MarkdownComponent extends React.PureComponent<MarkdownProps, {}> {
+class MarkdownComponent extends React.PureComponent<MarkdownProps> {
 
     render() {
 

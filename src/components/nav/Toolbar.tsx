@@ -30,8 +30,8 @@ interface MenuAction {
 @allowBinds
 export default class Toolbar extends React.Component<ToolbarProps, ToolbarState> {
 
-    private menuActions: {[prop: string]: MenuAction};
-    private menuActionsArray: MenuAction[];
+    private readonly menuActions: {[prop: string]: MenuAction};
+    private readonly menuActionsArray: MenuAction[];
 
     constructor() {
 

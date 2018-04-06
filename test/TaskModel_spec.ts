@@ -4,24 +4,24 @@ import TaskModel from "../src/model/TaskModel";
 import LocalStorageDB from "../src/model/DB/LocalStorageDB";
 import {DB} from "../src/model/DB/DB";
 import {Column} from "../src/model/Column";
-import 'mocha';
+import "mocha";
 import DataExporter from "../src/model/export/DataExporter";
 import {TaskPresentationalOptions} from "../src/model/Task";
 
-describe("task model", function () {
+describe("task model", function() {
 
     let storageMock: DB;
-    let origDateNow = Date.now;
+    const origDateNow = Date.now;
 
-    beforeEach(function () {
+    beforeEach(function() {
         storageMock = new LocalStorageDB(new MapBasedStorage());
     });
 
-    afterEach(function () {
+    afterEach(function() {
        Date.now = origDateNow;
     });
 
-    it("getBoards should return no boards when no boards are added", async function () {
+    it("getBoards should return no boards when no boards are added", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const boards = await taskModel.getBoards();
@@ -30,7 +30,7 @@ describe("task model", function () {
 
     });
 
-    it("addBoard should add an item to the map of boards", async function () {
+    it("addBoard should add an item to the map of boards", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const board = await taskModel.addBoard("default");
@@ -42,7 +42,7 @@ describe("task model", function () {
 
     });
 
-    it("getColumns should return the list of columns, by order", async function () {
+    it("getColumns should return the list of columns, by order", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const board = await taskModel.addBoard("default");
@@ -69,7 +69,7 @@ describe("task model", function () {
         const col = await taskModel.getColumnById(colId);
 
         if (col === null) {
-            expect.fail(null, col,"getColumnById failed to find existing column");
+            expect.fail(null, col, "getColumnById failed to find existing column");
         } else {
             expect(col.name).to.equal("foo");
         }
@@ -88,7 +88,7 @@ describe("task model", function () {
         expect(col).to.equal(null);
     });
 
-    it("getTasks should return the list of tasks", async function () {
+    it("getTasks should return the list of tasks", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const board = await taskModel.addBoard("default");
@@ -106,7 +106,7 @@ describe("task model", function () {
 
     });
 
-    it("delete task should remove the task from the list", async function () {
+    it("delete task should remove the task from the list", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const board = await taskModel.addBoard("default");
@@ -127,7 +127,7 @@ describe("task model", function () {
 
     });
 
-    it("moveTask should move the task to the target column", async function () {
+    it("moveTask should move the task to the target column", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const board = await taskModel.addBoard("default");
@@ -145,7 +145,7 @@ describe("task model", function () {
 
     });
 
-    it("moveTask should modify the counter in the task based on the column increment effect", async function () {
+    it("moveTask should modify the counter in the task based on the column increment effect", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const board = await taskModel.addBoard("default");
@@ -168,7 +168,7 @@ describe("task model", function () {
 
     });
 
-    it("moveTask to a column with a reset to 0 op should change the counter to 0", async function () {
+    it("moveTask to a column with a reset to 0 op should change the counter to 0", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const board = await taskModel.addBoard("default");
@@ -193,7 +193,7 @@ describe("task model", function () {
 
     });
 
-    it("editColumn with increment effect should apply", async function () {
+    it("editColumn with increment effect should apply", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const board = await taskModel.addBoard("default");
@@ -217,8 +217,7 @@ describe("task model", function () {
 
     });
 
-
-    it("editTask should update the lastUpdatedAt property of the task", async function () {
+    it("editTask should update the lastUpdatedAt property of the task", async function() {
 
         const taskModel = new TaskModel(storageMock);
 
@@ -243,7 +242,7 @@ describe("task model", function () {
 
     });
 
-    it("getNextBoard should return the second board in a set of two boards", async function () {
+    it("getNextBoard should return the second board in a set of two boards", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const board1 = await taskModel.addBoard("first");
@@ -260,7 +259,7 @@ describe("task model", function () {
 
     });
 
-    it("editCurrentBoard should only change the name of the current board", async function () {
+    it("editCurrentBoard should only change the name of the current board", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const board1 = await taskModel.addBoard("original name 1");
@@ -279,7 +278,7 @@ describe("task model", function () {
 
     });
 
-    it("getTasksByBoard should return the list of tasks in a board", async function () {
+    it("getTasksByBoard should return the list of tasks in a board", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const boardId = await taskModel.addBoard("default");
@@ -297,7 +296,7 @@ describe("task model", function () {
 
     });
 
-    it("removeCurrentBoard should remove all columns", async function () {
+    it("removeCurrentBoard should remove all columns", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const boardId = await taskModel.addBoard("default");
@@ -313,7 +312,7 @@ describe("task model", function () {
 
     });
 
-    it("export data should return an object that reflects the exact state of the model", async function () {
+    it("export data should return an object that reflects the exact state of the model", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const boardId = await taskModel.addBoard("default");
@@ -336,7 +335,7 @@ describe("task model", function () {
 
     });
 
-    it("import data should copy the exported model into the existing model", async function () {
+    it("import data should copy the exported model into the existing model", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const boardId = await taskModel.addBoard("default");
@@ -362,7 +361,7 @@ describe("task model", function () {
 
     });
 
-    it("presentational options are persisted when adding a task", async function () {
+    it("presentational options are persisted when adding a task", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const boardId = await taskModel.addBoard("foo");
@@ -382,7 +381,7 @@ describe("task model", function () {
 
     });
 
-    it("base column should be saved on a new task based on column in which the task is created", async function () {
+    it("base column should be saved on a new task based on column in which the task is created", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const boardId = await taskModel.addBoard("foo");
@@ -398,7 +397,7 @@ describe("task model", function () {
 
     });
 
-    it("base column should be saved on a new task based on specified base column", async function () {
+    it("base column should be saved on a new task based on specified base column", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const boardId = await taskModel.addBoard("foo");
@@ -415,8 +414,7 @@ describe("task model", function () {
 
     });
 
-
-    it("base column should not change after moving a task", async function () {
+    it("base column should not change after moving a task", async function() {
 
         const taskModel = new TaskModel(storageMock);
         const boardId = await taskModel.addBoard("foo");

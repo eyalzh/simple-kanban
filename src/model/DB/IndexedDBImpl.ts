@@ -18,7 +18,7 @@ export default class IndexedDBImpl implements DB {
     private db!: IDBDatabase;
     private stores: Array<DBStoreDescriptor> = [];
 
-    constructor(private dbFactory: IDBFactory) {}
+    constructor(private readonly dbFactory: IDBFactory) {}
 
     init(stores: Array<DBStoreDescriptor>): Promise<void> {
 

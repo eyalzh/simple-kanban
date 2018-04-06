@@ -10,7 +10,7 @@ interface BoardSelectorProps {
 }
 
 @allowBinds
-export default class BoardSelector extends React.Component<BoardSelectorProps, {}> {
+export default class BoardSelector extends React.Component<BoardSelectorProps> {
 
     render() {
 

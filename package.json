@@ -6,7 +6,7 @@
     "dev": "webpack-dev-server --mode development --inline --hot --content-base .",
     "build": "webpack -p --display-modules",
     "test": "mocha --require ts-node/register test/**/*.ts",
-    "lint": "tslint src/**/*.ts src/**/*.tsx"
+    "lint": "tslint -p ."
   },
   "keywords": [
     "kanban",

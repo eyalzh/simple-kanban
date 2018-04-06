@@ -31,6 +31,12 @@
     "max-classes-per-file": [true, 3],
     "array-type": false,
     "one-variable-per-declaration": false,
-    "interface-over-type-literal": false
+    "interface-over-type-literal": false,
+    "prefer-readonly": true,
+    "no-return-await": true,
+    "no-duplicate-switch-case": true,
+    "no-parameter-reassignment": true,
+    "no-this-assignment": true,
+    "use-default-type-parameter": true
   }
 }

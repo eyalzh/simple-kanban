@@ -4,7 +4,7 @@ export enum Priority {FIRST = 0, LAST = 1}
 
 export class Dispatcher {
 
-    private fns: Array<Array<Callback>> = [];
+    private readonly fns: Array<Array<Callback>> = [];
 
     constructor() {
         this.fns[Priority.FIRST] = [];

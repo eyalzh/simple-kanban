@@ -1,7 +1,7 @@
 import * as React from "react";
 import {droppable, Referrable} from "./hoc/dragAndDrop";
 
-class TrashZoneComponent extends React.Component<Referrable, {}> {
+class TrashZoneComponent extends React.Component<Referrable> {
 
     render() {
         return (
