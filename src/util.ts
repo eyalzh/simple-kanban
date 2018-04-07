@@ -67,3 +67,13 @@ export function allowBinds<T extends {new(...args: any[]): {}}>(constructor: T) 
         }
     };
 }
+
+export function reorderArray<T>(arr: Array<T>, sourceIndex: number, targetIndex: number): Array<T> {
+
+    const ret = arr.slice(0); // clone the array
+
+    ret.splice(sourceIndex, 1);
+    ret.splice(targetIndex, 0, arr[sourceIndex]);
+
+    return ret;
+}

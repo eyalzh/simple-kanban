@@ -1,6 +1,6 @@
-import {reorderArray} from "../src/model/util";
 import {expect} from "chai";
 import "mocha";
+import {reorderArray} from "../src/util";
 
 describe("model utils", function() {
 

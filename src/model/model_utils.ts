@@ -1,19 +1,6 @@
 import {DB} from "./DB/DB";
 import {Timestamp} from "./Timestamp";
 
-export function reorderArray<T>(arr: Array<T>, sourceIndex: number, targetIndex: number): Array<T> {
-
-    const ret = arr.slice(0); // clone the array
-
-    ret.splice(sourceIndex, 1);
-    ret.splice(targetIndex, 0, arr[sourceIndex]);
-
-    return ret;
-}
-
-/**
- * Generate a unique ID
- */
 let uniqueId: number | null = null;
 export async function generateUniqId(db: DB, prefix: string): Promise<string> {
 

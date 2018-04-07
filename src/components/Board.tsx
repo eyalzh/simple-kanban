@@ -7,8 +7,7 @@ import TrashZone from "./TrashZone";
 import {BoardStore} from "../stores/BoardStore";
 import {Task} from "../model/Task";
 import * as BoardActions from "../actions/boardActions";
-import {reorderArray} from "../model/util";
-import {allowBinds, bind} from "../util";
+import {allowBinds, bind, reorderArray} from "../util";
 
 import "./board.css";
 

@@ -6,7 +6,7 @@ import {BoardStore, FullStore} from "../stores/BoardStore";
 import {Task, TaskPresentationalOptions} from "../model/Task";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
-import {createIndexedDBExportUrl} from "../model/util";
+import {createIndexedDBExportUrl} from "../model/model_utils";
 import DataExporter from "../model/export/DataExporter";
 
 export function addColumn(columnName: string, wipLimit: number, options?: ColumnOptions) {

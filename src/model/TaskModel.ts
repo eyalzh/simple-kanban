@@ -1,6 +1,6 @@
 import {Column, ColumnOptions} from "./Column";
 import {Task, TaskPresentationalOptions} from "./Task";
-import {generateUniqId, getCurrentTime} from "./util";
+import {generateUniqId, getCurrentTime} from "./model_utils";
 import NonEmptyColumnException from "./NonEmptyColumnException";
 import {sanitizer} from "./sanitizer";
 import {DB} from "./DB/DB";
