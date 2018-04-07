@@ -3,6 +3,7 @@ import LocalStorageDB from "./DB/LocalStorageDB";
 import IndexedDBImpl from "./DB/IndexedDBImpl";
 import {DB} from "./DB/DB";
 import {config} from "../config";
+import DataExporter from "./export/DataExporter";
 
 let dbImpl: DB;
 if (config.useIndexedDB) {
@@ -12,5 +13,6 @@ if (config.useIndexedDB) {
 }
 
 const taskModel = new TaskModel(dbImpl);
+const modelExporter = new DataExporter(taskModel);
 
-export default taskModel;
+export {taskModel, modelExporter};

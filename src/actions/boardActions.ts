@@ -6,7 +6,6 @@ import {BoardStore, FullStore} from "../stores/BoardStore";
 import {Task, TaskPresentationalOptions} from "../model/Task";
 import {Board} from "../model/Board";
 import {Template} from "../model/Templates/Template";
-import {createIndexedDBExportUrl} from "../model/model_utils";
 import DataExporter from "../model/export/DataExporter";
 
 export function addColumn(columnName: string, wipLimit: number, options?: ColumnOptions) {
@@ -151,20 +150,21 @@ export function resetCurrentBoard() {
         .then(this.dispatchRefreshCurrentBoard);
 }
 
-export function exportData() {
-
-    const model = getModel();
-    const exporter = new DataExporter(model);
-    exporter.export().then((data) => {
-        const json = JSON.stringify(data);
-        createIndexedDBExportUrl(json);
-    });
-}
-
 export function importFromJSON(json: string) {
+
     const model = getModel();
     const exporter = new DataExporter(model);
-    exporter.import(JSON.parse(json)).then(this.dispatchRefreshFull);
+
+    exporter
+        .import(JSON.parse(json))
+        .then(() => {
+            alert("Import completed successfully");
+            this.dispatchRefreshFull();
+        })
+        .catch((reason) => {
+            alert("import failed. reason: " + reason);
+        });
+
 }
 
 async function buildBoardStoreFromModel() {

@@ -122,7 +122,9 @@
     text-transform: uppercase;
 }
 
-
+.export-link {
+    padding: 12px;
+}
 
 @media (min-width: 2000px) {
 

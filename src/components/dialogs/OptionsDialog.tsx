@@ -7,6 +7,8 @@ import {dialogModalStyle} from "./dialogModalStyle";
 import TextUploadField from "../fields/TextUploadField";
 import {allowBinds, bind} from "../../util";
 import TutorialTemplate from "../../model/Templates/TutorialTemplate";
+import DownloadLink from "../fields/DownloadLink";
+import {modelExporter} from "../../model/model";
 
 interface OptionsDialogProps {
     opened: boolean;
@@ -16,6 +18,7 @@ interface OptionsDialogProps {
 
 interface OptionsDialogState {
     activeTab: string;
+    downloadLinkCreated: boolean;
 }
 
 @allowBinds
@@ -24,13 +27,31 @@ export default class OptionsDialog extends React.Component<OptionsDialogProps, O
     constructor() {
         super();
         this.state = {
-            activeTab: "import-export"
+            activeTab: "import-export",
+            downloadLinkCreated: false
         };
     }
 
     render() {
 
         const title = "General Options";
+        let downloadLink: JSX.Element | null = null;
+
+        if (this.state.downloadLinkCreated) {
+
+            const dataProvider = async () => {
+                const data = await modelExporter.export();
+                return JSON.stringify(data);
+            };
+
+            downloadLink = (
+                <DownloadLink
+                    label="click here to download the export file"
+                    fileNamePrefix="kanban_export"
+                    dataProvider={dataProvider}/>
+            );
+
+        }
 
         return (
             <Modal isOpen={this.props.opened}
@@ -50,7 +71,11 @@ export default class OptionsDialog extends React.Component<OptionsDialogProps, O
                             </div>
                             <div className="sub-section">
                                 <div className="sub-section-title">Export data to JSON</div>
-                                <button onClick={this.exportDB}>Export</button>
+                                <button onClick={this.showDownloadLink}>Create export link</button>
+                                <div className="export-link">
+                                    {downloadLink}
+                                </div>
+
                             </div>
                         </Tab>
 
@@ -93,11 +118,6 @@ export default class OptionsDialog extends React.Component<OptionsDialogProps, O
     }
 
     @bind
-    private exportDB() {
-        BoardActions.exportData();
-    }
-
-    @bind
     private onTabChange(tabId) {
         this.setState({activeTab: tabId});
     }
@@ -111,6 +131,11 @@ export default class OptionsDialog extends React.Component<OptionsDialogProps, O
     private onAddTutorialBoard() {
         BoardActions.addBoard("Tutorial", new TutorialTemplate());
         this.props.onClosed();
+    }
+
+    @bind
+    private showDownloadLink() {
+        this.setState({downloadLinkCreated: true});
     }
 
 }

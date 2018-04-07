@@ -30,9 +30,3 @@ export function getCurrentTime(): Timestamp {
 
     return now;
 }
-
-export function createIndexedDBExportUrl(dump: string) {
-    const blob = new Blob([dump], {type: "octet/stream"});
-    const url = URL.createObjectURL(blob);
-    location.href = url;
-}

@@ -2,7 +2,7 @@ import { render } from "react-dom";
 import * as React from "react";
 import Nav from "./components/nav/Nav";
 import Board from "./components/Board";
-import taskModel from "./model/model";
+import {taskModel} from "./model/model";
 import {setModel, setCatalog} from "./context";
 import initializeModel from "./model/initializeModel";
 import * as BoardActions from "./actions/boardActions";
