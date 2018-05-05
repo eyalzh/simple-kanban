@@ -21,6 +21,7 @@
 1. Edit task - Background color, both dark and light
 1. Edit task - Side color
 1. Test markdown rendering in tasks
+1. Tasks with tags, counters, links to boards
 1. Move task
 1. Remove task
 1. Remove column with tasks in it (should not allow)
