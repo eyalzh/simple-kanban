@@ -27,7 +27,7 @@
 }
 
 .collapsable-content {
-    padding: 6px;
+    padding: 6px 12px 6px 6px;
     overflow: hidden;
     display: none;
 }

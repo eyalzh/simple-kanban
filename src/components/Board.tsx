@@ -4,15 +4,17 @@ import dispatcher from "../Dispatcher";
 import {Column} from "../model/Column";
 import {Priority} from "../Dispatcher";
 import TrashZone from "./TrashZone";
-import {BoardStore} from "../stores/BoardStore";
+import {FullStore} from "../stores/BoardStore";
 import {Task} from "../model/Task";
 import * as BoardActions from "../actions/boardActions";
 import {allowBinds, bind, reorderArray} from "../util";
+import {Board as BoardModel} from "../model/Board";
 
 import "./board.css";
 
 interface BoardState {
     columns: Array<Column> | null;
+    boards: Array<BoardModel>;
     boardId: string;
     columnTasks: Map<string, Array<Task>> | null;
     columnIdBeingDragged: string | null;
@@ -25,6 +27,7 @@ export default class Board extends React.Component<{}, BoardState> {
         super();
         this.state = {
             columns: [],
+            boards: [],
             boardId: "",
             columnTasks: null,
             columnIdBeingDragged: null
@@ -32,7 +35,7 @@ export default class Board extends React.Component<{}, BoardState> {
     }
 
     componentWillMount() {
-        dispatcher.register((actionName, store: BoardStore) => {
+        dispatcher.register((actionName, store: FullStore) => {
             switch (actionName) {
                 case "refreshFull":
                 case "refreshCurrentBoard":
@@ -66,6 +69,7 @@ export default class Board extends React.Component<{}, BoardState> {
                     onDragEnter={this.onDragEnter.bind(this, column.id)}
                     inBackground={this.state.columnIdBeingDragged !== null && this.state.columnIdBeingDragged !== column.id}
                     columnList={this.state.columns}
+                    boardList={this.state.boards}
                 />
             );
 
@@ -79,13 +83,15 @@ export default class Board extends React.Component<{}, BoardState> {
         );
     }
 
-    private syncState(store: BoardStore) {
+    private syncState(store: FullStore) {
 
         if (store.currentBoard !== null) {
             const boardId = store.currentBoard.id;
+            const boards = store.boards || this.state.boards;
             this.setState({
                 boardId,
                 columns: store.columnsInBoard,
+                boards,
                 columnTasks: store.columnTasks,
             });
         }

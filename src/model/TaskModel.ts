@@ -56,7 +56,12 @@ export default class TaskModel {
     }
 
     public async setCurrentBoard(boardId: string) {
-       await this.db.setItem(SELECTED_BOARD_KEY, boardId);
+        try {
+            await this.db.getDocumentByKey(BOARD_MAP_NAME, boardId);
+            await this.db.setItem(SELECTED_BOARD_KEY, boardId);
+        } catch (e) {
+            throw new Error(`board ${boardId} does not exist`);
+        }
     }
 
     public async getBoards(): Promise<Array<Board>> {
@@ -235,7 +240,8 @@ export default class TaskModel {
         desc: string,
         longdesc?: string,
         presentationalOptions?: TaskPresentationalOptions,
-        baseColumnId?: string): Promise<string> {
+        baseColumnId?: string,
+        linkToBoardId?: string): Promise<string> {
 
         const newKey = await generateUniqId(this.db, "task");
 
@@ -246,7 +252,8 @@ export default class TaskModel {
             createdAt: getCurrentTime(),
             presentationalOptions,
             baseColumnId: typeof baseColumnId !== "undefined" ? baseColumnId : columnId,
-            counters: [{value: 0}]
+            counters: [{value: 0}],
+            linkToBoardId
         };
 
         await this.db.addToStore(TASKS_NAME, newKey, newTask);
@@ -304,7 +311,8 @@ export default class TaskModel {
         newDesc: string,
         newLongDesc?: string,
         presentationalOptions?: TaskPresentationalOptions,
-        baseColumnId?: string) {
+        baseColumnId?: string,
+        linkToBoardId?: string) {
         await this.db.modifyStore<Task>(TASKS_NAME, taskId, (task) => {
             task.desc = sanitizer.sanitizeTaskTitle(newDesc);
             task.longdesc = typeof newLongDesc !== "undefined" ? newLongDesc : "";
@@ -314,6 +322,7 @@ export default class TaskModel {
             if (typeof baseColumnId !== "undefined") {
                 task.baseColumnId = baseColumnId;
             }
+            task.linkToBoardId = linkToBoardId;
             return task;
         });
     }

@@ -19,7 +19,8 @@ export function addTask(
   taskDesc: string,
   taskLongDesc?: string,
   presentationalOptions?: TaskPresentationalOptions,
-  baseColumnId?: string
+  baseColumnId?: string,
+  linkToBoardId?: string
 ) {
   getModel()
     .addTask(
@@ -27,7 +28,8 @@ export function addTask(
       taskDesc,
       taskLongDesc,
       presentationalOptions,
-      baseColumnId
+      baseColumnId,
+      linkToBoardId
     )
     .then(this.dispatchRefreshCurrentBoard);
 }
@@ -57,10 +59,12 @@ export function editTask(
   newDesc: string,
   newLongDesc?: string,
   presentationalOptions?: TaskPresentationalOptions,
-  baseColumnId?: string
+  baseColumnId?: string,
+  linkToBoardId?: string
+
 ) {
   getModel()
-    .editTask(taskId, newDesc, newLongDesc, presentationalOptions, baseColumnId)
+    .editTask(taskId, newDesc, newLongDesc, presentationalOptions, baseColumnId, linkToBoardId)
     .then(this.dispatchRefreshCurrentBoard);
 }
 

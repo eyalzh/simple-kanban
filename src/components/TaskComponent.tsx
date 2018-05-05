@@ -3,14 +3,16 @@ import {Task} from "../model/task";
 import * as BoardActions from "../actions/boardActions";
 import {Column} from "../model/Column";
 import TaskEditDialog from "./dialogs/TaskEditDialog";
-import AnnotatedHashtagDiv from "./AnnotatedHashtagDiv";
+import AnnotatedHashtagDiv from "./annotations/AnnotatedHashtagDiv";
 import {draggable, Referrable} from "./hoc/dragAndDrop";
 import {allowBinds, bind, calcColorBasedOnBackground} from "../util";
+import {Board} from "../model/Board";
 
 interface TaskProps extends Referrable {
     task: Task;
     column: Column;
     columnList: Column[] | null;
+    boardList: Board[];
 }
 
 interface TaskState {
@@ -29,17 +31,12 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
     render() {
 
-        const {desc, presentationalOptions, counters} = this.props.task;
+        const {desc, presentationalOptions} = this.props.task;
 
         let bgColor, sideColor;
         if (presentationalOptions) {
             bgColor = presentationalOptions.color;
             sideColor = presentationalOptions.sideColor;
-        }
-
-        let counterValue: number | null = null;
-        if (counters && counters.length > 0) {
-            counterValue = counters[0].value;
         }
 
         return (
@@ -51,8 +48,7 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
                 <AnnotatedHashtagDiv
                     text={desc}
-                    counterValue={counterValue}
-                    appliedClassName="hashtag"
+                    task={this.props.task}
                     className="task-title"
                     color={calcColorBasedOnBackground(bgColor)} />
 
@@ -63,6 +59,7 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
                     onEditSubmitted={this.onTaskSubmitted}
                     dialogTitle="Edit Task"
                     columnList={this.props.columnList}
+                    boardList={this.props.boardList}
                     currentColumnId={this.props.column.id}
                 />
 
@@ -78,8 +75,8 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
     }
 
     @bind
-    private onTaskSubmitted(desc, longdesc, presentationalOptions, baseColumnId) {
-        BoardActions.editTask(this.props.task.id, desc, longdesc, presentationalOptions, baseColumnId);
+    private onTaskSubmitted(desc, longdesc, presentationalOptions, baseColumnId, linkToBoardId) {
+        BoardActions.editTask(this.props.task.id, desc, longdesc, presentationalOptions, baseColumnId, linkToBoardId);
     }
 
     @bind

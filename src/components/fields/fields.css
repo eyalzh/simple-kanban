@@ -27,3 +27,8 @@
 .select-color-field {
     width: 40px;
 }
+
+.field-row {
+    display: flex;
+    justify-content: space-between;
+}

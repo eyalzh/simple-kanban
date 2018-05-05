@@ -32,6 +32,10 @@ export interface Task {
     // The column in which the task was originated
     baseColumnId?: string;
 
+    // Set of counters associated with the task
     counters?: Counter[];
+
+    // An optional link to board associated with the task
+    linkToBoardId?: string;
 
 }

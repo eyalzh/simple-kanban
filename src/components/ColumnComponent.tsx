@@ -7,12 +7,14 @@ import {allowBinds, bind, classSet} from "../util";
 import TaskEditDialog from "./dialogs/TaskEditDialog";
 import ColumnEditDialog from "./dialogs/ColumnEditDialog";
 import {draggable, droppable, Referrable} from "./hoc/dragAndDrop";
+import {Board} from "../model/Board";
 
 interface ColumnProps extends Referrable {
     column: Column;
     tasks: Array<Task>;
     inBackground?: boolean;
     columnList: Column[] | null;
+    boardList: Board[];
 }
 
 interface ColumnState {
@@ -23,7 +25,6 @@ interface ColumnState {
 
 @allowBinds
 class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
-
     constructor() {
         super();
         this.state = {
@@ -36,7 +37,7 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
     render() {
 
         const taskCount = this.props.tasks.length;
-        const tasks = this.props.tasks.map((task) => {
+        const tasks = this.props.tasks.map(task => {
             return (
                 <TaskComponent
                     type="task"
@@ -45,13 +46,16 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
                     task={task}
                     column={this.props.column}
                     columnList={this.props.columnList}
+                    boardList={this.props.boardList}
                 />
             );
         });
 
         const isAboveWipLimit = taskCount > this.props.column.wipLimit;
 
-        const isHalfCol = this.props.column.options && this.props.column.options.size === ColumnSize.HALF;
+        const isHalfCol =
+            this.props.column.options &&
+            this.props.column.options.size === ColumnSize.HALF;
         const classNames = classSet({
             "column": true,
             "column-above-limit": isAboveWipLimit,
@@ -60,13 +64,16 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
         });
 
         return (
-            <div
-                ref={this.props.innerRef}
-                className={classNames}>
-
-                <div className="column-header" title="double click to edit" onDoubleClick={e => this.editColumn(e)}>
+            <div ref={this.props.innerRef} className={classNames}>
+                <div
+                    className="column-header"
+                    title="double click to edit"
+                    onDoubleClick={e => this.editColumn(e)}
+                >
                     <div>{this.props.column.name}</div>
-                    <div className="wip">{taskCount} / {this.props.column.wipLimit}</div>
+                    <div className="wip">
+                        {taskCount} / {this.props.column.wipLimit}
+                    </div>
                 </div>
                 <div className="task-container" onDoubleClick={this.onAddTask}>
                     {tasks}
@@ -77,9 +84,10 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
                     onEditSubmitted={this.onTaskSubmitted}
                     dialogTitle="Add a New Task"
                     columnList={this.props.columnList}
+                    boardList={this.props.boardList}
                     currentColumnId={this.props.column.id}
                 />
-                 <ColumnEditDialog
+                <ColumnEditDialog
                     opened={this.state.isBeingEdited}
                     onEditClose={this.closeEditColumn}
                     column={this.props.column}
@@ -100,11 +108,20 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
     }
 
     @bind
-    private onEditColumnSubmitted(name: string, wipLimit: number, options: ColumnOptions) {
+    private onEditColumnSubmitted(
+        name: string,
+        wipLimit: number,
+        options: ColumnOptions
+    ) {
         if (name !== null && Number.isInteger(wipLimit) && wipLimit > 0) {
             const trimmedName = name.trim();
             if (trimmedName.length > 0) {
-                BoardActions.editColumn(this.props.column, trimmedName, wipLimit, options);
+                BoardActions.editColumn(
+                    this.props.column,
+                    trimmedName,
+                    wipLimit,
+                    options
+                );
             }
         }
 
@@ -122,10 +139,22 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
     }
 
     @bind
-    private onTaskSubmitted(desc: string, longdesc: string, presentationalOptions: TaskPresentationalOptions, baseColumnId?: string) {
-        BoardActions.addTask(this.props.column, desc, longdesc, presentationalOptions, baseColumnId);
+    private onTaskSubmitted(
+        desc: string,
+        longdesc: string,
+        presentationalOptions: TaskPresentationalOptions,
+        baseColumnId?: string,
+        linkToBoardId?: string
+    ) {
+        BoardActions.addTask(
+            this.props.column,
+            desc,
+            longdesc,
+            presentationalOptions,
+            baseColumnId,
+            linkToBoardId
+        );
     }
-
 }
 
 const DraggableDroppableColumnComponent = droppable(draggable<ColumnProps>(ColumnComponent));
