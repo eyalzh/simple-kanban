@@ -1,4 +1,4 @@
-import {calcColorBasedOnBackground} from "../src/util";
+import {calcColorBasedOnBackground, lock} from "../src/util";
 import {expect} from "chai";
 import "mocha";
 
@@ -31,5 +31,43 @@ describe("util", function() {
         expect(color).to.eql("#000");
 
     });
+
+it("lock decorator should prevent run of second call until first call hasn't finished", async function () {
+
+        let secondCalled = false;
+
+        class TestLock {
+
+            @lock("lock1")
+            method1(): Promise<string> {
+                return new Promise((resolve) => {
+                   setTimeout(() => {
+                       resolve("1");
+                   }, 100);
+                });
+            }
+
+            @lock("lock1")
+            method2(): Promise<string> {
+                return Promise.resolve("2")
+            }
+
+        }
+
+        const testLock = new TestLock();
+
+        await Promise.all([
+            testLock.method1(),
+            testLock.method2()
+                .then(() => secondCalled = true)
+                .catch(() => {
+                    console.log("rejected");
+                })
+        ]);
+
+        expect(secondCalled).to.eql(false);
+
+    });
+
 
 });

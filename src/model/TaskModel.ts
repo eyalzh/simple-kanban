@@ -7,6 +7,7 @@ import {DB} from "./DB/DB";
 import {Board} from "./Board";
 import ColumnEffectsFactory from "./effects/ColumnEffectsFactory";
 import ColumnEffectsHelper from "./effects/ColumnEffectsHelper";
+import {lock} from "../util";
 
 const SELECTED_BOARD_KEY = "selectedBoard";
 const BOARD_MAP_NAME = "boardMap";
@@ -262,6 +263,7 @@ export default class TaskModel {
         return newKey;
     }
 
+    @lock("board")
     public async moveTask(taskId: string, sourceColumnId: string, targetColumnId: string) {
 
         if (sourceColumnId === targetColumnId) {
@@ -293,11 +295,13 @@ export default class TaskModel {
 
     }
 
+    @lock("board")
     public async deleteTask(columnId: string, taskId: string) {
         await this.detachTask(columnId, taskId);
         await this.db.deleteStoreItem(TASKS_NAME, taskId);
     }
 
+    @lock("board")
     public async setOrder(boardId: string, columnIds: Array<string>) {
 
         await this.db.modifyStore<Array<string>>(BOARD_COL_MAP_NAME, boardId, () => {
@@ -327,6 +331,7 @@ export default class TaskModel {
         });
     }
 
+    @lock("board")
     public async removeColumn(boardId: string, columnId: string) {
 
         const tasks = await this.getTasksByColumn(columnId);

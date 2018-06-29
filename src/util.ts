@@ -46,7 +46,7 @@ export function calcColorBasedOnBackground(color: string): string {
 
 }
 
-export function bind(target, key) {
+export function bind(target: any, key: string) {
     if (typeof target.__bindlist === "undefined") {
         target.__bindlist = [];
     }
@@ -66,6 +66,27 @@ export function allowBinds<T extends {new(...args: any[]): {}}>(constructor: T) 
             });
         }
     };
+}
+
+const locks: Map<any, boolean> = new Map();
+export function lock(lockId: string) {
+    locks.set(lockId, false);
+    return function synchronized(_target: any, _key: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+        const origFn = descriptor.value;
+        return {
+            ...descriptor,
+            value: function (...args) {
+                if (locks.get(lockId) === true) {
+                    return Promise.reject(new Error("locked"));
+                } else {
+                    locks.set(lockId, true);
+                    return origFn.apply(this, args).then(() => {
+                        locks.set(lockId, false);
+                    });
+                }
+            }
+        };
+    }
 }
 
 export function reorderArray<T>(arr: Array<T>, sourceIndex: number, targetIndex: number): Array<T> {
