@@ -75,7 +75,7 @@ export function lock(lockId: string) {
         const origFn = descriptor.value;
         return {
             ...descriptor,
-            value: function (...args) {
+            value(...args) {
                 if (locks.get(lockId) === true) {
                     return Promise.reject(new Error("locked"));
                 } else {
@@ -86,7 +86,7 @@ export function lock(lockId: string) {
                 }
             }
         };
-    }
+    };
 }
 
 export function reorderArray<T>(arr: Array<T>, sourceIndex: number, targetIndex: number): Array<T> {

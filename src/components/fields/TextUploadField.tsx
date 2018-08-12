@@ -29,7 +29,11 @@ export default class TextUploadField extends React.Component<UploadFieldProps> {
             reader.onload = () => {
                 const DONE_READY_STATE = 2;
                 if (reader.readyState === DONE_READY_STATE) {
-                    this.props.onFileRead(reader.result);
+                    if (typeof reader.result === "string") {
+                        this.props.onFileRead(reader.result);
+                    } else {
+                        console.error("unsupported file type");
+                    }
                 }
             };
 

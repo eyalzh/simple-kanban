@@ -32,7 +32,7 @@ describe("util", function() {
 
     });
 
-it("lock decorator should prevent run of second call until first call hasn't finished", async function () {
+    it("lock decorator should prevent run of second call until first call hasn't finished", async function() {
 
         let secondCalled = false;
 
@@ -49,7 +49,7 @@ it("lock decorator should prevent run of second call until first call hasn't fin
 
             @lock("lock1")
             method2(): Promise<string> {
-                return Promise.resolve("2")
+                return Promise.resolve("2");
             }
 
         }
@@ -68,6 +68,5 @@ it("lock decorator should prevent run of second call until first call hasn't fin
         expect(secondCalled).to.eql(false);
 
     });
-
 
 });

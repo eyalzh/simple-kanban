@@ -37,6 +37,9 @@
     "no-duplicate-switch-case": true,
     "no-parameter-reassignment": true,
     "no-this-assignment": true,
-    "use-default-type-parameter": true
+    "use-default-type-parameter": true,
+    "variable-name": {
+      "options": ["allow-leading-underscore", "allow-pascal-case"]
+    }
   }
 }
