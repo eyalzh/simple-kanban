@@ -9,7 +9,7 @@ export interface Referrable {
 export interface DraggableProps {
     type: string;
     data: object;
-    onDragStart?: () => void;
+    onDragStart?: TimerHandler;
     onDragEnd?: () => void;
 }
 
@@ -53,7 +53,7 @@ export function draggable<P>(Comp: new() => Component<P & Referrable>): new() =>
             dragContext = {type, data: clonedContextData};
             e.dataTransfer.setData("text/plain", ""); // We don't use dataTransfer, but firefox requires it
 
-            if (this.props.onDragStart) {
+            if (this.props.onDragStart instanceof Function) {
                 setTimeout(this.props.onDragStart, 0);
             }
 

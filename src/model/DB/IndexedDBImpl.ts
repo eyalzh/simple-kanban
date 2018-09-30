@@ -229,7 +229,7 @@ export default class IndexedDBImpl implements DB {
 
                 request.addEventListener("success", () => {
 
-                    const cursor: IDBCursorWithValue = request.result;
+                    const cursor: IDBCursorWithValue | null = request.result;
                     if (cursor) {
 
                         if (cursor.value === null) {
@@ -261,7 +261,7 @@ export default class IndexedDBImpl implements DB {
 
             request.addEventListener("success", () => {
 
-                const cursor: IDBCursorWithValue = request.result;
+                const cursor: IDBCursorWithValue | null = request.result;
                 if (cursor) {
 
                     if (typeof cursor.key !== "string") {

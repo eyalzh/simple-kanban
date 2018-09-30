@@ -44,7 +44,11 @@ export function clear() {
     getModel()
         .clear()
         .then(() => {
-            document.location.reload(true);
+            if (document.location) {
+                document.location.reload(true);
+            } else {
+                alert("could not reload the page, please do so manually to continue");
+            }
         });
 }
 
