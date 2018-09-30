@@ -27,7 +27,7 @@ export default class Nav extends React.Component<{}, NavState> {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         dispatcher.register((actionName, store: FullStore) => {
             switch (actionName) {
                 case "refreshFull":

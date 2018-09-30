@@ -34,7 +34,7 @@ export default class Board extends React.Component<{}, BoardState> {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         dispatcher.register((actionName, store: FullStore) => {
             switch (actionName) {
                 case "refreshFull":
