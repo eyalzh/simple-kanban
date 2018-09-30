@@ -80,9 +80,15 @@ export function lock(lockId: string) {
                     return Promise.reject(new Error("locked"));
                 } else {
                     locks.set(lockId, true);
+
                     return origFn.apply(this, args).then(() => {
                         locks.set(lockId, false);
+                    })
+                    .catch((e) => {
+                        locks.set(lockId, false);
+                        throw e;
                     });
+
                 }
             }
         };
