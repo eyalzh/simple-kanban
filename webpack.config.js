@@ -4,7 +4,7 @@ module.exports = {
     entry: './src/app.tsx',
 
     output: {
-        filename: './dist/app.js'
+        filename: './app.js'
     },
 
     resolve: {
