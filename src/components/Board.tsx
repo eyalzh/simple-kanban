@@ -133,6 +133,11 @@ export default class Board extends React.Component<{}, BoardState> {
 
         switch (type) {
             case "task":
+                if (! data.deleteWithoutConfirmation) {
+                    if (! window.confirm("Are you sure you want to delete this non-empty task?")) {
+                        break;
+                    }
+                }
                 BoardActions.deleteTask(data.sourceColumnId, data.id);
                 break;
 

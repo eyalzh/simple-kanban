@@ -36,12 +36,18 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
 
     render() {
 
-        const taskCount = this.props.tasks.length;
         const tasks = this.props.tasks.map(task => {
+
+            const dragContextData = {
+                id: task.id,
+                sourceColumnId: this.props.column.id,
+                deleteWithoutConfirmation: task.longdesc.length === 0
+            };
+
             return (
                 <TaskComponent
                     type="task"
-                    data={{id: task.id, sourceColumnId: this.props.column.id}}
+                    data={dragContextData}
                     key={task.id}
                     task={task}
                     column={this.props.column}
@@ -49,8 +55,10 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
                     boardList={this.props.boardList}
                 />
             );
+
         });
 
+        const taskCount = this.props.tasks.length;
         const isAboveWipLimit = taskCount > this.props.column.wipLimit;
 
         const isHalfCol =
