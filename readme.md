@@ -10,7 +10,7 @@ Lightweight Kanban Board
 
 Demo
 ====
-http://simple.kanban.s3-website-eu-west-1.amazonaws.com/
+https://s3.eu-west-1.amazonaws.com/simple.kanban/index.html
 
 Build
 =====
