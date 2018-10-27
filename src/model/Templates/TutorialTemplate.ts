@@ -23,7 +23,7 @@ export default class TutorialTemplate implements Template {
             "and see it rendered on the right.");
         await model.addTask(backlog, "Use #hashtags in tasks' text");
         await model.addTask(backlog, "Create a new board by selecting 'Add new board' in the menu");
-        await model.addTask(backlog, "Switch between boards by using the select box at the upper right corner of the page");
+        await model.addTask(backlog, "Switch between boards by using the select box at the upper left corner of the page");
 
     }
 
