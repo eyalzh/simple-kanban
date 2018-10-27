@@ -100,7 +100,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         return (
             <div>
                 <ActionDialog
-                    title="Edit Task"
+                    title={this.props.task ? "Edit Task" : "Create a Task"}
                     opened={this.props.opened}
                     onRequestClose={this.onRequestClose}
                     onOpen={this.onEditDialogOpen}
