@@ -1,5 +1,7 @@
 import TaskModel from "../TaskModel";
 import {DataElement, KanbanExportedData} from "./KanbanExportedData";
+import {Task} from "../Task";
+import {Column} from "../Column";
 
 const DATA_VERSION = 1;
 
@@ -18,8 +20,8 @@ export default class DataExporter {
             parentRef: null
         }));
 
-        const exportedCols: Array<DataElement> = [];
-        const exportedTasks: Array<DataElement> = [];
+        const exportedCols: Array<DataElement<Column>> = [];
+        const exportedTasks: Array<DataElement<Task>> = [];
         for (const board of boards) {
             const colsInBoard = await this.model.getColumnsByBoard(board.id);
             for (const col of colsInBoard) {
@@ -74,7 +76,13 @@ export default class DataExporter {
         const tasks = data.tasks;
         for (const task of tasks) {
             if (task.parentRef) {
-                await this.model.addTask(colRefMap[task.parentRef], task.props.desc, task.props.longdesc, task.props.presentationalOptions);
+                await this.model.addTask(
+                    colRefMap[task.parentRef],
+                    task.props.desc,
+                    task.props.longdesc,
+                    task.props.presentationalOptions,
+                    task.props.baseColumnId,
+                    task.props.linkToBoardId ? boardRefMap[task.props.linkToBoardId] : undefined);
             }
         }
 
