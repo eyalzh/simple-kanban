@@ -41,8 +41,8 @@ export default class BoardSelector extends React.Component<BoardSelectorProps> {
                     section: "board",
                     data: {isArchived: board.isArchived}}));
 
-            currentBoardId =  currentBoard.id;
-            currentBoardName =  currentBoard.name;
+            currentBoardId = currentBoard.id;
+            currentBoardName = currentBoard.name;
         }
 
         return <Dropdown

@@ -15,10 +15,10 @@ export class Dispatcher {
         this.fns[priority].push(callback);
     }
 
-    dispatch(actionName: string, actionPayload: any) {
+    dispatch(actionName: string, actionPayload: object) {
         []
             .concat.apply([], this.fns)
-            .forEach(fn => fn.call(this, actionName, actionPayload));
+            .forEach((fn: Callback) => fn.call(this, actionName, actionPayload));
     }
 
     removeListener(fn: Callback) {

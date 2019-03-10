@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Task} from "../model/task";
 import * as BoardActions from "../actions/boardActions";
 import {Column} from "../model/Column";
 import TaskEditDialog from "./dialogs/TaskEditDialog";
@@ -7,6 +6,7 @@ import AnnotatedHashtagDiv from "./annotations/AnnotatedHashtagDiv";
 import {draggable, Referrable} from "./hoc/dragAndDrop";
 import {allowBinds, bind, calcColorBasedOnBackground} from "../util";
 import {Board} from "../model/Board";
+import {Task} from "../model/Task";
 
 interface TaskProps extends Referrable {
     task: Task;

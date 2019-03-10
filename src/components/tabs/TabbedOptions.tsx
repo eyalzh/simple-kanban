@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import {TabProps} from "./Tab";
 import {allowBinds, bind} from "../../util";
@@ -7,7 +6,7 @@ import "./tabs.css";
 
 interface TabbedOptionsProps {
     activeTab: string;
-    onTabChange: (tabId) => void;
+    onTabChange: (tabId: string) => void;
 
 }
 
@@ -55,7 +54,7 @@ export default class TabbedOptions extends React.Component<TabbedOptionsProps> {
     }
 
     @bind
-    onTabClicked(tabId) {
+    onTabClicked(tabId: string) {
         this.props.onTabChange(tabId);
     }
 

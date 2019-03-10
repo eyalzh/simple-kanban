@@ -31,7 +31,7 @@ export default class DownloadLink extends React.PureComponent<DownloadLinkProps>
         this.revokeUrl();
     }
 
-    private createUrl(props) {
+    private createUrl(props: DownloadLinkProps) {
         this.revokeUrl();
         props.dataProvider().then(jsonString => {
             const blob = new Blob([jsonString], {type: "octet/stream"});

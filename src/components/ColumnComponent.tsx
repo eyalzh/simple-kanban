@@ -1,6 +1,5 @@
 import * as React from "react";
 import {Column, ColumnOptions, ColumnSize} from "../model/Column";
-import {Task, TaskPresentationalOptions} from "../model/task";
 import TaskComponent from "./TaskComponent";
 import * as BoardActions from "../actions/boardActions";
 import {allowBinds, bind, classSet} from "../util";
@@ -8,6 +7,7 @@ import TaskEditDialog from "./dialogs/TaskEditDialog";
 import ColumnEditDialog from "./dialogs/ColumnEditDialog";
 import {draggable, droppable, Referrable} from "./hoc/dragAndDrop";
 import {Board} from "../model/Board";
+import {Task, TaskPresentationalOptions} from "../model/Task";
 
 interface ColumnProps extends Referrable {
     column: Column;
