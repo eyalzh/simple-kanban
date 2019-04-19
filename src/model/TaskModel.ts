@@ -242,7 +242,8 @@ export default class TaskModel {
         longdesc?: string,
         presentationalOptions?: TaskPresentationalOptions,
         baseColumnId?: string,
-        linkToBoardId?: string): Promise<string> {
+        linkToBoardId?: string,
+        steamVol?: number): Promise<string> {
 
         const newKey = await generateUniqId(this.db, "task");
 
@@ -254,7 +255,8 @@ export default class TaskModel {
             presentationalOptions,
             baseColumnId: typeof baseColumnId !== "undefined" ? baseColumnId : columnId,
             counters: [{value: 0}],
-            linkToBoardId
+            linkToBoardId,
+            steamVol: typeof steamVol !== "undefined" ? Math.max(0, steamVol) : 0
         };
 
         await this.db.addToStore(TASKS_NAME, newKey, newTask);
@@ -279,7 +281,7 @@ export default class TaskModel {
         });
 
         const col = await this.getColumnById(targetColumnId);
-        if (col && col.effects) {
+        if (col) {
             await this.db.modifyStore<Task>(TASKS_NAME, taskId, (task) => {
                 let newTask = task;
                 (col.effects || []).forEach(({id, config}) => {
@@ -288,9 +290,9 @@ export default class TaskModel {
                         newTask = effect.modifyTask(newTask, config);
                     }
                 });
+                newTask.lastMovedAt = getCurrentTime();
                 return newTask;
             });
-
         }
 
     }
@@ -316,7 +318,9 @@ export default class TaskModel {
         newLongDesc?: string,
         presentationalOptions?: TaskPresentationalOptions,
         baseColumnId?: string,
-        linkToBoardId?: string) {
+        linkToBoardId?: string,
+        steamVol?: number) {
+
         await this.db.modifyStore<Task>(TASKS_NAME, taskId, (task) => {
             task.desc = sanitizer.sanitizeTaskTitle(newDesc);
             task.longdesc = typeof newLongDesc !== "undefined" ? newLongDesc : "";
@@ -327,6 +331,7 @@ export default class TaskModel {
                 task.baseColumnId = baseColumnId;
             }
             task.linkToBoardId = linkToBoardId;
+            task.steamVol = typeof steamVol !== "undefined" ? Math.max(0, steamVol) : 0;
             return task;
         });
     }

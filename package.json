@@ -19,8 +19,8 @@
     "@types/chai": "^4.1.6",
     "@types/mocha": "^2.2.48",
     "@types/node": "^8.10.29",
-    "@types/react": "16.0.9",
-    "@types/react-dom": "16.0.0",
+    "@types/react": "16.8.10",
+    "@types/react-dom": "16.8.3",
     "chai": "^4.2.0",
     "css-loader": "^1.0.0",
     "mocha": "^5.2.0",
@@ -28,8 +28,8 @@
     "style-loader": "^0.23.1",
     "ts-loader": "^5.3.1",
     "ts-node": "^7.0.1",
-    "tslint": "^5.11.0",
-    "typescript": "^3.2.1",
+    "tslint": "^5.14.0",
+    "typescript": "^3.4.1",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "webpack": "^4.27.1",
     "webpack-cli": "^3.1.2",
@@ -37,9 +37,9 @@
   },
   "dependencies": {
     "lodash.debounce": "^4.0.8",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "react-modal": "^3.6.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-modal": "^3.8.1",
     "showdown": "1.9.0"
   }
 }

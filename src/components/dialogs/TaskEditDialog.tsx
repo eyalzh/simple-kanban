@@ -23,7 +23,8 @@ interface TaskEditDialogProps {
         longdesc: string,
         presentationalOptions: TaskPresentationalOptions,
         baseColumnId?: string,
-        linkToBoardId?: string) => void;
+        linkToBoardId?: string,
+        steamVol?: number) => void;
     columnList: Column[] | null;
     boardList: Board[];
     currentColumnId: string;
@@ -33,11 +34,11 @@ interface TaskEditDialogState {
     desc: string;
     longdesc: string;
     color: string;
-    sideColor?: string;
     creationDateString: string | null;
     lastUpdatedAtString: string | null;
     baseColumnId?: string;
     linkToBoardId?: string;
+    steamVol?: number;
 }
 
 const DEFAULT_COLOR = "#fff6a8";
@@ -68,8 +69,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
         const {creationDateString, lastUpdatedAtString} = this.state;
 
-        let buttonEls: ReactElement<any>,
-            info: ReactElement<any> | null = null;
+        let buttonEls: ReactElement,
+            info: ReactElement | null = null;
 
         if (this.props.task) {
             buttonEls = (
@@ -129,15 +130,14 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                                 boardList={this.props.boardList}
                                 columnList={this.props.columnList}
                                 color={this.state.color}
-                                sideColor={this.state.sideColor}
                                 baseColumnId={this.state.baseColumnId}
                                 linkToBoardId={this.state.linkToBoardId}
+                                taskSteamVol={this.state.steamVol}
                                 onColorChanged={this.onColorChanged}
-                                onSideColorChanged={this.onSideColorChanged}
-                                onResetSideColor={this.onResetSideColor}
                                 onResetColors={this.onResetColors}
                                 onBaseColChanged={this.onBaseColChanged}
                                 onLinkToBoardChanged={this.onLinkBoardChanged}
+                                onSteamVolChanged={this.onSteamVolChanged}
                             />
 
                         </div>
@@ -177,25 +177,24 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         let desc = "",
             longdesc = "",
             color = DEFAULT_COLOR,
-            sideColor = DEFAULT_COLOR,
             createdAt,
             lastUpdatedAt,
             presentationalOptions,
             baseColumnId: string | undefined = props.currentColumnId,
-            linkToBoardId;
+            linkToBoardId,
+            steamVol;
 
         if (props.task) {
-            ({ desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions, baseColumnId, linkToBoardId } = props.task);
+            ({ desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions, baseColumnId, linkToBoardId, steamVol } = props.task);
             if (presentationalOptions) {
                 color = presentationalOptions.color;
-                sideColor = presentationalOptions.sideColor;
             }
         }
 
         const creationDateString = TaskEditDialog.buildDateString(createdAt);
         const lastUpdatedAtString = TaskEditDialog.buildDateString(lastUpdatedAt);
 
-        return { desc, longdesc, color, sideColor, creationDateString, lastUpdatedAtString, baseColumnId, linkToBoardId };
+        return { desc, longdesc, color, creationDateString, lastUpdatedAtString, baseColumnId, linkToBoardId, steamVol };
 
     }
 
@@ -230,32 +229,22 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     }
 
     @bind
-    private onSideColorChanged(sideColor: string) {
-        this.setState({sideColor});
-    }
-
-    @bind
     private onResetColors() {
         this.setState({color: DEFAULT_COLOR});
     }
 
     @bind
-    private onResetSideColor() {
-        this.setState({sideColor: DEFAULT_COLOR});
-    }
-
-    @bind
     private onEditSubmitted() {
         const presentationalOptions = {
-            color: this.state.color,
-            sideColor: this.state.sideColor
+            color: this.state.color
         };
         this.props.onEditSubmitted(
             this.state.desc,
             this.state.longdesc,
             presentationalOptions,
             this.state.baseColumnId,
-            this.state.linkToBoardId
+            this.state.linkToBoardId,
+            this.state.steamVol
         );
     }
 
@@ -299,6 +288,13 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     @bind
     private onLinkBoardChanged(linkToBoardId: string | undefined) {
         this.setState({linkToBoardId});
+    }
+
+    @bind
+    private onSteamVolChanged(steamVol: number) {
+        this.setState({
+            steamVol
+        });
     }
 
     static buildDateString(timestamp: Timestamp | undefined): string | null {

@@ -8,7 +8,6 @@ import initializeModel from "./model/initializeModel";
 import * as BoardActions from "./actions/boardActions";
 import TemplateCatalog from "./model/Templates/TemplateCatalog";
 import * as Modal from "react-modal";
-
 import "./main.css";
 
 setModel(taskModel);
@@ -37,6 +36,14 @@ taskModel.init()
 
         Modal.setAppElement(cont);
         BoardActions.dispatchRefreshFull();
+
+        document.addEventListener("visibilitychange", () => {
+
+            if (! document.hidden) {
+                BoardActions.dispatchRefreshFull();
+            }
+
+        }, false);
 
     })
 

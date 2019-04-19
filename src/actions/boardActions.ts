@@ -20,16 +20,18 @@ export function addTask(
   taskLongDesc?: string,
   presentationalOptions?: TaskPresentationalOptions,
   baseColumnId?: string,
-  linkToBoardId?: string
+  linkToBoardId?: string,
+  steamVol?: number
 ) {
   getModel()
     .addTask(
-      column.id,
-      taskDesc,
-      taskLongDesc,
-      presentationalOptions,
-      baseColumnId,
-      linkToBoardId
+        column.id,
+        taskDesc,
+        taskLongDesc,
+        presentationalOptions,
+        baseColumnId,
+        linkToBoardId,
+        steamVol
     )
     .then(this.dispatchRefreshCurrentBoard);
 }
@@ -64,11 +66,12 @@ export function editTask(
   newLongDesc?: string,
   presentationalOptions?: TaskPresentationalOptions,
   baseColumnId?: string,
-  linkToBoardId?: string
+  linkToBoardId?: string,
+  steamVol?: number
 
 ) {
   getModel()
-    .editTask(taskId, newDesc, newLongDesc, presentationalOptions, baseColumnId, linkToBoardId)
+    .editTask(taskId, newDesc, newLongDesc, presentationalOptions, baseColumnId, linkToBoardId, steamVol)
     .then(this.dispatchRefreshCurrentBoard);
 }
 

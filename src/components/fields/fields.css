@@ -24,6 +24,10 @@
     flex: 1 1 auto;
 }
 
+.form-field input[type="number"], .form-field select {
+    width: 120px;
+}
+
 .select-color-field {
     width: 40px;
 }

@@ -18,8 +18,8 @@ interface NavState {
 @allowBinds
 export default class Nav extends React.Component<{}, NavState> {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             currentBoard: null,
             boards: null,

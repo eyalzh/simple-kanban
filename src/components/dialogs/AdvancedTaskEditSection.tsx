@@ -12,15 +12,14 @@ interface AdvancedTaskEditSectionProps {
     boardList: Board[];
     columnList: Column[] | null;
     color: string;
-    sideColor?: string;
+    taskSteamVol?: number;
     baseColumnId?: string;
     linkToBoardId?: string;
     onColorChanged: (color: string) => void;
-    onSideColorChanged: (color: string) => void;
-    onResetSideColor: () => void;
     onResetColors: () => void;
     onBaseColChanged: (baseColumnId: string) => void;
     onLinkToBoardChanged: (linkToBoardId: string | undefined) => void;
+    onSteamVolChanged: (steam: number) => void;
 }
 
 @allowBinds
@@ -53,11 +52,20 @@ export default class AdvancedTaskEditSection extends React.Component<AdvancedTas
                     <SelectColorField value={this.props.color} onChange={this.props.onColorChanged}/> (<span
                     className="reset-color-btn" onClick={this.props.onResetColors}>reset</span>)
                 </FormField>
-                <FormField caption="Side color">
-                    <SelectColorField value={this.props.sideColor}
-                                      onChange={this.props.onSideColorChanged}/> (<span
-                    className="reset-color-btn" onClick={this.props.onResetSideColor}>reset</span>)
-                </FormField>
+
+                <div className="field-row">
+
+                    <FormField caption="Steam Volume">
+                        <input
+                            min="0"
+                            placeholder="0-999 hours"
+                            type="number"
+                            onChange={this.onSteamVolChanged}
+                            value={this.props.taskSteamVol || ""}
+                        />
+                    </FormField>
+
+                </div>
 
                 <div className="field-row">
 
@@ -90,6 +98,12 @@ export default class AdvancedTaskEditSection extends React.Component<AdvancedTas
     private onLinkToBoardChanged(ev: React.FormEvent<HTMLSelectElement>) {
         const linkToBoardId = ev.currentTarget.value;
         this.props.onLinkToBoardChanged(linkToBoardId === NO_BOARD ?  undefined : linkToBoardId);
+    }
+
+    @bind
+    private onSteamVolChanged(ev: React.FormEvent<HTMLInputElement>) {
+        const steamVol = Number(ev.currentTarget.value);
+        this.props.onSteamVolChanged(steamVol);
     }
 
 }

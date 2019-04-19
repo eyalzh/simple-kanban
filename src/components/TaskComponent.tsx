@@ -6,7 +6,7 @@ import AnnotatedHashtagDiv from "./annotations/AnnotatedHashtagDiv";
 import {draggable, Referrable} from "./hoc/dragAndDrop";
 import {allowBinds, bind, calcColorBasedOnBackground} from "../util";
 import {Board} from "../model/Board";
-import {Task} from "../model/Task";
+import {getTaskSteamStatus, Task, TaskSteamStatus} from "../model/Task";
 
 interface TaskProps extends Referrable {
     task: Task;
@@ -22,8 +22,10 @@ interface TaskState {
 @allowBinds
 class TaskComponent extends React.Component<TaskProps, TaskState> {
 
-    constructor() {
-        super();
+    constructor(props) {
+
+        super(props);
+
         this.state = {
             isBeingEdited: false
         };
@@ -33,10 +35,24 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
         const {desc, presentationalOptions} = this.props.task;
 
-        let bgColor, sideColor;
+        let bgColor;
         if (presentationalOptions) {
             bgColor = presentationalOptions.color;
-            sideColor = presentationalOptions.sideColor;
+        }
+
+        const steamStatus = getTaskSteamStatus(this.props.task);
+        let sideColor: string | null  = null;
+
+        switch (steamStatus) {
+            case TaskSteamStatus.FULL:
+                sideColor = "#f00";
+                break;
+            case TaskSteamStatus.HALF_FULL:
+            case TaskSteamStatus.ALMOST_FULL:
+                sideColor = "#fbb";
+                break;
+            default:
+                sideColor = null;
         }
 
         return (
@@ -75,8 +91,22 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
     }
 
     @bind
-    private onTaskSubmitted(desc, longdesc, presentationalOptions, baseColumnId, linkToBoardId) {
-        BoardActions.editTask(this.props.task.id, desc, longdesc, presentationalOptions, baseColumnId, linkToBoardId);
+    private onTaskSubmitted(
+        desc,
+        longdesc,
+        presentationalOptions,
+        baseColumnId,
+        linkToBoardId,
+        steamVol) {
+        BoardActions.editTask(
+            this.props.task.id,
+            desc,
+            longdesc,
+            presentationalOptions,
+            baseColumnId,
+            linkToBoardId,
+            steamVol
+        );
     }
 
     @bind

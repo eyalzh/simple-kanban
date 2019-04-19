@@ -11,8 +11,8 @@ interface DialogProps {
     onOpen: () => void;
 
     title: string;
-    buttons: ReactElement<any>;
-    info: ReactElement<any> | null;
+    buttons: ReactElement;
+    info: ReactElement | null;
 
 }
 

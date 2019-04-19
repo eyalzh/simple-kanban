@@ -29,8 +29,8 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
 
     private mounted: boolean;
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             isOpen: false
         };
@@ -109,7 +109,8 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     @bind
     handleDocumentClick(event) {
         if (this.mounted) {
-            if (!findDOMNode(this).contains(event.target)) {
+            const domNode = findDOMNode(this);
+            if (domNode && !domNode.contains(event.target)) {
                 if (this.state.isOpen) {
                     this.setState({ isOpen: false });
                 }

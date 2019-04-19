@@ -20,12 +20,14 @@ interface DragContext {
 
 let dragContext: DragContext | null = null;
 
-export function draggable<P>(Comp: new() => Component<P & Referrable>): new() => Component<P & DraggableProps> {
+type InputComponentConstructor<P> = new(props: Readonly<P>) => Component<P & Referrable>;
+type OutputComponentConstructor<P> = new(props: Readonly<P & DraggableProps>) => Component<P & DraggableProps>;
+export function draggable<P>(Comp: InputComponentConstructor<P>): OutputComponentConstructor<P> {
 
     return class extends Component<P & DraggableProps & Referrable> {
 
-        constructor() {
-            super();
+        constructor(props) {
+            super(props);
             this.onRefUpdate = this.onRefUpdate.bind(this);
         }
 
@@ -80,12 +82,13 @@ interface DroppableInterface {
     filterTypeFunc?: (type: string, data: any) => boolean;
 }
 
-export function droppable<P>(Comp: new() => Component<P & Referrable>): new() => Component<P & DroppableInterface> {
+export function droppable<P>(Comp: new(props: Readonly<P>) => Component<P & Referrable>):
+    new(props: Readonly<P>) => Component<P & DroppableInterface> {
 
     return class extends Component<P & DroppableInterface & Referrable> {
 
-        constructor() {
-            super();
+        constructor(props) {
+            super(props);
             this.onRefUpdate = this.onRefUpdate.bind(this);
         }
 

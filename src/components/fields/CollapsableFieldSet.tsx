@@ -14,8 +14,8 @@ interface CollapsableFieldSetState {
 @allowBinds
 export default class CollapsableFieldSet extends React.Component<CollapsableFieldSetProps, CollapsableFieldSetState> {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             isExpanded: false
         };

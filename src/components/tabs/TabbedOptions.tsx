@@ -3,6 +3,7 @@ import {TabProps} from "./Tab";
 import {allowBinds, bind} from "../../util";
 
 import "./tabs.css";
+import {ReactElement} from "react";
 
 interface TabbedOptionsProps {
     activeTab: string;
@@ -15,9 +16,10 @@ export default class TabbedOptions extends React.Component<TabbedOptionsProps> {
 
     render() {
 
-        const tabs: Array<React.ReactElement<any>> = [];
-        const tabSections: Array<React.ReactElement<any>> = React.Children.map(
-            this.props.children,
+        const tabs: Array<React.ReactElement> = [];
+
+        const tabSections: Array<React.ReactElement<TabProps>> = React.Children.map(
+            this.props.children as ReactElement[],
             (tabChild: React.ReactChild) => {
 
                 const tab = tabChild as React.ReactElement<TabProps>;
@@ -30,7 +32,7 @@ export default class TabbedOptions extends React.Component<TabbedOptionsProps> {
                     onClick={this.onTabClicked}
                 />);
 
-                return React.cloneElement<any, any>(tab, {
+                return React.cloneElement<TabProps>(tab, {
                     isVisible: this.props.activeTab === tab.props.id
                 });
 

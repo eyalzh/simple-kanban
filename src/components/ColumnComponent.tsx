@@ -25,8 +25,9 @@ interface ColumnState {
 
 @allowBinds
 class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
-    constructor() {
-        super();
+
+    constructor(props) {
+        super(props);
         this.state = {
             isTaskBeingAdded: false,
             isBeingEdited: false,
@@ -152,7 +153,8 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
         longdesc: string,
         presentationalOptions: TaskPresentationalOptions,
         baseColumnId?: string,
-        linkToBoardId?: string
+        linkToBoardId?: string,
+        steamVol?: number
     ) {
         BoardActions.addTask(
             this.props.column,
@@ -160,7 +162,8 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
             longdesc,
             presentationalOptions,
             baseColumnId,
-            linkToBoardId
+            linkToBoardId,
+            steamVol
         );
     }
 }

@@ -24,8 +24,8 @@ interface OptionsDialogState {
 @allowBinds
 export default class OptionsDialog extends React.Component<OptionsDialogProps, OptionsDialogState> {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             activeTab: "import-export",
             downloadLinkCreated: false

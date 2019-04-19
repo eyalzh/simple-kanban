@@ -33,9 +33,9 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
     private readonly menuActions: {[prop: string]: MenuAction};
     private readonly menuActionsArray: MenuAction[];
 
-    constructor() {
+    constructor(props) {
 
-        super();
+        super(props);
 
         this.state = {
             isColBeingAdded: false,

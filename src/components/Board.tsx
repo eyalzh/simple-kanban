@@ -23,8 +23,8 @@ interface BoardState {
 @allowBinds
 export default class Board extends React.Component<{}, BoardState> {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             columns: [],
             boards: [],

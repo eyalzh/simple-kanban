@@ -2,7 +2,6 @@ import {Timestamp} from "./Timestamp";
 
 export interface TaskPresentationalOptions {
     color?: string;
-    sideColor?: string;
 }
 
 export interface Counter {
@@ -25,6 +24,7 @@ export interface Task {
 
     // The time at which the task was last updated. If this is undefined, the time is unknown
     lastUpdatedAt?: Timestamp;
+    lastMovedAt?: Timestamp;
 
     // Presentational options
     presentationalOptions?: TaskPresentationalOptions;
@@ -37,5 +37,34 @@ export interface Task {
 
     // An optional link to board associated with the task
     linkToBoardId?: string;
+
+    // Steam is accumulated as time goes by and is fully released
+    // when the task is moved from its column. Each task can have a different volume of steam that it can carry
+    // before an indication appears
+    steamVol?: number;
+
+}
+
+export enum TaskSteamStatus {
+    UNKNOWN = -1,
+    EMPTY = 0,
+    HALF_FULL = 0.5,
+    ALMOST_FULL = 0.9,
+    FULL = 1
+}
+
+export function getTaskSteamStatus(task: Task): TaskSteamStatus | undefined {
+
+    if (! task.lastMovedAt || ! task.steamVol) {
+        return TaskSteamStatus.UNKNOWN;
+    }
+
+    const now = new Date().getTime();
+    const hourMs = 3_600_000;
+    const hoursSinceLastUpdated = (now - task.lastMovedAt.value ) / hourMs;
+    const steam = (hoursSinceLastUpdated / task.steamVol);
+
+    return [TaskSteamStatus.FULL, TaskSteamStatus.ALMOST_FULL, TaskSteamStatus.HALF_FULL, TaskSteamStatus.EMPTY]
+        .find(status => steam >= status);
 
 }
