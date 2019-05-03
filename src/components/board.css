@@ -78,14 +78,14 @@
 }
 
 .task {
-    margin: 4px;
-    padding: 4px;
-    background-color: #fff6a8;
-    width: 162px;
-    border: 1px solid #2C2C2C;
-    border-radius: 3px;
+    margin: 0 3px 4px 3px;
+    padding: 4px 4px 6px 4px;
+    background-color: rgb(255,248,186);
+    width: 164px;
+    border: 1px solid #9C9C9C;
+    border-radius: 2px;
     cursor: move;
-    min-height: 30px;
+    min-height: 34px;
     overflow: hidden;
     position: relative;
 }
@@ -132,7 +132,7 @@
     }
 
     .task {
-        width: 182px;
+        width: 184px;
     }
 
 }

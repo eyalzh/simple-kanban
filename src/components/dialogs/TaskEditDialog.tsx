@@ -41,7 +41,7 @@ interface TaskEditDialogState {
     steamVol?: number;
 }
 
-const DEFAULT_COLOR = "#fff6a8";
+const DEFAULT_COLOR = "#FFF8BA";
 
 @allowBinds
 export default class TaskEditDialog extends React.Component<TaskEditDialogProps, TaskEditDialogState> {
