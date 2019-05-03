@@ -55,7 +55,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
 
     componentWillReceiveProps(props: TaskEditDialogProps) {
         const justOpened = props.opened && !this.props.opened;
-        const taskSwitched = this.props.task !== props.task;
+        const taskSwitched = this.props.task && props.task && this.props.task.id !== props.task.id;
         if (justOpened || taskSwitched) {
             this.setState(this.getInitState(props));
         }

@@ -53,7 +53,7 @@ export function bind(target: any, key: string) {
     target.__bindlist.push(key);
 }
 
-export function allowBinds<T extends {new(...args: any[]): {}}>(constructor: T) {
+export function allowBinds<T extends new(...args: any[]) => {}>(constructor: T) {
 
     const target = constructor;
 
