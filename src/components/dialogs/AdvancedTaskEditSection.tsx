@@ -65,7 +65,7 @@ export default class AdvancedTaskEditSection extends React.Component<AdvancedTas
                         />
                     </FormField>
 
-                </div>
+                </div>d
 
                 <div className="field-row">
 
