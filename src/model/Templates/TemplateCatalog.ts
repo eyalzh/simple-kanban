@@ -2,6 +2,7 @@ import {Template} from "./Template";
 import ProjectTemplate from "./ProjectTemplate";
 import EmptyTemplate from "./EmptyTemplate";
 import BrainstormingTemplate from "./BrainstormingTemplate";
+import DailyTemplate from "./DailyTemplate";
 
 export default class TemplateCatalog {
 
@@ -11,7 +12,8 @@ export default class TemplateCatalog {
         this.templates = [
             new EmptyTemplate(),
             new ProjectTemplate(),
-            new BrainstormingTemplate()
+            new BrainstormingTemplate(),
+            new DailyTemplate(),
         ];
     }
 
