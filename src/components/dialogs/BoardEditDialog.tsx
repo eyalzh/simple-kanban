@@ -88,7 +88,7 @@ export default class BoardEditDialog extends React.Component<BoardEditDialogProp
 
         const buttons = (
             <p>
-                <button onClick={this.onEditSubmitted}>Submit</button>&nbsp;
+                <button onClick={this.onEditSubmitted} disabled={this.state.name.length === 0}>Submit</button>&nbsp;
                 <button onClick={this.props.onEditClose}>Cancel</button>&nbsp;
             </p>
         );

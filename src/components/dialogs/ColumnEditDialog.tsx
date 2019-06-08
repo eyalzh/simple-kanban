@@ -78,7 +78,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
                     </FormField>
 
                     <p>
-                        <button onClick={this.onEditSubmitted}>Submit</button>&nbsp;
+                        <button onClick={this.onEditSubmitted} disabled={this.state.name.length === 0}>Submit</button>&nbsp;
                         <button onClick={this.props.onEditClose}>Cancel</button>
                     </p>
                 </div>
