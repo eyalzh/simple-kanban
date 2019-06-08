@@ -46,7 +46,7 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
 
         this.menuActions = {
             ADD_COL: {value: "1", label: "Add column", section: "column", handler: this.onAddColStarted.bind(this)},
-            ADD_BOARD: {value: "2", label: "Add new board", section: "board", handler: this.onAddBoardClicked.bind(this)},
+            ADD_BOARD: {value: "2", label: "Add board", section: "board", handler: this.onAddBoardClicked.bind(this)},
             EDIT_NAME: {value: "3", label: "Edit board", section: "board", handler: this.onEditBoardClicked.bind(this)},
             RESET_BOARD: {value: "4", label: "Reset board", section: "board", handler: this.onResetBoard.bind(this)},
             REMOVE_BOARD: {value: "5", label: "Remove board", section: "board", handler: this.onRemoveBoard.bind(this)},
@@ -55,8 +55,8 @@ export default class Toolbar extends React.Component<ToolbarProps, ToolbarState>
 
         this.menuActionsArray = [
             this.menuActions.ADD_COL,
-            this.menuActions.EDIT_NAME,
             this.menuActions.ADD_BOARD,
+            this.menuActions.EDIT_NAME,
             this.menuActions.RESET_BOARD,
             this.menuActions.REMOVE_BOARD,
             this.menuActions.ADVANCED
