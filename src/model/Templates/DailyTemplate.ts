@@ -11,7 +11,7 @@ export default class DailyTemplate implements Template {
 
         const notToday = await model.addColumn("Not today", 20);
         const today = await model.addColumn("Today", 10);
-        const done = await model.addColumn("Done +1", 99);
+        const done = await model.addColumn("Done +1", 99, {steamRelease: true});
 
         await model.addTask(notToday, "Tasks that you are not planning on doing today (drag to 'Today' if you are," +
             " and when you reset the board they will land here again)");

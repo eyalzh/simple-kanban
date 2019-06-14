@@ -246,17 +246,19 @@ export default class TaskModel {
         steamVol?: number): Promise<string> {
 
         const newKey = await generateUniqId(this.db, "task");
+        const now = getCurrentTime();
 
         const newTask: Task = {
             id: newKey,
             desc: sanitizer.sanitizeTaskTitle(desc),
             longdesc: typeof longdesc !== "undefined" ? longdesc : "",
-            createdAt: getCurrentTime(),
+            createdAt: now,
             presentationalOptions,
             baseColumnId: typeof baseColumnId !== "undefined" ? baseColumnId : columnId,
             counters: [{value: 0}],
             linkToBoardId,
-            steamVol: typeof steamVol !== "undefined" ? Math.max(0, steamVol) : 0
+            steamVol: typeof steamVol !== "undefined" ? Math.max(0, steamVol) : 0,
+            lastSteamReleased: now
         };
 
         await this.db.addToStore(TASKS_NAME, newKey, newTask);
@@ -290,7 +292,9 @@ export default class TaskModel {
                         newTask = effect.modifyTask(newTask, config);
                     }
                 });
-                newTask.lastMovedAt = getCurrentTime();
+                if (col.options && col.options.steamRelease) {
+                    newTask.lastSteamReleased = getCurrentTime();
+                }
                 return newTask;
             });
         }

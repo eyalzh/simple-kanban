@@ -24,7 +24,7 @@ export interface Task {
 
     // The time at which the task was last updated. If this is undefined, the time is unknown
     lastUpdatedAt?: Timestamp;
-    lastMovedAt?: Timestamp;
+    lastSteamReleased?: Timestamp;
 
     // Presentational options
     presentationalOptions?: TaskPresentationalOptions;
@@ -55,13 +55,13 @@ export enum TaskSteamStatus {
 
 export function getTaskSteamStatus(task: Task): TaskSteamStatus | undefined {
 
-    if (! task.lastMovedAt || ! task.steamVol) {
+    if (! task.lastSteamReleased || ! task.steamVol) {
         return TaskSteamStatus.UNKNOWN;
     }
 
     const now = new Date().getTime();
     const hourMs = 3_600_000;
-    const hoursSinceLastUpdated = (now - task.lastMovedAt.value ) / hourMs;
+    const hoursSinceLastUpdated = (now - task.lastSteamReleased.value ) / hourMs;
     const steam = (hoursSinceLastUpdated / task.steamVol);
 
     return [TaskSteamStatus.FULL, TaskSteamStatus.ALMOST_FULL, TaskSteamStatus.HALF_FULL, TaskSteamStatus.EMPTY]

@@ -16,6 +16,7 @@ interface ColumnEditDialogState {
     name: string;
     wipLimit: number;
     size: ColumnSize | undefined;
+    releaseSteam: boolean;
 }
 
 @allowBinds
@@ -77,6 +78,10 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
                         </select>
                     </FormField>
 
+                    <FormField caption="Release steam?">
+                        <input type="checkbox" checked={this.state.releaseSteam} onChange={this.onReleaseSteamChanged}/>
+                    </FormField>
+
                     <p>
                         <button onClick={this.onEditSubmitted} disabled={this.state.name.length === 0}>Submit</button>&nbsp;
                         <button onClick={this.props.onEditClose}>Cancel</button>
@@ -92,16 +97,19 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
         const defaultColumnValues = {
             name: "",
             wipLimit: 3,
-            size: ColumnSize.FULL
+            size: ColumnSize.FULL,
+            releaseSteam: false
         };
 
         if (props.column) {
             const {name, wipLimit, options} = props.column;
             let size = ColumnSize.FULL;
+            let releaseSteam = false;
             if (options && typeof options.size !== "undefined") {
                 size = options.size;
+                releaseSteam = options.releaseSteam;
             }
-            return {name, wipLimit, size};
+            return {name, wipLimit, size, releaseSteam};
         } else {
             return defaultColumnValues;
         }
@@ -135,8 +143,9 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
 
     @bind
     private onEditSubmitted() {
-        const options = {
-            size: this.state.size
+        const options: ColumnOptions = {
+            size: this.state.size,
+            steamRelease: this.state.releaseSteam
         };
         this.props.onEditSubmitted(this.state.name, this.state.wipLimit, options);
     }
@@ -146,6 +155,12 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
         if (this.fieldInput) {
             this.fieldInput.focus();
         }
+    }
+
+    @bind
+    private onReleaseSteamChanged(e: React.FormEvent<HTMLInputElement>) {
+        const releaseSteam = !!e.currentTarget.checked;
+        this.setState({releaseSteam});
     }
 
 }

@@ -2,6 +2,7 @@ export enum ColumnSize {FULL, HALF}
 
 export interface ColumnOptions {
     size?: ColumnSize;
+    steamRelease?: boolean;
 }
 
 export interface ColumnEffectConfig {

@@ -58,6 +58,7 @@ export default class AdvancedTaskEditSection extends React.Component<AdvancedTas
                     <FormField caption="Steam Volume">
                         <input
                             min="0"
+                            step="0.01"
                             placeholder="0-999 hours"
                             type="number"
                             onChange={this.onSteamVolChanged}
@@ -65,7 +66,7 @@ export default class AdvancedTaskEditSection extends React.Component<AdvancedTas
                         />
                     </FormField>
 
-                </div>d
+                </div>
 
                 <div className="field-row">
 
