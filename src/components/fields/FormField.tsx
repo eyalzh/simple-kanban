@@ -1,8 +1,6 @@
 import * as React from "react";
 import {classSet} from "../../util";
 
-import "./fields.css";
-
 interface FormFieldProps {
     caption: string;
     direction?: "row" | "column";

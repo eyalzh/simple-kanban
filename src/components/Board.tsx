@@ -10,8 +10,6 @@ import * as BoardActions from "../actions/boardActions";
 import {allowBinds, bind, reorderArray} from "../util";
 import {Board as BoardModel} from "../model/Board";
 
-import "./board.css";
-
 interface BoardState {
     columns: Array<Column> | null;
     boards: Array<BoardModel>;

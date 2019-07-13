@@ -130,28 +130,26 @@ export function editCurrentBoard(boardName: string, isArchived: boolean) {
         .then(this.dispatchRefreshFull);
 }
 
-export function removeCurrentBoard() {
+export async function removeCurrentBoard() {
 
-    (async () => {
+    const currentBoard = await getModel().getCurrentBoard();
+    if (currentBoard !== null) {
+        const tasks = await getModel().getTasksByBoard(currentBoard);
 
-        const currentBoard = await getModel().getCurrentBoard();
-        if (currentBoard !== null) {
-            const tasks = await getModel().getTasksByBoard(currentBoard);
+        if (tasks.length === 0
+            || window.confirm(`Are you sure you want to remove a non-empty board (${tasks.length} tasks found)?`)) {
 
-            if (tasks.length > 0) {
-                alert(`Cannot remove a non-empty board (${tasks.length} tasks found)`);
-            } else {
-                const nextBoard = await getModel().getNextBoard();
-                await getModel().removeCurrentBoard();
-                if (nextBoard) {
-                    await getModel().setCurrentBoard(nextBoard.id);
-                }
-
+            const nextBoard = await getModel().getNextBoard();
+            await getModel().removeCurrentBoard();
+            if (nextBoard) {
+                await getModel().setCurrentBoard(nextBoard.id);
             }
 
         }
 
-    })().then(this.dispatchRefreshFull);
+    }
+
+    this.dispatchRefreshFull();
 
 }
 

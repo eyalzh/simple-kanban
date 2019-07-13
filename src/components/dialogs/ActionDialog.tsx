@@ -3,8 +3,6 @@ import {leftSideModalStyle} from "./dialogModalStyle";
 import * as Modal from "react-modal";
 import {ReactElement} from "react";
 
-import "./dialogs.css";
-
 interface DialogProps {
     opened: boolean;
     onRequestClose: () => void;

@@ -7,8 +7,6 @@ import BoardSelector from "./BoardSelector";
 import * as BoardActions from "../../actions/boardActions";
 import {allowBinds, bind} from "../../util";
 
-import "./nav.css";
-
 interface NavState {
     currentBoard: Board | null;
     boards: Array<Board> | null;

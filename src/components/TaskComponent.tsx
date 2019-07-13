@@ -66,7 +66,9 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
                     text={desc}
                     task={this.props.task}
                     className="task-title"
-                    color={calcColorBasedOnBackground(bgColor)} />
+                    color={calcColorBasedOnBackground(bgColor)}
+                    linkToBoard={this.props.task.linkToBoardId}
+                />
 
                 <TaskEditDialog
                     task={this.props.task}

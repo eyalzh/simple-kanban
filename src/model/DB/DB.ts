@@ -1,6 +1,6 @@
 export interface DBStoreDescriptor {
-    storeName: string;
-    storeKey: string;
+    readonly storeName: string;
+    readonly storeKey: string;
 }
 
 export interface DB {

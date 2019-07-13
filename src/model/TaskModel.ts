@@ -341,11 +341,15 @@ export default class TaskModel {
     }
 
     @lock("board")
-    public async removeColumn(boardId: string, columnId: string) {
+    public async removeColumn(boardId: string, columnId: string, allowNonEmpty: boolean = false) {
 
         const tasks = await this.getTasksByColumn(columnId);
-        if (tasks.length > 0) {
+        if (tasks.length > 0 && !allowNonEmpty) {
             throw new NonEmptyColumnException();
+        } else {
+            for (const task of tasks) {
+                await this.db.deleteStoreItem(TASKS_NAME, task.id);
+            }
         }
 
         await this.db.deleteStoreItem(COL_TASK_MAP_NAME, columnId);
@@ -362,15 +366,10 @@ export default class TaskModel {
         if (boardId !== null) {
             const cols = await this.getColumnsByBoard(boardId);
 
-            const colMods = cols.map(col => {
-                return (async () => {
-                    if (col) {
-                        await this.removeColumn(boardId, col.id);
-                    }
-                })();
-            });
-
-            await Promise.all(colMods);
+            // delete one by one (method is locking the board)
+            for (const col of cols) {
+                await this.removeColumn(boardId, col.id, true);
+            }
 
             await this.db.deleteStoreItem(BOARD_MAP_NAME, boardId);
             await this.db.deleteStoreItem(BOARD_COL_MAP_NAME, boardId);

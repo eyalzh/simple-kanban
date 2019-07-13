@@ -77,7 +77,7 @@ export function lock(lockId: string) {
             ...descriptor,
             value(...args) {
                 if (locks.get(lockId) === true) {
-                    return Promise.reject(new Error("locked"));
+                    return Promise.reject(new Error(lockId + " locked"));
                 } else {
                     locks.set(lockId, true);
 

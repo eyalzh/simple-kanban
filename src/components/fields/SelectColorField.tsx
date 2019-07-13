@@ -1,8 +1,6 @@
 import * as React from "react";
 import {allowBinds, bind} from "../../util";
 
-import "./fields.css";
-
 interface SelectColorFieldProps {
     value?: string;
     onChange: (color: string) => void;

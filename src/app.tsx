@@ -8,7 +8,7 @@ import initializeModel from "./model/initializeModel";
 import * as BoardActions from "./actions/boardActions";
 import TemplateCatalog from "./model/Templates/TemplateCatalog";
 import * as Modal from "react-modal";
-import "./main.css";
+import "./styles.css";
 
 setModel(taskModel);
 setCatalog(new TemplateCatalog());

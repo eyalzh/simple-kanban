@@ -1,8 +1,6 @@
 import * as React from "react";
 import {TabProps} from "./Tab";
 import {allowBinds, bind} from "../../util";
-
-import "./tabs.css";
 import {ReactElement} from "react";
 
 interface TabbedOptionsProps {

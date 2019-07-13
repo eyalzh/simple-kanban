@@ -1,6 +1,5 @@
 import {
     CounterText,
-    LinkText,
     parseTaskTitle,
     RegularText,
     TagText
@@ -70,7 +69,7 @@ describe("annotation parser", function() {
 
     it("should parse correctly regular text with a counter and link", () => {
 
-        const text = "foo #1 bar #link baz";
+        const text = "foo #1 bar baz";
 
         const parts = parseTaskTitle(text);
 
@@ -78,9 +77,7 @@ describe("annotation parser", function() {
             [
                 {component: RegularText, text: "foo "},
                 {component: CounterText, text: "#1"},
-                {component: RegularText, text: " bar "},
-                {component: LinkText, text: "#link"},
-                {component: RegularText, text: " baz"},
+                {component: RegularText, text: " bar baz"}
             ]
         );
 
