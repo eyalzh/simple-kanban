@@ -1,5 +1,5 @@
 import * as React from "react";
-import {leftSideModalStyle} from "./dialogModalStyle";
+import {actionModalStyle} from "./dialogModalStyle";
 import * as Modal from "react-modal";
 import {ReactElement} from "react";
 
@@ -22,7 +22,7 @@ export default class ActionDialog extends React.Component<DialogProps> {
                 isOpen={this.props.opened}
                 onRequestClose={this.props.onRequestClose}
                 onAfterOpen={this.props.onOpen}
-                style={leftSideModalStyle}>
+                style={actionModalStyle}>
 
                 <div className="dialog-title">
                     {this.props.title}

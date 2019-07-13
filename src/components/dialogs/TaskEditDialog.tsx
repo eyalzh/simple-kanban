@@ -1,10 +1,6 @@
 import * as React from "react";
-import Markdown from "../Markdown";
 import {allowBinds, bind} from "../../util";
 import {Timestamp} from "../../model/Timestamp";
-import * as Modal from "react-modal";
-import AnnotatedHashtagDiv from "../annotations/AnnotatedHashtagDiv";
-import {rightSideModalStyle} from "./dialogModalStyle";
 import {Task, TaskPresentationalOptions} from "../../model/Task";
 import FormField from "../fields/FormField";
 import ActionDialog from "./ActionDialog";
@@ -143,27 +139,6 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                         </div>
 
                     </div>
-
-                    <Modal
-                        isOpen={this.props.opened}
-                        onRequestClose={this.onRequestClose}
-                        onAfterOpen={this.onEditDialogOpen}
-                        style={rightSideModalStyle}
-                        shouldCloseOnOverlayClick={false}
-                        contentLabel="Edit Task">
-
-                        <div className="preview-section">
-                            <div className="soft-modal-title">markdown</div>
-                            <h2>
-                                <AnnotatedHashtagDiv
-                                    text={this.state.desc}
-                                    task={this.props.task}
-                                />
-                            </h2>
-                            <Markdown text={this.state.longdesc} />
-                        </div>
-
-                    </Modal>
 
                 </ActionDialog>
 
