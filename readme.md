@@ -5,7 +5,7 @@ Lightweight Kanban Board
 * Simple and quick editing - to add a task, just double click on a column, type the title and press enter
 * Drag-and-drop tasks and columns
 * Visual indication when WiP (Work in Progress) exceeds column's capacity
-* Markdown support
+* ~~Markdown support~~
 * Import/export
 
 Demo
