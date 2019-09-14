@@ -20,7 +20,8 @@ interface TaskEditDialogProps {
         presentationalOptions: TaskPresentationalOptions,
         baseColumnId?: string,
         linkToBoardId?: string,
-        steamVol?: number) => void;
+        steamVol?: number,
+        externalUrl?: string) => void;
     columnList: Column[] | null;
     boardList: Board[];
     currentColumnId: string;
@@ -35,6 +36,7 @@ interface TaskEditDialogState {
     baseColumnId?: string;
     linkToBoardId?: string;
     steamVol?: number;
+    externalUrl?: string;
 }
 
 const DEFAULT_COLOR = "#FFF8BA";
@@ -129,11 +131,13 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
                                 baseColumnId={this.state.baseColumnId}
                                 linkToBoardId={this.state.linkToBoardId}
                                 taskSteamVol={this.state.steamVol}
+                                externalUrl={this.state.externalUrl}
                                 onColorChanged={this.onColorChanged}
                                 onResetColors={this.onResetColors}
                                 onBaseColChanged={this.onBaseColChanged}
                                 onLinkToBoardChanged={this.onLinkBoardChanged}
                                 onSteamVolChanged={this.onSteamVolChanged}
+                                onChangeUrl={this.onChangeUrl}
                             />
 
                         </div>
@@ -157,10 +161,11 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
             presentationalOptions,
             baseColumnId: string | undefined = props.currentColumnId,
             linkToBoardId,
-            steamVol;
+            steamVol,
+            externalUrl;
 
         if (props.task) {
-            ({ desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions, baseColumnId, linkToBoardId, steamVol } = props.task);
+            ({ desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions, baseColumnId, linkToBoardId, steamVol, externalUrl} = props.task);
             if (presentationalOptions) {
                 color = presentationalOptions.color;
             }
@@ -169,7 +174,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         const creationDateString = TaskEditDialog.buildDateString(createdAt);
         const lastUpdatedAtString = TaskEditDialog.buildDateString(lastUpdatedAt);
 
-        return { desc, longdesc, color, creationDateString, lastUpdatedAtString, baseColumnId, linkToBoardId, steamVol };
+        return { desc, longdesc, color, creationDateString, lastUpdatedAtString, baseColumnId, linkToBoardId, steamVol, externalUrl };
 
     }
 
@@ -219,7 +224,8 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
             presentationalOptions,
             this.state.baseColumnId,
             this.state.linkToBoardId,
-            this.state.steamVol
+            this.state.steamVol,
+            this.state.externalUrl
         );
     }
 
@@ -269,6 +275,13 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
     private onSteamVolChanged(steamVol: number) {
         this.setState({
             steamVol
+        });
+    }
+
+    @bind
+    private onChangeUrl(externalUrl: string) {
+        this.setState({
+            externalUrl
         });
     }
 

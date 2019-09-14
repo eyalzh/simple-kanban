@@ -563,8 +563,12 @@ body {
     flex: 1 1 auto;
 }
 
-.form-field input[type="number"], .form-field select {
+.form-field input[type="number"], .form-field select{
     width: 120px;
+}
+
+.form-field input[type="url"] {
+    width: 114px;
 }
 
 .select-color-field {
@@ -612,4 +616,8 @@ body {
 
 .collapsable-container-expanded .collapsable-content {
     display: block;
+}
+
+.task a {
+    text-decoration: none;
 }

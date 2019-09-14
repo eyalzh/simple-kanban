@@ -154,7 +154,8 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
         presentationalOptions: TaskPresentationalOptions,
         baseColumnId?: string,
         linkToBoardId?: string,
-        steamVol?: number
+        steamVol?: number,
+        externalUrl?: string
     ) {
         BoardActions.addTask(
             this.props.column,
@@ -163,7 +164,8 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
             presentationalOptions,
             baseColumnId,
             linkToBoardId,
-            steamVol
+            steamVol,
+            externalUrl
         );
     }
 }

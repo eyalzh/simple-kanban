@@ -15,11 +15,13 @@ interface AdvancedTaskEditSectionProps {
     taskSteamVol?: number;
     baseColumnId?: string;
     linkToBoardId?: string;
+    externalUrl?: string;
     onColorChanged: (color: string) => void;
     onResetColors: () => void;
     onBaseColChanged: (baseColumnId: string) => void;
     onLinkToBoardChanged: (linkToBoardId: string | undefined) => void;
     onSteamVolChanged: (steam: number) => void;
+    onChangeUrl: (url: string) => void;
 }
 
 @allowBinds
@@ -66,6 +68,10 @@ export default class AdvancedTaskEditSection extends React.Component<AdvancedTas
                         />
                     </FormField>
 
+                    <FormField caption="External URL">
+                        <input type="url" onChange={this.onChangeUrl} value={this.props.externalUrl || ""} placeholder="https://url.com"/>
+                    </FormField>
+
                 </div>
 
                 <div className="field-row">
@@ -78,7 +84,7 @@ export default class AdvancedTaskEditSection extends React.Component<AdvancedTas
 
                     <FormField caption="Link to board">
                         <select onChange={this.onLinkToBoardChanged} value={this.props.linkToBoardId}>
-                            <option value={NO_BOARD}>Select board</option>
+                            <option value={NO_BOARD}>None</option>
                             {boardOptions}
                         </select>
                     </FormField>
@@ -105,6 +111,11 @@ export default class AdvancedTaskEditSection extends React.Component<AdvancedTas
     private onSteamVolChanged(ev: React.FormEvent<HTMLInputElement>) {
         const steamVol = Number(ev.currentTarget.value);
         this.props.onSteamVolChanged(steamVol);
+    }
+
+    @bind
+    private onChangeUrl(ev: React.FormEvent<HTMLInputElement>) {
+        this.props.onChangeUrl(ev.currentTarget.value);
     }
 
 }

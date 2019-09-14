@@ -18,26 +18,26 @@
   "devDependencies": {
     "@types/chai": "^4.1.6",
     "@types/mocha": "^2.2.48",
-    "@types/node": "^8.10.29",
+    "@types/node": "^8.10.54",
     "@types/react": "16.8.10",
     "@types/react-dom": "16.8.3",
     "chai": "^4.2.0",
-    "css-loader": "^1.0.0",
+    "css-loader": "^1.0.1",
     "mocha": "^5.2.0",
     "sinon": "^6.3.4",
     "style-loader": "^0.23.1",
     "ts-loader": "^5.4.5",
     "ts-node": "^7.0.1",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.3",
+    "typescript": "~3.6.3",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.6",
     "webpack-dev-server": "^3.8.0"
   },
   "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-modal": "^3.8.1"
+    "react": "~16.8.6",
+    "react-dom": "~16.8.6",
+    "react-modal": "~3.8.2"
   }
 }

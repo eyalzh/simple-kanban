@@ -21,7 +21,8 @@ export function addTask(
   presentationalOptions?: TaskPresentationalOptions,
   baseColumnId?: string,
   linkToBoardId?: string,
-  steamVol?: number
+  steamVol?: number,
+  externalUrl?: string
 ) {
   getModel()
     .addTask(
@@ -31,7 +32,8 @@ export function addTask(
         presentationalOptions,
         baseColumnId,
         linkToBoardId,
-        steamVol
+        steamVol,
+        externalUrl
     )
     .then(this.dispatchRefreshCurrentBoard);
 }
@@ -67,11 +69,12 @@ export function editTask(
   presentationalOptions?: TaskPresentationalOptions,
   baseColumnId?: string,
   linkToBoardId?: string,
-  steamVol?: number
+  steamVol?: number,
+  externalUrl?: string
 
 ) {
   getModel()
-    .editTask(taskId, newDesc, newLongDesc, presentationalOptions, baseColumnId, linkToBoardId, steamVol)
+    .editTask(taskId, newDesc, newLongDesc, presentationalOptions, baseColumnId, linkToBoardId, steamVol, externalUrl)
     .then(this.dispatchRefreshCurrentBoard);
 }
 

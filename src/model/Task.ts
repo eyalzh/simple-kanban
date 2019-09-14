@@ -38,6 +38,9 @@ export interface Task {
     // An optional link to board associated with the task
     linkToBoardId?: string;
 
+    // Optional External URL
+    externalUrl?: string;
+
     // Steam is accumulated as time goes by and is fully released
     // when the task is moved from its column. Each task can have a different volume of steam that it can carry
     // before an indication appears

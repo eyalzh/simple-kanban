@@ -243,7 +243,8 @@ export default class TaskModel {
         presentationalOptions?: TaskPresentationalOptions,
         baseColumnId?: string,
         linkToBoardId?: string,
-        steamVol?: number): Promise<string> {
+        steamVol?: number,
+        externalUrl?: string): Promise<string> {
 
         const newKey = await generateUniqId(this.db, "task");
         const now = getCurrentTime();
@@ -258,7 +259,8 @@ export default class TaskModel {
             counters: [{value: 0}],
             linkToBoardId,
             steamVol: typeof steamVol !== "undefined" ? Math.max(0, steamVol) : 0,
-            lastSteamReleased: now
+            lastSteamReleased: now,
+            externalUrl
         };
 
         await this.db.addToStore(TASKS_NAME, newKey, newTask);
@@ -323,7 +325,8 @@ export default class TaskModel {
         presentationalOptions?: TaskPresentationalOptions,
         baseColumnId?: string,
         linkToBoardId?: string,
-        steamVol?: number) {
+        steamVol?: number,
+        externalUrl?: string) {
 
         await this.db.modifyStore<Task>(TASKS_NAME, taskId, (task) => {
             task.desc = sanitizer.sanitizeTaskTitle(newDesc);
@@ -336,6 +339,7 @@ export default class TaskModel {
             }
             task.linkToBoardId = linkToBoardId;
             task.steamVol = typeof steamVol !== "undefined" ? Math.max(0, steamVol) : 0;
+            task.externalUrl = externalUrl;
             return task;
         });
     }

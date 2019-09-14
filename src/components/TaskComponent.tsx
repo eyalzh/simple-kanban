@@ -68,6 +68,7 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
                     className="task-title"
                     color={calcColorBasedOnBackground(bgColor)}
                     linkToBoard={this.props.task.linkToBoardId}
+                    externalUrl={this.props.task.externalUrl}
                 />
 
                 <TaskEditDialog
@@ -99,7 +100,8 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
         presentationalOptions,
         baseColumnId,
         linkToBoardId,
-        steamVol) {
+        steamVol,
+        externalUrl) {
         BoardActions.editTask(
             this.props.task.id,
             desc,
@@ -107,7 +109,8 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
             presentationalOptions,
             baseColumnId,
             linkToBoardId,
-            steamVol
+            steamVol,
+            externalUrl
         );
     }
 

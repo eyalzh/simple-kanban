@@ -9,6 +9,7 @@ interface AnnotatedHashtagDivProps {
     className?: string;
     color?: string;
     linkToBoard?: string;
+    externalUrl?: string;
 }
 
 export default class AnnotatedHashtagDiv extends React.Component<AnnotatedHashtagDivProps> {
@@ -16,7 +17,8 @@ export default class AnnotatedHashtagDiv extends React.Component<AnnotatedHashta
     shouldComponentUpdate(nextProps: AnnotatedHashtagDivProps) {
         return this.props.text !== nextProps.text
             || this.props.color !== nextProps.color
-            || this.props.linkToBoard !== nextProps.linkToBoard;
+            || this.props.linkToBoard !== nextProps.linkToBoard
+            || this.props.externalUrl !== nextProps.externalUrl;
     }
 
     render() {
@@ -26,6 +28,7 @@ export default class AnnotatedHashtagDiv extends React.Component<AnnotatedHashta
         const task = this.props.task;
         let innerElement;
         let linkToBoard: JSX.Element | null = null;
+        let externalLink: JSX.Element | null = null;
 
         if (textParts.length > 0 && task) {
 
@@ -41,12 +44,18 @@ export default class AnnotatedHashtagDiv extends React.Component<AnnotatedHashta
             linkToBoard = <span
                 title="click to switch board"
                 onClick={() => switchBoard(link)}>
-                🔗
+                ↪
             </span>;
         }
 
+        if (this.props.externalUrl) {
+            externalLink = <a href={this.props.externalUrl} target="_blank" rel="noopener">
+                🔗
+            </a>;
+        }
+
         return (
-            <div className={this.props.className} style={{color: this.props.color}}>{innerElement}{linkToBoard}</div>
+            <div className={this.props.className} style={{color: this.props.color}}>{innerElement}{linkToBoard}{externalLink}</div>
         );
 
     }
