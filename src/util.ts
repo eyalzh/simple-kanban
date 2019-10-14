@@ -12,7 +12,7 @@ export function classSet(classNames: object) {
 }
 
 const cache = {};
-export function calcColorBasedOnBackground(color: string): string {
+export function calcColorBasedOnBackground(color: string | undefined): string {
 
     if (typeof color === "undefined") {
         return "#000";

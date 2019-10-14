@@ -165,7 +165,17 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
             externalUrl;
 
         if (props.task) {
-            ({ desc, longdesc, createdAt, lastUpdatedAt, presentationalOptions, baseColumnId, linkToBoardId, steamVol, externalUrl} = props.task);
+            ({
+                desc,
+                longdesc,
+                createdAt,
+                lastUpdatedAt,
+                presentationalOptions,
+                baseColumnId,
+                linkToBoardId,
+                steamVol,
+                externalUrl
+            } = props.task);
             if (presentationalOptions) {
                 color = presentationalOptions.color;
             }

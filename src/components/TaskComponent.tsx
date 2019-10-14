@@ -7,6 +7,7 @@ import {draggable, Referrable} from "./hoc/dragAndDrop";
 import {allowBinds, bind, calcColorBasedOnBackground} from "../util";
 import {Board} from "../model/Board";
 import {getTaskSteamStatus, Task, TaskSteamStatus} from "../model/Task";
+import {switchBoard} from "../actions/boardActions";
 
 interface TaskProps extends Referrable {
     task: Task;
@@ -33,12 +34,9 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
 
     render() {
 
-        const {desc, presentationalOptions} = this.props.task;
+        const {desc, presentationalOptions, linkToBoardId, externalUrl} = this.props.task;
 
-        let bgColor;
-        if (presentationalOptions) {
-            bgColor = presentationalOptions.color;
-        }
+        const bgColor = presentationalOptions?.color;
 
         const steamStatus = getTaskSteamStatus(this.props.task);
         let sideColor: string | null  = null;
@@ -55,36 +53,58 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
                 sideColor = null;
         }
 
-        return (
-            <div
-                ref={this.props.innerRef}
-                className="task"
-                onDoubleClick={e => this.editTask(e)}
-                style={{backgroundColor: bgColor}}>
+        let linkToBoard: JSX.Element | null = null;
+        if (linkToBoardId) {
+            linkToBoard = <span
+                className="task-action-section-item"
+                title="click to switch board"
+                onClick={() => switchBoard(linkToBoardId)}>
+                        ↪
+                        </span>;
+        }
 
-                <AnnotatedHashtagDiv
-                    text={desc}
-                    task={this.props.task}
-                    className="task-title"
-                    color={calcColorBasedOnBackground(bgColor)}
-                    linkToBoard={this.props.task.linkToBoardId}
-                    externalUrl={this.props.task.externalUrl}
-                />
+        let externalLink: JSX.Element | null = null;
+        if (externalUrl) {
+            externalLink = <a className="task-action-section-item" href={externalUrl} target="_blank" rel="noopener">
+                🔗
+            </a>;
+        }
+
+        return (
+            <React.Fragment>
+                <div
+                    ref={this.props.innerRef}
+                    className="task"
+                    onDoubleClick={e => this.editTask(e)}
+                    style={{backgroundColor: bgColor}}>
+
+                    <AnnotatedHashtagDiv
+                        text={desc}
+                        task={this.props.task}
+                        className="task-title"
+                        color={calcColorBasedOnBackground(bgColor)}
+                    />
+
+                    {(linkToBoard || externalLink) ? <div className="task-action-section">
+                        {linkToBoard}
+                        {externalLink}
+                    </div> : null}
+
+                    {sideColor ? <div className="side-color-marker" style={{backgroundColor: sideColor}} /> : null}
+
+                </div>
 
                 <TaskEditDialog
-                    task={this.props.task}
-                    opened={this.state.isBeingEdited}
-                    onCloseEditTask={this.closeEditTask}
-                    onEditSubmitted={this.onTaskSubmitted}
-                    dialogTitle="Edit Task"
-                    columnList={this.props.columnList}
-                    boardList={this.props.boardList}
-                    currentColumnId={this.props.column.id}
-                />
-
-                {sideColor ? <div className="side-color-marker" style={{backgroundColor: sideColor}} /> : null}
-
-            </div>
+            task={this.props.task}
+            opened={this.state.isBeingEdited}
+            onCloseEditTask={this.closeEditTask}
+            onEditSubmitted={this.onTaskSubmitted}
+            dialogTitle="Edit Task"
+            columnList={this.props.columnList}
+            boardList={this.props.boardList}
+            currentColumnId={this.props.column.id}
+            />
+        </React.Fragment>
         );
     }
 
