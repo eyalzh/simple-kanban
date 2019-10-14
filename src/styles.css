@@ -285,7 +285,7 @@ body {
     border: 1px solid #9C9C9C;
     border-radius: 2px;
     cursor: move;
-    min-height: 34px;
+    min-height: 40px;
     overflow-x: hidden;
     position: relative;
     display: flex;
