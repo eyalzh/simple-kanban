@@ -286,7 +286,7 @@ body {
     border-radius: 2px;
     cursor: move;
     min-height: 40px;
-    overflow-x: hidden;
+    overflow: hidden;
     position: relative;
     display: flex;
 }
