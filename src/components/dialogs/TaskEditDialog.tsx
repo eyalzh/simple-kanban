@@ -97,7 +97,7 @@ export default class TaskEditDialog extends React.Component<TaskEditDialogProps,
         }
 
         return (
-            <div>
+            <div onDoubleClick={(e) => {e.stopPropagation()}}>
                 <ActionDialog
                     title={this.props.task ? "Edit Task" : "Create a Task"}
                     opened={this.props.opened}

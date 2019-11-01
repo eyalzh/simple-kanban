@@ -95,15 +95,15 @@ class TaskComponent extends React.Component<TaskProps, TaskState> {
                 </div>
 
                 <TaskEditDialog
-            task={this.props.task}
-            opened={this.state.isBeingEdited}
-            onCloseEditTask={this.closeEditTask}
-            onEditSubmitted={this.onTaskSubmitted}
-            dialogTitle="Edit Task"
-            columnList={this.props.columnList}
-            boardList={this.props.boardList}
-            currentColumnId={this.props.column.id}
-            />
+                    task={this.props.task}
+                    opened={this.state.isBeingEdited}
+                    onCloseEditTask={this.closeEditTask}
+                    onEditSubmitted={this.onTaskSubmitted}
+                    dialogTitle="Edit Task"
+                    columnList={this.props.columnList}
+                    boardList={this.props.boardList}
+                    currentColumnId={this.props.column.id}
+                />
         </React.Fragment>
         );
     }

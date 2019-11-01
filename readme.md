@@ -1,12 +1,12 @@
 Lightweight Kanban Board
 ========================
 * Completely offline (IndexedDB backend)
-* Supports multiple boards
+* Supports multiple boards and links between boards
 * Simple and quick editing - to add a task, just double click on a column, type the title and press enter
 * Drag-and-drop tasks and columns
 * Visual indication when WiP (Work in Progress) exceeds column's capacity
 * ~~Markdown support~~
-* Import/export
+* JSON import/export
 
 Demo
 ====
