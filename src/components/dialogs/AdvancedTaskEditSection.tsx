@@ -40,7 +40,9 @@ export default class AdvancedTaskEditSection extends React.Component<AdvancedTas
 
         let boardOptions: JSX.Element[] = [];
         if (this.props.boardList) {
-            boardOptions = this.props.boardList.map(board => {
+            boardOptions = this.props.boardList
+                .filter(board => !board.isArchived)
+                .map(board => {
                 return (
                     <option key={board.id} value={board.id}>{board.name}</option>
                 );
