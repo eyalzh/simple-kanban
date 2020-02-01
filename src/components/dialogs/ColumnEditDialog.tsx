@@ -92,7 +92,7 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
         );
     }
 
-    private getInitState(props) {
+    private getInitState(props: ColumnEditDialogProps): ColumnEditDialogState {
 
         const defaultColumnValues = {
             name: "",
@@ -105,9 +105,12 @@ export default class ColumnEditDialog extends React.Component<ColumnEditDialogPr
             const {name, wipLimit, options} = props.column;
             let size = ColumnSize.FULL;
             let releaseSteam = false;
-            if (options && typeof options.size !== "undefined") {
-                size = options.size;
-                releaseSteam = options.releaseSteam;
+            if (options) {
+                if (typeof options.size !== "undefined") {
+                    size = options.size;
+                }
+
+                releaseSteam = !!options.steamRelease;
             }
             return {name, wipLimit, size, releaseSteam};
         } else {
