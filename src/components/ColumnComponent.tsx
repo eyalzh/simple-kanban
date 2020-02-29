@@ -84,8 +84,8 @@ class ColumnComponent extends React.Component<ColumnProps, ColumnState> {
                         {taskCount} / {this.props.column.wipLimit}
                     </div>
                 </div>
-                <div className="task-container" onDoubleClick={this.onAddTask}>
-                    {tasks}
+                 <div className="task-container" onDoubleClick={this.onAddTask}>
+                    {tasks.length > 0 ? tasks : <div className="column-empty-info">Double click on column to add new tasks</div>}
                 </div>
                 <TaskEditDialog
                     opened={this.state.isTaskBeingAdded}

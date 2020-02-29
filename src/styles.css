@@ -258,6 +258,15 @@ body {
     white-space: nowrap;
 }
 
+.column-empty-info {
+    width: 100px;
+    text-align: center;
+    font-family: "Helvetica", "Arial", sans-serif;
+    margin: 0 auto;
+    padding-top: 40px;
+    font-size: 14px;
+}
+
 .wip {
     font-size: 14px;
     color: #772b13;
@@ -312,17 +321,50 @@ body {
     color: red;
 }
 
-.trash-zone {
-    height: calc(100vh - 40px);
-    width: 150px;
-    border: 1px dashed #2C2C2C;
+.toolbox-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.trash-zone, .toolbox-area-add-col {
+    height: 108px;
+    width: 110px;
+
     border-radius: 4px;
     margin: 6px 3px 4px 6px;
-    text-align: center;
-    font-size: 32px;
-    font-family: "Helvetica", "Arial", sans-serif;
+
     user-select: none;
     -moz-user-select: none;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.trash-zone {
+    border: 1px dashed #2C2C2C;
+}
+
+.toolbox-area-add-col {
+    cursor: pointer;
+    border: 1px solid #2C2C2C;
+    background: #f3f2f2;
+}
+
+.trash-icon:drop {
+    font-weight: bold;
+}
+
+.toolbox-area-icon {
+    font-size: 48px;
+}
+
+.toolbox-area-text {
+    font-size: 14px;
+    font-family: "Helvetica", "Arial", sans-serif;
+    width: 70px;
+    text-align: center;
 }
 
 

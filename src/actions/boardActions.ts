@@ -91,7 +91,7 @@ export function removeColumn(boardId: string, columnId: string) {
         .then(this.dispatchRefreshCurrentBoard)
         .catch(e => {
             if (e instanceof NonEmptyColumnException) {
-                alert("Cannot remove a column that has tasks");
+                alert("Cannot remove a column that has tasks. Delete them first by dragging them to the trash bin.");
             } else {
                 console.error(e);
                 alert("Cannot remove column (see dev console)");

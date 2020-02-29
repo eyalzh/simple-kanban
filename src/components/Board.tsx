@@ -76,7 +76,14 @@ export default class Board extends React.Component<{}, BoardState> {
         return (
             <div className="board-container">
                 {columns}
-                <TrashZone onDrop={this.onMovedToTrash}/>
+                <div className="toolbox-area">
+                    <TrashZone onDrop={this.onMovedToTrash}/>
+                    <div className="toolbox-area-add-col" onClick={this.onAddColumn}>
+                        <div className="toolbox-area-icon">+</div>
+                        <div  className="toolbox-area-text">Add new column</div>
+                    </div>
+                </div>
+
             </div>
         );
     }
@@ -156,6 +163,11 @@ export default class Board extends React.Component<{}, BoardState> {
     @bind
     private onColumnDraggedEnd() {
         this.setState({columnIdBeingDragged: null});
+    }
+
+    @bind
+    private onAddColumn() {
+        BoardActions.addColumn("New column", 10);
     }
 
 }

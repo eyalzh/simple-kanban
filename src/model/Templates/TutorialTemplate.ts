@@ -13,7 +13,7 @@ export default class TutorialTemplate implements Template {
         const next = await model.addColumn("Next", 3);
         await model.addColumn("Done", 10);
 
-        await model.addTask(next, "Create a new task by double clicking anywhere on this column");
+        await model.addTask(next, "Create a new task by double clicking on free space in this column");
         await model.addTask(backlog, "Create a new column by selecting 'Add column' in the menu at the upper right corner of the page");
         await model.addTask(backlog, "Drag this task from this column to the next column");
         await model.addTask(backlog, "Delete this task by dragging it to the 'Trash Zone'");
